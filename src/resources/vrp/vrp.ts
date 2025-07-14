@@ -141,6 +141,25 @@ export class Vrp extends APIResource {
 }
 
 /**
+ * Options to manage the explanation of the solution
+ */
+export interface ExplanationOptions {
+  /**
+   * When enabled the explanation will contain a map of all the alternative positions
+   * for each job
+   */
+  enabled?: boolean | null;
+
+  /**
+   * When true the map of alternative positions will contain only feasible
+   * alternatives
+   */
+  filterHardConstraints?: boolean | null;
+
+  onlyUnassigned?: boolean | null;
+}
+
+/**
  * Geographical Location in WGS-84
  */
 export interface Location {
@@ -194,14 +213,14 @@ export interface OnRouteRequest {
   /**
    * Options to tweak the routing engine
    */
-  options?: OnRouteRequest.Options | null;
+  options?: Options | null;
 
   relations?: Array<OnRouteRequest.Relation> | null;
 
   /**
    * OnRoute Weights
    */
-  weights?: OnRouteRequest.Weights | null;
+  weights?: Weights | null;
 }
 
 export namespace OnRouteRequest {
@@ -609,114 +628,6 @@ export namespace OnRouteRequest {
   }
 
   /**
-   * Options to tweak the routing engine
-   */
-  export interface Options {
-    /**
-     * Use euclidian distance for travel time. Default false.
-     */
-    euclidian?: boolean | null;
-
-    /**
-     * Options to manage the explanation of the solution
-     */
-    explanation?: Options.Explanation | null;
-
-    fairComplexityPerResource?: boolean | null;
-
-    fairComplexityPerTrip?: boolean | null;
-
-    /**
-     * If true, the workload (service time) will be spread over all days of one
-     * resource. (interacts with `Weights.workloadSpreadWeight` and
-     * `options.workloadSensitivity`)
-     */
-    fairWorkloadPerResource?: boolean | null;
-
-    /**
-     * If true, the workload (service time) will be spread over all resources and all
-     * days. (interacts with `Weights.workloadSpreadWeight` and
-     * `options.workloadSensitivity`)
-     */
-    fairWorkloadPerTrip?: boolean | null;
-
-    /**
-     * If the request is submitted to the suggestion end point it indicates the maximum
-     * number of suggestions the solver should return (default is 0 which means return
-     * all)
-     */
-    maxSuggestions?: number | null;
-
-    /**
-     * Minimise the vehicle useage or minimise total travel time. Two different
-     * objective functions.
-     */
-    minimizeResources?: boolean | null;
-
-    /**
-     * If the request is a suggestion then if the initial plan is feasible the solver
-     * will return only feasible suggestions otherwise it will return only suggestions
-     * that do not worsen the infeasibility (default is true)
-     */
-    onlyFeasibleSuggestions?: boolean | null;
-
-    /**
-     * We will try to assign as many jobs as possible and create a partial schedule
-     * unless `partial` is set to `false`. Default set to true.
-     */
-    partialPlanning?: boolean | null;
-
-    /**
-     * Let our map server calculate the actual polylines for connecting the visits.
-     * Processing will take longer.
-     */
-    polylines?: boolean | null;
-
-    /**
-     * The routing engine to use for distance and travel time calculations
-     */
-    routingEngine?: 'OSM' | 'TOMTOM' | 'GOOGLE' | 'ANYMAP' | null;
-
-    /**
-     * The smallest steps in arrival time to which results will be snapped. The
-     * snapping policy is round-up and is used at runtime, implying it influences the
-     * score calculation. Unless a post-calculation feature such as order padding is
-     * used, any calculated arrival time in `[391, 395]` with a `snapUnit` of `5` will
-     * yield `395`. Fallback value for `Options.use_snapUnit_for_waitRange`.
-     */
-    snapUnit?: number | null;
-
-    /**
-     * Modifier to travel time for traffic. If you want actual traffic information, use
-     * HERE or TomTom map integration.
-     */
-    traffic?: number | null;
-
-    workloadSensitivity?: number | null;
-  }
-
-  export namespace Options {
-    /**
-     * Options to manage the explanation of the solution
-     */
-    export interface Explanation {
-      /**
-       * When enabled the explanation will contain a map of all the alternative positions
-       * for each job
-       */
-      enabled?: boolean | null;
-
-      /**
-       * When true the map of alternative positions will contain only feasible
-       * alternatives
-       */
-      filterHardConstraints?: boolean | null;
-
-      onlyUnassigned?: boolean | null;
-    }
-  }
-
-  /**
    * Relation between two jobs.
    */
   export interface Relation {
@@ -778,71 +689,93 @@ export namespace OnRouteRequest {
      */
     tags?: Array<string> | null;
   }
+}
+
+/**
+ * Options to tweak the routing engine
+ */
+export interface Options {
+  /**
+   * Use euclidian distance for travel time. Default false.
+   */
+  euclidian?: boolean | null;
 
   /**
-   * OnRoute Weights
+   * Options to manage the explanation of the solution
    */
-  export interface Weights {
-    /**
-     * Weight modifier for the resources allowed constraint.
-     */
-    allowedResourcesWeight?: number | null;
+  explanation?: ExplanationOptions | null;
 
-    /**
-     * Weight modifier scheduling jobs as soon (on day basis) as possible.
-     */
-    asapWeight?: number | null;
+  fairComplexityPerResource?: boolean | null;
 
-    /**
-     * Weight modifier for the drive time constraint.
-     */
-    driveTimeWeight?: number | null;
+  fairComplexityPerTrip?: boolean | null;
 
-    /**
-     * Weight modifier for minimizing activating another resource on a day trip. The
-     * weight is put on the same balance as travel time. So setting this weight to 3600
-     * (1hour) will make sure that the solver will try to minimize the number of
-     * resources used on a day trip compared to 1 extra hour of travel time.
-     */
-    minimizeResourcesWeight?: number | null;
+  /**
+   * If true, the workload (service time) will be spread over all days of one
+   * resource. (interacts with `Weights.workloadSpreadWeight` and
+   * `options.workloadSensitivity`)
+   */
+  fairWorkloadPerResource?: boolean | null;
 
-    /**
-     * Weight modifier for planned vehicle and planned date requirement.
-     */
-    plannedWeight?: number | null;
+  /**
+   * If true, the workload (service time) will be spread over all resources and all
+   * days. (interacts with `Weights.workloadSpreadWeight` and
+   * `options.workloadSensitivity`)
+   */
+  fairWorkloadPerTrip?: boolean | null;
 
-    /**
-     * Weight modifier for `job.priority` that ensures that priority orders are
-     * scheduled. Note that this does not make sure that they are scheduled sooner.
-     */
-    priorityWeight?: number | null;
+  /**
+   * If the request is submitted to the suggestion end point it indicates the maximum
+   * number of suggestions the solver should return (default is 0 which means return
+   * all)
+   */
+  maxSuggestions?: number | null;
 
-    /**
-     * Weight modifier for tag ranking preference. Higher weight increases the
-     * importance of assigning jobs to higher-ranked resources.
-     */
-    rankingWeight?: number | null;
+  /**
+   * Minimise the vehicle useage or minimise total travel time. Two different
+   * objective functions.
+   */
+  minimizeResources?: boolean | null;
 
-    /**
-     * Weight modifier for travel time.
-     */
-    travelTimeWeight?: number | null;
+  /**
+   * If the request is a suggestion then if the initial plan is feasible the solver
+   * will return only feasible suggestions otherwise it will return only suggestions
+   * that do not worsen the infeasibility (default is true)
+   */
+  onlyFeasibleSuggestions?: boolean | null;
 
-    /**
-     * Weight modifier for the urgency constraint.
-     */
-    urgencyWeight?: number | null;
+  /**
+   * We will try to assign as many jobs as possible and create a partial schedule
+   * unless `partial` is set to `false`. Default set to true.
+   */
+  partialPlanning?: boolean | null;
 
-    /**
-     * Weight modifier for wait time constraint.
-     */
-    waitTimeWeight?: number | null;
+  /**
+   * Let our map server calculate the actual polylines for connecting the visits.
+   * Processing will take longer.
+   */
+  polylines?: boolean | null;
 
-    /**
-     * Weight modifier for service time per vehicle day.
-     */
-    workloadSpreadWeight?: number | null;
-  }
+  /**
+   * The routing engine to use for distance and travel time calculations
+   */
+  routingEngine?: 'OSM' | 'TOMTOM' | 'GOOGLE' | 'ANYMAP' | null;
+
+  /**
+   * The smallest steps in arrival time to which results will be snapped. The
+   * snapping policy is round-up and is used at runtime, implying it influences the
+   * score calculation. Unless a post-calculation feature such as order padding is
+   * used, any calculated arrival time in `[391, 395]` with a `snapUnit` of `5` will
+   * yield `395`. Fallback value for `Options.use_snapUnit_for_waitRange`.
+   */
+  snapUnit?: number | null;
+
+  /**
+   * Modifier to travel time for traffic. If you want actual traffic information, use
+   * HERE or TomTom map integration.
+   */
+  traffic?: number | null;
+
+  workloadSensitivity?: number | null;
 }
 
 /**
@@ -875,6 +808,71 @@ export interface SolviceStatusJob {
   warnings?: Array<Message> | null;
 }
 
+/**
+ * OnRoute Weights
+ */
+export interface Weights {
+  /**
+   * Weight modifier for the resources allowed constraint.
+   */
+  allowedResourcesWeight?: number | null;
+
+  /**
+   * Weight modifier scheduling jobs as soon (on day basis) as possible.
+   */
+  asapWeight?: number | null;
+
+  /**
+   * Weight modifier for the drive time constraint.
+   */
+  driveTimeWeight?: number | null;
+
+  /**
+   * Weight modifier for minimizing activating another resource on a day trip. The
+   * weight is put on the same balance as travel time. So setting this weight to 3600
+   * (1hour) will make sure that the solver will try to minimize the number of
+   * resources used on a day trip compared to 1 extra hour of travel time.
+   */
+  minimizeResourcesWeight?: number | null;
+
+  /**
+   * Weight modifier for planned vehicle and planned date requirement.
+   */
+  plannedWeight?: number | null;
+
+  /**
+   * Weight modifier for `job.priority` that ensures that priority orders are
+   * scheduled. Note that this does not make sure that they are scheduled sooner.
+   */
+  priorityWeight?: number | null;
+
+  /**
+   * Weight modifier for tag ranking preference. Higher weight increases the
+   * importance of assigning jobs to higher-ranked resources.
+   */
+  rankingWeight?: number | null;
+
+  /**
+   * Weight modifier for travel time.
+   */
+  travelTimeWeight?: number | null;
+
+  /**
+   * Weight modifier for the urgency constraint.
+   */
+  urgencyWeight?: number | null;
+
+  /**
+   * Weight modifier for wait time constraint.
+   */
+  waitTimeWeight?: number | null;
+
+  /**
+   * Weight modifier for service time per vehicle day.
+   */
+  workloadSpreadWeight?: number | null;
+}
+
 export interface VrpDemoParams {
   geolocation?: string | null;
 
@@ -904,14 +902,14 @@ export interface VrpEvaluateParams {
   /**
    * Options to tweak the routing engine
    */
-  options?: VrpEvaluateParams.Options | null;
+  options?: Options | null;
 
   relations?: Array<VrpEvaluateParams.Relation> | null;
 
   /**
    * OnRoute Weights
    */
-  weights?: VrpEvaluateParams.Weights | null;
+  weights?: Weights | null;
 }
 
 export namespace VrpEvaluateParams {
@@ -1319,114 +1317,6 @@ export namespace VrpEvaluateParams {
   }
 
   /**
-   * Options to tweak the routing engine
-   */
-  export interface Options {
-    /**
-     * Use euclidian distance for travel time. Default false.
-     */
-    euclidian?: boolean | null;
-
-    /**
-     * Options to manage the explanation of the solution
-     */
-    explanation?: Options.Explanation | null;
-
-    fairComplexityPerResource?: boolean | null;
-
-    fairComplexityPerTrip?: boolean | null;
-
-    /**
-     * If true, the workload (service time) will be spread over all days of one
-     * resource. (interacts with `Weights.workloadSpreadWeight` and
-     * `options.workloadSensitivity`)
-     */
-    fairWorkloadPerResource?: boolean | null;
-
-    /**
-     * If true, the workload (service time) will be spread over all resources and all
-     * days. (interacts with `Weights.workloadSpreadWeight` and
-     * `options.workloadSensitivity`)
-     */
-    fairWorkloadPerTrip?: boolean | null;
-
-    /**
-     * If the request is submitted to the suggestion end point it indicates the maximum
-     * number of suggestions the solver should return (default is 0 which means return
-     * all)
-     */
-    maxSuggestions?: number | null;
-
-    /**
-     * Minimise the vehicle useage or minimise total travel time. Two different
-     * objective functions.
-     */
-    minimizeResources?: boolean | null;
-
-    /**
-     * If the request is a suggestion then if the initial plan is feasible the solver
-     * will return only feasible suggestions otherwise it will return only suggestions
-     * that do not worsen the infeasibility (default is true)
-     */
-    onlyFeasibleSuggestions?: boolean | null;
-
-    /**
-     * We will try to assign as many jobs as possible and create a partial schedule
-     * unless `partial` is set to `false`. Default set to true.
-     */
-    partialPlanning?: boolean | null;
-
-    /**
-     * Let our map server calculate the actual polylines for connecting the visits.
-     * Processing will take longer.
-     */
-    polylines?: boolean | null;
-
-    /**
-     * The routing engine to use for distance and travel time calculations
-     */
-    routingEngine?: 'OSM' | 'TOMTOM' | 'GOOGLE' | 'ANYMAP' | null;
-
-    /**
-     * The smallest steps in arrival time to which results will be snapped. The
-     * snapping policy is round-up and is used at runtime, implying it influences the
-     * score calculation. Unless a post-calculation feature such as order padding is
-     * used, any calculated arrival time in `[391, 395]` with a `snapUnit` of `5` will
-     * yield `395`. Fallback value for `Options.use_snapUnit_for_waitRange`.
-     */
-    snapUnit?: number | null;
-
-    /**
-     * Modifier to travel time for traffic. If you want actual traffic information, use
-     * HERE or TomTom map integration.
-     */
-    traffic?: number | null;
-
-    workloadSensitivity?: number | null;
-  }
-
-  export namespace Options {
-    /**
-     * Options to manage the explanation of the solution
-     */
-    export interface Explanation {
-      /**
-       * When enabled the explanation will contain a map of all the alternative positions
-       * for each job
-       */
-      enabled?: boolean | null;
-
-      /**
-       * When true the map of alternative positions will contain only feasible
-       * alternatives
-       */
-      filterHardConstraints?: boolean | null;
-
-      onlyUnassigned?: boolean | null;
-    }
-  }
-
-  /**
    * Relation between two jobs.
    */
   export interface Relation {
@@ -1488,71 +1378,6 @@ export namespace VrpEvaluateParams {
      */
     tags?: Array<string> | null;
   }
-
-  /**
-   * OnRoute Weights
-   */
-  export interface Weights {
-    /**
-     * Weight modifier for the resources allowed constraint.
-     */
-    allowedResourcesWeight?: number | null;
-
-    /**
-     * Weight modifier scheduling jobs as soon (on day basis) as possible.
-     */
-    asapWeight?: number | null;
-
-    /**
-     * Weight modifier for the drive time constraint.
-     */
-    driveTimeWeight?: number | null;
-
-    /**
-     * Weight modifier for minimizing activating another resource on a day trip. The
-     * weight is put on the same balance as travel time. So setting this weight to 3600
-     * (1hour) will make sure that the solver will try to minimize the number of
-     * resources used on a day trip compared to 1 extra hour of travel time.
-     */
-    minimizeResourcesWeight?: number | null;
-
-    /**
-     * Weight modifier for planned vehicle and planned date requirement.
-     */
-    plannedWeight?: number | null;
-
-    /**
-     * Weight modifier for `job.priority` that ensures that priority orders are
-     * scheduled. Note that this does not make sure that they are scheduled sooner.
-     */
-    priorityWeight?: number | null;
-
-    /**
-     * Weight modifier for tag ranking preference. Higher weight increases the
-     * importance of assigning jobs to higher-ranked resources.
-     */
-    rankingWeight?: number | null;
-
-    /**
-     * Weight modifier for travel time.
-     */
-    travelTimeWeight?: number | null;
-
-    /**
-     * Weight modifier for the urgency constraint.
-     */
-    urgencyWeight?: number | null;
-
-    /**
-     * Weight modifier for wait time constraint.
-     */
-    waitTimeWeight?: number | null;
-
-    /**
-     * Weight modifier for service time per vehicle day.
-     */
-    workloadSpreadWeight?: number | null;
-  }
 }
 
 export interface VrpSolveParams {
@@ -1584,7 +1409,7 @@ export interface VrpSolveParams {
   /**
    * Body param: Options to tweak the routing engine
    */
-  options?: VrpSolveParams.Options | null;
+  options?: Options | null;
 
   /**
    * Body param:
@@ -1594,7 +1419,7 @@ export interface VrpSolveParams {
   /**
    * Body param: OnRoute Weights
    */
-  weights?: VrpSolveParams.Weights | null;
+  weights?: Weights | null;
 
   /**
    * Header param:
@@ -2007,114 +1832,6 @@ export namespace VrpSolveParams {
   }
 
   /**
-   * Options to tweak the routing engine
-   */
-  export interface Options {
-    /**
-     * Use euclidian distance for travel time. Default false.
-     */
-    euclidian?: boolean | null;
-
-    /**
-     * Options to manage the explanation of the solution
-     */
-    explanation?: Options.Explanation | null;
-
-    fairComplexityPerResource?: boolean | null;
-
-    fairComplexityPerTrip?: boolean | null;
-
-    /**
-     * If true, the workload (service time) will be spread over all days of one
-     * resource. (interacts with `Weights.workloadSpreadWeight` and
-     * `options.workloadSensitivity`)
-     */
-    fairWorkloadPerResource?: boolean | null;
-
-    /**
-     * If true, the workload (service time) will be spread over all resources and all
-     * days. (interacts with `Weights.workloadSpreadWeight` and
-     * `options.workloadSensitivity`)
-     */
-    fairWorkloadPerTrip?: boolean | null;
-
-    /**
-     * If the request is submitted to the suggestion end point it indicates the maximum
-     * number of suggestions the solver should return (default is 0 which means return
-     * all)
-     */
-    maxSuggestions?: number | null;
-
-    /**
-     * Minimise the vehicle useage or minimise total travel time. Two different
-     * objective functions.
-     */
-    minimizeResources?: boolean | null;
-
-    /**
-     * If the request is a suggestion then if the initial plan is feasible the solver
-     * will return only feasible suggestions otherwise it will return only suggestions
-     * that do not worsen the infeasibility (default is true)
-     */
-    onlyFeasibleSuggestions?: boolean | null;
-
-    /**
-     * We will try to assign as many jobs as possible and create a partial schedule
-     * unless `partial` is set to `false`. Default set to true.
-     */
-    partialPlanning?: boolean | null;
-
-    /**
-     * Let our map server calculate the actual polylines for connecting the visits.
-     * Processing will take longer.
-     */
-    polylines?: boolean | null;
-
-    /**
-     * The routing engine to use for distance and travel time calculations
-     */
-    routingEngine?: 'OSM' | 'TOMTOM' | 'GOOGLE' | 'ANYMAP' | null;
-
-    /**
-     * The smallest steps in arrival time to which results will be snapped. The
-     * snapping policy is round-up and is used at runtime, implying it influences the
-     * score calculation. Unless a post-calculation feature such as order padding is
-     * used, any calculated arrival time in `[391, 395]` with a `snapUnit` of `5` will
-     * yield `395`. Fallback value for `Options.use_snapUnit_for_waitRange`.
-     */
-    snapUnit?: number | null;
-
-    /**
-     * Modifier to travel time for traffic. If you want actual traffic information, use
-     * HERE or TomTom map integration.
-     */
-    traffic?: number | null;
-
-    workloadSensitivity?: number | null;
-  }
-
-  export namespace Options {
-    /**
-     * Options to manage the explanation of the solution
-     */
-    export interface Explanation {
-      /**
-       * When enabled the explanation will contain a map of all the alternative positions
-       * for each job
-       */
-      enabled?: boolean | null;
-
-      /**
-       * When true the map of alternative positions will contain only feasible
-       * alternatives
-       */
-      filterHardConstraints?: boolean | null;
-
-      onlyUnassigned?: boolean | null;
-    }
-  }
-
-  /**
    * Relation between two jobs.
    */
   export interface Relation {
@@ -2176,71 +1893,6 @@ export namespace VrpSolveParams {
      */
     tags?: Array<string> | null;
   }
-
-  /**
-   * OnRoute Weights
-   */
-  export interface Weights {
-    /**
-     * Weight modifier for the resources allowed constraint.
-     */
-    allowedResourcesWeight?: number | null;
-
-    /**
-     * Weight modifier scheduling jobs as soon (on day basis) as possible.
-     */
-    asapWeight?: number | null;
-
-    /**
-     * Weight modifier for the drive time constraint.
-     */
-    driveTimeWeight?: number | null;
-
-    /**
-     * Weight modifier for minimizing activating another resource on a day trip. The
-     * weight is put on the same balance as travel time. So setting this weight to 3600
-     * (1hour) will make sure that the solver will try to minimize the number of
-     * resources used on a day trip compared to 1 extra hour of travel time.
-     */
-    minimizeResourcesWeight?: number | null;
-
-    /**
-     * Weight modifier for planned vehicle and planned date requirement.
-     */
-    plannedWeight?: number | null;
-
-    /**
-     * Weight modifier for `job.priority` that ensures that priority orders are
-     * scheduled. Note that this does not make sure that they are scheduled sooner.
-     */
-    priorityWeight?: number | null;
-
-    /**
-     * Weight modifier for tag ranking preference. Higher weight increases the
-     * importance of assigning jobs to higher-ranked resources.
-     */
-    rankingWeight?: number | null;
-
-    /**
-     * Weight modifier for travel time.
-     */
-    travelTimeWeight?: number | null;
-
-    /**
-     * Weight modifier for the urgency constraint.
-     */
-    urgencyWeight?: number | null;
-
-    /**
-     * Weight modifier for wait time constraint.
-     */
-    waitTimeWeight?: number | null;
-
-    /**
-     * Weight modifier for service time per vehicle day.
-     */
-    workloadSpreadWeight?: number | null;
-  }
 }
 
 export interface VrpSuggestParams {
@@ -2272,7 +1924,7 @@ export interface VrpSuggestParams {
   /**
    * Body param: Options to tweak the routing engine
    */
-  options?: VrpSuggestParams.Options | null;
+  options?: Options | null;
 
   /**
    * Body param:
@@ -2282,7 +1934,7 @@ export interface VrpSuggestParams {
   /**
    * Body param: OnRoute Weights
    */
-  weights?: VrpSuggestParams.Weights | null;
+  weights?: Weights | null;
 }
 
 export namespace VrpSuggestParams {
@@ -2690,114 +2342,6 @@ export namespace VrpSuggestParams {
   }
 
   /**
-   * Options to tweak the routing engine
-   */
-  export interface Options {
-    /**
-     * Use euclidian distance for travel time. Default false.
-     */
-    euclidian?: boolean | null;
-
-    /**
-     * Options to manage the explanation of the solution
-     */
-    explanation?: Options.Explanation | null;
-
-    fairComplexityPerResource?: boolean | null;
-
-    fairComplexityPerTrip?: boolean | null;
-
-    /**
-     * If true, the workload (service time) will be spread over all days of one
-     * resource. (interacts with `Weights.workloadSpreadWeight` and
-     * `options.workloadSensitivity`)
-     */
-    fairWorkloadPerResource?: boolean | null;
-
-    /**
-     * If true, the workload (service time) will be spread over all resources and all
-     * days. (interacts with `Weights.workloadSpreadWeight` and
-     * `options.workloadSensitivity`)
-     */
-    fairWorkloadPerTrip?: boolean | null;
-
-    /**
-     * If the request is submitted to the suggestion end point it indicates the maximum
-     * number of suggestions the solver should return (default is 0 which means return
-     * all)
-     */
-    maxSuggestions?: number | null;
-
-    /**
-     * Minimise the vehicle useage or minimise total travel time. Two different
-     * objective functions.
-     */
-    minimizeResources?: boolean | null;
-
-    /**
-     * If the request is a suggestion then if the initial plan is feasible the solver
-     * will return only feasible suggestions otherwise it will return only suggestions
-     * that do not worsen the infeasibility (default is true)
-     */
-    onlyFeasibleSuggestions?: boolean | null;
-
-    /**
-     * We will try to assign as many jobs as possible and create a partial schedule
-     * unless `partial` is set to `false`. Default set to true.
-     */
-    partialPlanning?: boolean | null;
-
-    /**
-     * Let our map server calculate the actual polylines for connecting the visits.
-     * Processing will take longer.
-     */
-    polylines?: boolean | null;
-
-    /**
-     * The routing engine to use for distance and travel time calculations
-     */
-    routingEngine?: 'OSM' | 'TOMTOM' | 'GOOGLE' | 'ANYMAP' | null;
-
-    /**
-     * The smallest steps in arrival time to which results will be snapped. The
-     * snapping policy is round-up and is used at runtime, implying it influences the
-     * score calculation. Unless a post-calculation feature such as order padding is
-     * used, any calculated arrival time in `[391, 395]` with a `snapUnit` of `5` will
-     * yield `395`. Fallback value for `Options.use_snapUnit_for_waitRange`.
-     */
-    snapUnit?: number | null;
-
-    /**
-     * Modifier to travel time for traffic. If you want actual traffic information, use
-     * HERE or TomTom map integration.
-     */
-    traffic?: number | null;
-
-    workloadSensitivity?: number | null;
-  }
-
-  export namespace Options {
-    /**
-     * Options to manage the explanation of the solution
-     */
-    export interface Explanation {
-      /**
-       * When enabled the explanation will contain a map of all the alternative positions
-       * for each job
-       */
-      enabled?: boolean | null;
-
-      /**
-       * When true the map of alternative positions will contain only feasible
-       * alternatives
-       */
-      filterHardConstraints?: boolean | null;
-
-      onlyUnassigned?: boolean | null;
-    }
-  }
-
-  /**
    * Relation between two jobs.
    */
   export interface Relation {
@@ -2859,71 +2403,6 @@ export namespace VrpSuggestParams {
      */
     tags?: Array<string> | null;
   }
-
-  /**
-   * OnRoute Weights
-   */
-  export interface Weights {
-    /**
-     * Weight modifier for the resources allowed constraint.
-     */
-    allowedResourcesWeight?: number | null;
-
-    /**
-     * Weight modifier scheduling jobs as soon (on day basis) as possible.
-     */
-    asapWeight?: number | null;
-
-    /**
-     * Weight modifier for the drive time constraint.
-     */
-    driveTimeWeight?: number | null;
-
-    /**
-     * Weight modifier for minimizing activating another resource on a day trip. The
-     * weight is put on the same balance as travel time. So setting this weight to 3600
-     * (1hour) will make sure that the solver will try to minimize the number of
-     * resources used on a day trip compared to 1 extra hour of travel time.
-     */
-    minimizeResourcesWeight?: number | null;
-
-    /**
-     * Weight modifier for planned vehicle and planned date requirement.
-     */
-    plannedWeight?: number | null;
-
-    /**
-     * Weight modifier for `job.priority` that ensures that priority orders are
-     * scheduled. Note that this does not make sure that they are scheduled sooner.
-     */
-    priorityWeight?: number | null;
-
-    /**
-     * Weight modifier for tag ranking preference. Higher weight increases the
-     * importance of assigning jobs to higher-ranked resources.
-     */
-    rankingWeight?: number | null;
-
-    /**
-     * Weight modifier for travel time.
-     */
-    travelTimeWeight?: number | null;
-
-    /**
-     * Weight modifier for the urgency constraint.
-     */
-    urgencyWeight?: number | null;
-
-    /**
-     * Weight modifier for wait time constraint.
-     */
-    waitTimeWeight?: number | null;
-
-    /**
-     * Weight modifier for service time per vehicle day.
-     */
-    workloadSpreadWeight?: number | null;
-  }
 }
 
 export interface VrpSyncParams {
@@ -2955,7 +2434,7 @@ export interface VrpSyncParams {
   /**
    * Body param: Options to tweak the routing engine
    */
-  options?: VrpSyncParams.Options | null;
+  options?: Options | null;
 
   /**
    * Body param:
@@ -2965,7 +2444,7 @@ export interface VrpSyncParams {
   /**
    * Body param: OnRoute Weights
    */
-  weights?: VrpSyncParams.Weights | null;
+  weights?: Weights | null;
 }
 
 export namespace VrpSyncParams {
@@ -3373,114 +2852,6 @@ export namespace VrpSyncParams {
   }
 
   /**
-   * Options to tweak the routing engine
-   */
-  export interface Options {
-    /**
-     * Use euclidian distance for travel time. Default false.
-     */
-    euclidian?: boolean | null;
-
-    /**
-     * Options to manage the explanation of the solution
-     */
-    explanation?: Options.Explanation | null;
-
-    fairComplexityPerResource?: boolean | null;
-
-    fairComplexityPerTrip?: boolean | null;
-
-    /**
-     * If true, the workload (service time) will be spread over all days of one
-     * resource. (interacts with `Weights.workloadSpreadWeight` and
-     * `options.workloadSensitivity`)
-     */
-    fairWorkloadPerResource?: boolean | null;
-
-    /**
-     * If true, the workload (service time) will be spread over all resources and all
-     * days. (interacts with `Weights.workloadSpreadWeight` and
-     * `options.workloadSensitivity`)
-     */
-    fairWorkloadPerTrip?: boolean | null;
-
-    /**
-     * If the request is submitted to the suggestion end point it indicates the maximum
-     * number of suggestions the solver should return (default is 0 which means return
-     * all)
-     */
-    maxSuggestions?: number | null;
-
-    /**
-     * Minimise the vehicle useage or minimise total travel time. Two different
-     * objective functions.
-     */
-    minimizeResources?: boolean | null;
-
-    /**
-     * If the request is a suggestion then if the initial plan is feasible the solver
-     * will return only feasible suggestions otherwise it will return only suggestions
-     * that do not worsen the infeasibility (default is true)
-     */
-    onlyFeasibleSuggestions?: boolean | null;
-
-    /**
-     * We will try to assign as many jobs as possible and create a partial schedule
-     * unless `partial` is set to `false`. Default set to true.
-     */
-    partialPlanning?: boolean | null;
-
-    /**
-     * Let our map server calculate the actual polylines for connecting the visits.
-     * Processing will take longer.
-     */
-    polylines?: boolean | null;
-
-    /**
-     * The routing engine to use for distance and travel time calculations
-     */
-    routingEngine?: 'OSM' | 'TOMTOM' | 'GOOGLE' | 'ANYMAP' | null;
-
-    /**
-     * The smallest steps in arrival time to which results will be snapped. The
-     * snapping policy is round-up and is used at runtime, implying it influences the
-     * score calculation. Unless a post-calculation feature such as order padding is
-     * used, any calculated arrival time in `[391, 395]` with a `snapUnit` of `5` will
-     * yield `395`. Fallback value for `Options.use_snapUnit_for_waitRange`.
-     */
-    snapUnit?: number | null;
-
-    /**
-     * Modifier to travel time for traffic. If you want actual traffic information, use
-     * HERE or TomTom map integration.
-     */
-    traffic?: number | null;
-
-    workloadSensitivity?: number | null;
-  }
-
-  export namespace Options {
-    /**
-     * Options to manage the explanation of the solution
-     */
-    export interface Explanation {
-      /**
-       * When enabled the explanation will contain a map of all the alternative positions
-       * for each job
-       */
-      enabled?: boolean | null;
-
-      /**
-       * When true the map of alternative positions will contain only feasible
-       * alternatives
-       */
-      filterHardConstraints?: boolean | null;
-
-      onlyUnassigned?: boolean | null;
-    }
-  }
-
-  /**
    * Relation between two jobs.
    */
   export interface Relation {
@@ -3542,81 +2913,19 @@ export namespace VrpSyncParams {
      */
     tags?: Array<string> | null;
   }
-
-  /**
-   * OnRoute Weights
-   */
-  export interface Weights {
-    /**
-     * Weight modifier for the resources allowed constraint.
-     */
-    allowedResourcesWeight?: number | null;
-
-    /**
-     * Weight modifier scheduling jobs as soon (on day basis) as possible.
-     */
-    asapWeight?: number | null;
-
-    /**
-     * Weight modifier for the drive time constraint.
-     */
-    driveTimeWeight?: number | null;
-
-    /**
-     * Weight modifier for minimizing activating another resource on a day trip. The
-     * weight is put on the same balance as travel time. So setting this weight to 3600
-     * (1hour) will make sure that the solver will try to minimize the number of
-     * resources used on a day trip compared to 1 extra hour of travel time.
-     */
-    minimizeResourcesWeight?: number | null;
-
-    /**
-     * Weight modifier for planned vehicle and planned date requirement.
-     */
-    plannedWeight?: number | null;
-
-    /**
-     * Weight modifier for `job.priority` that ensures that priority orders are
-     * scheduled. Note that this does not make sure that they are scheduled sooner.
-     */
-    priorityWeight?: number | null;
-
-    /**
-     * Weight modifier for tag ranking preference. Higher weight increases the
-     * importance of assigning jobs to higher-ranked resources.
-     */
-    rankingWeight?: number | null;
-
-    /**
-     * Weight modifier for travel time.
-     */
-    travelTimeWeight?: number | null;
-
-    /**
-     * Weight modifier for the urgency constraint.
-     */
-    urgencyWeight?: number | null;
-
-    /**
-     * Weight modifier for wait time constraint.
-     */
-    waitTimeWeight?: number | null;
-
-    /**
-     * Weight modifier for service time per vehicle day.
-     */
-    workloadSpreadWeight?: number | null;
-  }
 }
 
 Vrp.Jobs = Jobs;
 
 export declare namespace Vrp {
   export {
+    type ExplanationOptions as ExplanationOptions,
     type Location as Location,
     type Message as Message,
     type OnRouteRequest as OnRouteRequest,
+    type Options as Options,
     type SolviceStatusJob as SolviceStatusJob,
+    type Weights as Weights,
     type VrpDemoParams as VrpDemoParams,
     type VrpEvaluateParams as VrpEvaluateParams,
     type VrpSolveParams as VrpSolveParams,

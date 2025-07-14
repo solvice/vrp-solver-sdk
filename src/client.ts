@@ -17,9 +17,11 @@ import * as Uploads from './core/uploads';
 import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
 import {
+  ExplanationOptions,
   Location,
   Message,
   OnRouteRequest,
+  Options,
   SolviceStatusJob,
   Vrp,
   VrpDemoParams,
@@ -27,6 +29,7 @@ import {
   VrpSolveParams,
   VrpSuggestParams,
   VrpSyncParams,
+  Weights,
 } from './resources/vrp/vrp';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
@@ -733,10 +736,13 @@ export declare namespace SolviceVrpSolver {
 
   export {
     Vrp as Vrp,
+    type ExplanationOptions as ExplanationOptions,
     type Location as Location,
     type Message as Message,
     type OnRouteRequest as OnRouteRequest,
+    type Options as Options,
     type SolviceStatusJob as SolviceStatusJob,
+    type Weights as Weights,
     type VrpDemoParams as VrpDemoParams,
     type VrpEvaluateParams as VrpEvaluateParams,
     type VrpSolveParams as VrpSolveParams,
