@@ -10,10 +10,13 @@ export {
 } from './jobs';
 export {
   Vrp,
+  type ExplanationOptions,
   type Location,
   type Message,
   type OnRouteRequest,
+  type Options,
   type SolviceStatusJob,
+  type Weights,
   type VrpDemoParams,
   type VrpEvaluateParams,
   type VrpSolveParams,
