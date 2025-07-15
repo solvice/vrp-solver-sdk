@@ -2,15 +2,22 @@
 
 import { APIResource } from '../../core/resource';
 import * as VrpAPI from './vrp';
-import * as JobsAPI from './jobs';
-import { JobExplanationResponse, Jobs, OnRouteResponse, OnrouteConstraint, Unresolved, Visit } from './jobs';
+import * as SolvesAPI from './solves';
+import {
+  OnRouteResponse,
+  OnrouteConstraint,
+  SolveExplanationResponse,
+  Solves,
+  Unresolved,
+  Visit,
+} from './solves';
 import { APIPromise } from '../../core/api-promise';
 import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
 export class Vrp extends APIResource {
-  jobs: JobsAPI.Jobs = new JobsAPI.Jobs(this._client);
+  solves: SolvesAPI.Solves = new SolvesAPI.Solves(this._client);
 
   /**
    * Demo of random generated VRP instance
@@ -134,7 +141,7 @@ export class Vrp extends APIResource {
     operation: 'SOLVE' | 'SUGGEST' | 'EVALUATE',
     params: VrpSyncParams,
     options?: RequestOptions,
-  ): APIPromise<JobsAPI.OnRouteResponse> {
+  ): APIPromise<SolvesAPI.OnRouteResponse> {
     const { millis, ...body } = params;
     return this._client.post(path`/v2/vrp/sync/${operation}`, { query: { millis }, body, ...options });
   }
@@ -1303,7 +1310,7 @@ export namespace VrpSyncParams {
   }
 }
 
-Vrp.Jobs = Jobs;
+Vrp.Solves = Solves;
 
 export declare namespace Vrp {
   export {
@@ -1324,11 +1331,11 @@ export declare namespace Vrp {
   };
 
   export {
-    Jobs as Jobs,
+    Solves as Solves,
     type OnRouteResponse as OnRouteResponse,
     type OnrouteConstraint as OnrouteConstraint,
     type Unresolved as Unresolved,
     type Visit as Visit,
-    type JobExplanationResponse as JobExplanationResponse,
+    type SolveExplanationResponse as SolveExplanationResponse,
   };
 }
