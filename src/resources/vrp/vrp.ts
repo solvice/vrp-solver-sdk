@@ -585,7 +585,7 @@ export interface Resource {
   /**
    * Shift definition of a Resource over course of planning period
    */
-  shifts: Array<Shifts> | null;
+  shifts: Array<Shift> | null;
 
   /**
    * Capacity
@@ -715,7 +715,7 @@ export namespace Resource {
  * Shift definition. Every potential shift of a resource should be defined here.
  * Every shift can be a trip.
  */
-export interface Shifts {
+export interface Shift {
   /**
    * Start of the shift datetime
    */
@@ -729,7 +729,7 @@ export interface Shifts {
   /**
    * Windowed breaks definitions.
    */
-  breaks?: Array<Shifts.Break> | null;
+  breaks?: Array<Shift.Break> | null;
 
   /**
    * Geographical Location in WGS-84
@@ -768,7 +768,7 @@ export interface Shifts {
   tags?: Array<string> | null;
 }
 
-export namespace Shifts {
+export namespace Shift {
   export interface Break {
     /**
      * Type of break that can be defined for a resource
@@ -1313,7 +1313,7 @@ export declare namespace Vrp {
     type OnRouteRequest as OnRouteRequest,
     type Options as Options,
     type Resource as Resource,
-    type Shifts as Shifts,
+    type Shift as Shift,
     type SolviceStatusJob as SolviceStatusJob,
     type Weights as Weights,
     type VrpDemoParams as VrpDemoParams,
