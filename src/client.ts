@@ -18,10 +18,12 @@ import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
 import {
   ExplanationOptions,
+  Job,
   Location,
   Message,
   OnRouteRequest,
   Options,
+  Resource,
   SolviceStatusJob,
   Vrp,
   VrpDemoParams,
@@ -737,10 +739,12 @@ export declare namespace SolviceVrpSolver {
   export {
     Vrp as Vrp,
     type ExplanationOptions as ExplanationOptions,
+    type Job as Job,
     type Location as Location,
     type Message as Message,
     type OnRouteRequest as OnRouteRequest,
     type Options as Options,
+    type Resource as Resource,
     type SolviceStatusJob as SolviceStatusJob,
     type Weights as Weights,
     type VrpDemoParams as VrpDemoParams,
