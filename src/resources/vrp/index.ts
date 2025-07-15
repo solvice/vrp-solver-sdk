@@ -17,6 +17,7 @@ export {
   type OnRouteRequest,
   type Options,
   type Resource,
+  type Shifts,
   type SolviceStatusJob,
   type Weights,
   type VrpDemoParams,

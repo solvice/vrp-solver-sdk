@@ -9,6 +9,7 @@ Types:
 - <code><a href="./src/resources/vrp/vrp.ts">OnRouteRequest</a></code>
 - <code><a href="./src/resources/vrp/vrp.ts">Options</a></code>
 - <code><a href="./src/resources/vrp/vrp.ts">Resource</a></code>
+- <code><a href="./src/resources/vrp/vrp.ts">Shifts</a></code>
 - <code><a href="./src/resources/vrp/vrp.ts">SolviceStatusJob</a></code>
 - <code><a href="./src/resources/vrp/vrp.ts">Weights</a></code>
 

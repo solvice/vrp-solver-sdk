@@ -1,7 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../../core/resource';
-import * as VrpAPI from './vrp';
 import * as JobsAPI from './jobs';
 import { JobExplanationResponse, Jobs, OnRouteResponse, OnrouteConstraint, Unresolved, Visit } from './jobs';
 import { APIPromise } from '../../core/api-promise';
@@ -586,7 +585,7 @@ export interface Resource {
   /**
    * Shift definition of a Resource over course of planning period
    */
-  shifts: Array<Resource.Shift> | null;
+  shifts: Array<Shifts> | null;
 
   /**
    * Capacity
@@ -640,72 +639,6 @@ export interface Resource {
 }
 
 export namespace Resource {
-  /**
-   * Shift definition. Every potential shift of a resource should be defined here.
-   * Every shift can be a trip.
-   */
-  export interface Shift {
-    /**
-     * Start of the shift datetime
-     */
-    from: string;
-
-    /**
-     * End of the shift datetime
-     */
-    to: string;
-
-    /**
-     * Windowed breaks definitions.
-     */
-    breaks?: Array<Shift.Break> | null;
-
-    /**
-     * Geographical Location in WGS-84
-     */
-    end?: VrpAPI.Location | null;
-
-    /**
-     * Ignore the travel time from the last order to the optional end location
-     */
-    ignoreTravelTimeFromLastJob?: boolean | null;
-
-    /**
-     * Ignore the travel time from the start location to the first order
-     */
-    ignoreTravelTimeToFirstJob?: boolean | null;
-
-    /**
-     * @deprecated Can go into overtime.
-     */
-    overtime?: unknown;
-
-    /**
-     * Maximum overtime time.
-     */
-    overtimeEnd?: string | null;
-
-    /**
-     * Geographical Location in WGS-84
-     */
-    start?: VrpAPI.Location | null;
-
-    /**
-     * Shift tags will ensure that this resource can only do Jobs of this tag during
-     * this shift. This allows for tag based availability.
-     */
-    tags?: Array<string> | null;
-  }
-
-  export namespace Shift {
-    export interface Break {
-      /**
-       * Type of break that can be defined for a resource
-       */
-      type: 'WINDOWED' | 'DRIVE' | 'UNAVAILABILITY';
-    }
-  }
-
   /**
    * Periodic time rule for a resource
    */
@@ -775,6 +708,72 @@ export namespace Resource {
 
       to: string;
     }
+  }
+}
+
+/**
+ * Shift definition. Every potential shift of a resource should be defined here.
+ * Every shift can be a trip.
+ */
+export interface Shifts {
+  /**
+   * Start of the shift datetime
+   */
+  from: string;
+
+  /**
+   * End of the shift datetime
+   */
+  to: string;
+
+  /**
+   * Windowed breaks definitions.
+   */
+  breaks?: Array<Shifts.Break> | null;
+
+  /**
+   * Geographical Location in WGS-84
+   */
+  end?: Location | null;
+
+  /**
+   * Ignore the travel time from the last order to the optional end location
+   */
+  ignoreTravelTimeFromLastJob?: boolean | null;
+
+  /**
+   * Ignore the travel time from the start location to the first order
+   */
+  ignoreTravelTimeToFirstJob?: boolean | null;
+
+  /**
+   * @deprecated Can go into overtime.
+   */
+  overtime?: unknown;
+
+  /**
+   * Maximum overtime time.
+   */
+  overtimeEnd?: string | null;
+
+  /**
+   * Geographical Location in WGS-84
+   */
+  start?: Location | null;
+
+  /**
+   * Shift tags will ensure that this resource can only do Jobs of this tag during
+   * this shift. This allows for tag based availability.
+   */
+  tags?: Array<string> | null;
+}
+
+export namespace Shifts {
+  export interface Break {
+    /**
+     * Type of break that can be defined for a resource
+     */
+    type: 'WINDOWED' | 'DRIVE' | 'UNAVAILABILITY';
   }
 }
 
@@ -1314,6 +1313,7 @@ export declare namespace Vrp {
     type OnRouteRequest as OnRouteRequest,
     type Options as Options,
     type Resource as Resource,
+    type Shifts as Shifts,
     type SolviceStatusJob as SolviceStatusJob,
     type Weights as Weights,
     type VrpDemoParams as VrpDemoParams,
