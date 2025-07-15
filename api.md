@@ -9,7 +9,7 @@ Types:
 - <code><a href="./src/resources/vrp/vrp.ts">OnRouteRequest</a></code>
 - <code><a href="./src/resources/vrp/vrp.ts">Options</a></code>
 - <code><a href="./src/resources/vrp/vrp.ts">Resource</a></code>
-- <code><a href="./src/resources/vrp/vrp.ts">SolviceStatusJob</a></code>
+- <code><a href="./src/resources/vrp/vrp.ts">Shift</a></code>
 - <code><a href="./src/resources/vrp/vrp.ts">Weights</a></code>
 
 Methods:
@@ -26,6 +26,7 @@ Types:
 
 - <code><a href="./src/resources/vrp/jobs.ts">OnRouteResponse</a></code>
 - <code><a href="./src/resources/vrp/jobs.ts">OnrouteConstraint</a></code>
+- <code><a href="./src/resources/vrp/jobs.ts">SolviceStatusJob</a></code>
 - <code><a href="./src/resources/vrp/jobs.ts">Unresolved</a></code>
 - <code><a href="./src/resources/vrp/jobs.ts">Visit</a></code>
 - <code><a href="./src/resources/vrp/jobs.ts">JobExplanationResponse</a></code>

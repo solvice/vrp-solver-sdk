@@ -1,9 +1,16 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../../core/resource';
-import * as VrpAPI from './vrp';
 import * as JobsAPI from './jobs';
-import { JobExplanationResponse, Jobs, OnRouteResponse, OnrouteConstraint, Unresolved, Visit } from './jobs';
+import {
+  JobExplanationResponse,
+  Jobs,
+  OnRouteResponse,
+  OnrouteConstraint,
+  SolviceStatusJob,
+  Unresolved,
+  Visit,
+} from './jobs';
 import { APIPromise } from '../../core/api-promise';
 import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
@@ -45,7 +52,7 @@ export class Vrp extends APIResource {
    * });
    * ```
    */
-  evaluate(body: VrpEvaluateParams, options?: RequestOptions): APIPromise<SolviceStatusJob> {
+  evaluate(body: VrpEvaluateParams, options?: RequestOptions): APIPromise<JobsAPI.SolviceStatusJob> {
     return this._client.post('/v2/vrp/evaluate', { body, ...options });
   }
 
@@ -70,7 +77,7 @@ export class Vrp extends APIResource {
    * });
    * ```
    */
-  solve(params: VrpSolveParams, options?: RequestOptions): APIPromise<SolviceStatusJob> {
+  solve(params: VrpSolveParams, options?: RequestOptions): APIPromise<JobsAPI.SolviceStatusJob> {
     const { millis, instance, ...body } = params;
     return this._client.post('/v2/vrp/solve', {
       query: { millis },
@@ -104,7 +111,7 @@ export class Vrp extends APIResource {
    * });
    * ```
    */
-  suggest(params: VrpSuggestParams, options?: RequestOptions): APIPromise<SolviceStatusJob> {
+  suggest(params: VrpSuggestParams, options?: RequestOptions): APIPromise<JobsAPI.SolviceStatusJob> {
     const { millis, ...body } = params;
     return this._client.post('/v2/vrp/suggest', { query: { millis }, body, ...options });
   }
@@ -586,7 +593,7 @@ export interface Resource {
   /**
    * Shift definition of a Resource over course of planning period
    */
-  shifts: Array<Resource.Shift> | null;
+  shifts: Array<Shift> | null;
 
   /**
    * Capacity
@@ -640,72 +647,6 @@ export interface Resource {
 }
 
 export namespace Resource {
-  /**
-   * Shift definition. Every potential shift of a resource should be defined here.
-   * Every shift can be a trip.
-   */
-  export interface Shift {
-    /**
-     * Start of the shift datetime
-     */
-    from: string;
-
-    /**
-     * End of the shift datetime
-     */
-    to: string;
-
-    /**
-     * Windowed breaks definitions.
-     */
-    breaks?: Array<Shift.Break> | null;
-
-    /**
-     * Geographical Location in WGS-84
-     */
-    end?: VrpAPI.Location | null;
-
-    /**
-     * Ignore the travel time from the last order to the optional end location
-     */
-    ignoreTravelTimeFromLastJob?: boolean | null;
-
-    /**
-     * Ignore the travel time from the start location to the first order
-     */
-    ignoreTravelTimeToFirstJob?: boolean | null;
-
-    /**
-     * @deprecated Can go into overtime.
-     */
-    overtime?: unknown;
-
-    /**
-     * Maximum overtime time.
-     */
-    overtimeEnd?: string | null;
-
-    /**
-     * Geographical Location in WGS-84
-     */
-    start?: VrpAPI.Location | null;
-
-    /**
-     * Shift tags will ensure that this resource can only do Jobs of this tag during
-     * this shift. This allows for tag based availability.
-     */
-    tags?: Array<string> | null;
-  }
-
-  export namespace Shift {
-    export interface Break {
-      /**
-       * Type of break that can be defined for a resource
-       */
-      type: 'WINDOWED' | 'DRIVE' | 'UNAVAILABILITY';
-    }
-  }
-
   /**
    * Periodic time rule for a resource
    */
@@ -779,33 +720,69 @@ export namespace Resource {
 }
 
 /**
- * Status of a solve job
+ * Shift definition. Every potential shift of a resource should be defined here.
+ * Every shift can be a trip.
  */
-export interface SolviceStatusJob {
+export interface Shift {
   /**
-   * Job ID
+   * Start of the shift datetime
    */
-  id: string;
+  from: string;
 
   /**
-   * List of errors
+   * End of the shift datetime
    */
-  errors?: Array<Message> | null;
+  to: string;
 
   /**
-   * Duration of the solve in seconds
+   * Windowed breaks definitions.
    */
-  solveDuration?: number | null;
+  breaks?: Array<Shift.Break> | null;
 
   /**
-   * Status of the solve.
+   * Geographical Location in WGS-84
    */
-  status?: 'QUEUED' | 'SOLVING' | 'SOLVED' | 'ERROR' | null;
+  end?: Location | null;
 
   /**
-   * List of warnings
+   * Ignore the travel time from the last order to the optional end location
    */
-  warnings?: Array<Message> | null;
+  ignoreTravelTimeFromLastJob?: boolean | null;
+
+  /**
+   * Ignore the travel time from the start location to the first order
+   */
+  ignoreTravelTimeToFirstJob?: boolean | null;
+
+  /**
+   * @deprecated Can go into overtime.
+   */
+  overtime?: unknown;
+
+  /**
+   * Maximum overtime time.
+   */
+  overtimeEnd?: string | null;
+
+  /**
+   * Geographical Location in WGS-84
+   */
+  start?: Location | null;
+
+  /**
+   * Shift tags will ensure that this resource can only do Jobs of this tag during
+   * this shift. This allows for tag based availability.
+   */
+  tags?: Array<string> | null;
+}
+
+export namespace Shift {
+  export interface Break {
+    /**
+     * Type of break that can be defined for a resource
+     */
+    type: 'WINDOWED' | 'DRIVE' | 'UNAVAILABILITY';
+  }
 }
 
 /**
@@ -1314,7 +1291,7 @@ export declare namespace Vrp {
     type OnRouteRequest as OnRouteRequest,
     type Options as Options,
     type Resource as Resource,
-    type SolviceStatusJob as SolviceStatusJob,
+    type Shift as Shift,
     type Weights as Weights,
     type VrpDemoParams as VrpDemoParams,
     type VrpEvaluateParams as VrpEvaluateParams,
@@ -1327,6 +1304,7 @@ export declare namespace Vrp {
     Jobs as Jobs,
     type OnRouteResponse as OnRouteResponse,
     type OnrouteConstraint as OnrouteConstraint,
+    type SolviceStatusJob as SolviceStatusJob,
     type Unresolved as Unresolved,
     type Visit as Visit,
     type JobExplanationResponse as JobExplanationResponse,

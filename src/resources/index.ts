@@ -9,7 +9,7 @@ export {
   type OnRouteRequest,
   type Options,
   type Resource,
-  type SolviceStatusJob,
+  type Shift,
   type Weights,
   type VrpDemoParams,
   type VrpEvaluateParams,
