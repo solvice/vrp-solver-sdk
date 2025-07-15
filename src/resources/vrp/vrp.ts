@@ -44,7 +44,7 @@ export class Vrp extends APIResource {
    * });
    * ```
    */
-  evaluate(body: VrpEvaluateParams, options?: RequestOptions): APIPromise<SolviceStatusJob> {
+  evaluate(body: VrpEvaluateParams, options?: RequestOptions): APIPromise<JobsAPI.SolviceStatusJob> {
     return this._client.post('/v2/vrp/evaluate', { body, ...options });
   }
 
@@ -69,7 +69,7 @@ export class Vrp extends APIResource {
    * });
    * ```
    */
-  solve(params: VrpSolveParams, options?: RequestOptions): APIPromise<SolviceStatusJob> {
+  solve(params: VrpSolveParams, options?: RequestOptions): APIPromise<JobsAPI.SolviceStatusJob> {
     const { millis, instance, ...body } = params;
     return this._client.post('/v2/vrp/solve', {
       query: { millis },
@@ -103,7 +103,7 @@ export class Vrp extends APIResource {
    * });
    * ```
    */
-  suggest(params: VrpSuggestParams, options?: RequestOptions): APIPromise<SolviceStatusJob> {
+  suggest(params: VrpSuggestParams, options?: RequestOptions): APIPromise<JobsAPI.SolviceStatusJob> {
     const { millis, ...body } = params;
     return this._client.post('/v2/vrp/suggest', { query: { millis }, body, ...options });
   }

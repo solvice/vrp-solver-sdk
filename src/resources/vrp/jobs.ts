@@ -54,7 +54,7 @@ export class Jobs extends APIResource {
    * const solviceStatusJob = await client.vrp.jobs.status('id');
    * ```
    */
-  status(id: string, options?: RequestOptions): APIPromise<VrpAPI.SolviceStatusJob> {
+  status(id: string, options?: RequestOptions): APIPromise<SolviceStatusJob> {
     return this._client.get(path`/v2/vrp/jobs/${id}/status`, options);
   }
 }
@@ -440,6 +440,36 @@ export type OnrouteConstraint =
   | 'RESOURCE_PERIOD_MAX_COMPLEXITY';
 
 /**
+ * Status of a solve job
+ */
+export interface SolviceStatusJob {
+  /**
+   * Job ID
+   */
+  id: string;
+
+  /**
+   * List of errors
+   */
+  errors?: Array<VrpAPI.Message> | null;
+
+  /**
+   * Duration of the solve in seconds
+   */
+  solveDuration?: number | null;
+
+  /**
+   * Status of the solve.
+   */
+  status?: 'QUEUED' | 'SOLVING' | 'SOLVED' | 'ERROR' | null;
+
+  /**
+   * List of warnings
+   */
+  warnings?: Array<VrpAPI.Message> | null;
+}
+
+/**
  * Unresolved constraints in the solution
  */
 export interface Unresolved {
@@ -621,6 +651,7 @@ export declare namespace Jobs {
   export {
     type OnRouteResponse as OnRouteResponse,
     type OnrouteConstraint as OnrouteConstraint,
+    type SolviceStatusJob as SolviceStatusJob,
     type Unresolved as Unresolved,
     type Visit as Visit,
     type JobExplanationResponse as JobExplanationResponse,
