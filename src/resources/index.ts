@@ -10,7 +10,6 @@ export {
   type Options,
   type Resource,
   type Shift,
-  type SolviceStatusJob,
   type Weights,
   type VrpDemoParams,
   type VrpEvaluateParams,
