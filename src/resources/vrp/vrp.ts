@@ -2,7 +2,15 @@
 
 import { APIResource } from '../../core/resource';
 import * as JobsAPI from './jobs';
-import { JobExplanationResponse, Jobs, OnRouteResponse, OnrouteConstraint, Unresolved, Visit } from './jobs';
+import {
+  JobExplanationResponse,
+  Jobs,
+  OnRouteResponse,
+  OnrouteConstraint,
+  SolviceStatusJob,
+  Unresolved,
+  Visit,
+} from './jobs';
 import { APIPromise } from '../../core/api-promise';
 import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
@@ -778,36 +786,6 @@ export namespace Shift {
 }
 
 /**
- * Status of a solve job
- */
-export interface SolviceStatusJob {
-  /**
-   * Job ID
-   */
-  id: string;
-
-  /**
-   * List of errors
-   */
-  errors?: Array<Message> | null;
-
-  /**
-   * Duration of the solve in seconds
-   */
-  solveDuration?: number | null;
-
-  /**
-   * Status of the solve.
-   */
-  status?: 'QUEUED' | 'SOLVING' | 'SOLVED' | 'ERROR' | null;
-
-  /**
-   * List of warnings
-   */
-  warnings?: Array<Message> | null;
-}
-
-/**
  * OnRoute Weights
  */
 export interface Weights {
@@ -1314,7 +1292,6 @@ export declare namespace Vrp {
     type Options as Options,
     type Resource as Resource,
     type Shift as Shift,
-    type SolviceStatusJob as SolviceStatusJob,
     type Weights as Weights,
     type VrpDemoParams as VrpDemoParams,
     type VrpEvaluateParams as VrpEvaluateParams,
@@ -1327,6 +1304,7 @@ export declare namespace Vrp {
     Jobs as Jobs,
     type OnRouteResponse as OnRouteResponse,
     type OnrouteConstraint as OnrouteConstraint,
+    type SolviceStatusJob as SolviceStatusJob,
     type Unresolved as Unresolved,
     type Visit as Visit,
     type JobExplanationResponse as JobExplanationResponse,
