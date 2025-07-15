@@ -1,13 +1,13 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 export {
-  Jobs,
+  Solves,
   type OnRouteResponse,
   type OnrouteConstraint,
   type Unresolved,
   type Visit,
-  type JobExplanationResponse,
-} from './jobs';
+  type SolveExplanationResponse,
+} from './solves';
 export {
   Vrp,
   type ExplanationOptions,

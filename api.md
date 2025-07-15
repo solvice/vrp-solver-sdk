@@ -20,19 +20,19 @@ Methods:
 - <code title="post /v2/vrp/suggest">client.vrp.<a href="./src/resources/vrp/vrp.ts">suggest</a>({ ...params }) -> SolviceStatusJob</code>
 - <code title="post /v2/vrp/sync/{operation}">client.vrp.<a href="./src/resources/vrp/vrp.ts">sync</a>(operation, { ...params }) -> OnRouteResponse</code>
 
-## Jobs
+## Solves
 
 Types:
 
-- <code><a href="./src/resources/vrp/jobs.ts">OnRouteResponse</a></code>
-- <code><a href="./src/resources/vrp/jobs.ts">OnrouteConstraint</a></code>
-- <code><a href="./src/resources/vrp/jobs.ts">Unresolved</a></code>
-- <code><a href="./src/resources/vrp/jobs.ts">Visit</a></code>
-- <code><a href="./src/resources/vrp/jobs.ts">JobExplanationResponse</a></code>
+- <code><a href="./src/resources/vrp/solves.ts">OnRouteResponse</a></code>
+- <code><a href="./src/resources/vrp/solves.ts">OnrouteConstraint</a></code>
+- <code><a href="./src/resources/vrp/solves.ts">Unresolved</a></code>
+- <code><a href="./src/resources/vrp/solves.ts">Visit</a></code>
+- <code><a href="./src/resources/vrp/solves.ts">SolveExplanationResponse</a></code>
 
 Methods:
 
-- <code title="get /v2/vrp/jobs/{id}">client.vrp.jobs.<a href="./src/resources/vrp/jobs.ts">retrieve</a>(id) -> OnRouteRequest</code>
-- <code title="get /v2/vrp/jobs/{id}/explanation">client.vrp.jobs.<a href="./src/resources/vrp/jobs.ts">explanation</a>(id) -> JobExplanationResponse</code>
-- <code title="get /v2/vrp/jobs/{id}/solution">client.vrp.jobs.<a href="./src/resources/vrp/jobs.ts">solution</a>(id) -> OnRouteResponse</code>
-- <code title="get /v2/vrp/jobs/{id}/status">client.vrp.jobs.<a href="./src/resources/vrp/jobs.ts">status</a>(id) -> SolviceStatusJob</code>
+- <code title="get /v2/vrp/jobs/{id}">client.vrp.solves.<a href="./src/resources/vrp/solves.ts">retrieve</a>(id) -> OnRouteRequest</code>
+- <code title="get /v2/vrp/jobs/{id}/explanation">client.vrp.solves.<a href="./src/resources/vrp/solves.ts">explanation</a>(id) -> SolveExplanationResponse</code>
+- <code title="get /v2/vrp/jobs/{id}/solution">client.vrp.solves.<a href="./src/resources/vrp/solves.ts">solution</a>(id) -> OnRouteResponse</code>
+- <code title="get /v2/vrp/jobs/{id}/status">client.vrp.solves.<a href="./src/resources/vrp/solves.ts">status</a>(id) -> SolviceStatusJob</code>
