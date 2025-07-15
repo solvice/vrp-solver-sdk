@@ -11,10 +11,12 @@ export {
 export {
   Vrp,
   type ExplanationOptions,
+  type Job,
   type Location,
   type Message,
   type OnRouteRequest,
   type Options,
+  type Resource,
   type SolviceStatusJob,
   type Weights,
   type VrpDemoParams,

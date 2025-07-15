@@ -160,6 +160,205 @@ export interface ExplanationOptions {
 }
 
 /**
+ * A job to be performed by a resource.
+ */
+export interface Job {
+  /**
+   * Unique description
+   */
+  name: string;
+
+  /**
+   * @deprecated List of vehicle names that are allowed to be assigned to this order.
+   */
+  allowedResources?: Array<string> | null;
+
+  /**
+   * Complexity of the job
+   */
+  complexity?: number | null;
+
+  /**
+   * List of vehicle names that are allowed to be assigned to this order.
+   */
+  disallowedResources?: Array<string> | null;
+
+  /**
+   * Service duration of the job
+   */
+  duration?: number | null;
+
+  /**
+   * When a job is performed at the same location as another job, `durationSquash`
+   * ensures that the 2nd job' service time is reduced to this value. Example:
+   * `duration=600` and `durationSquash=30` means that the 2nd job will only take 30
+   * seconds to perform.
+   */
+  durationSquash?: number | null;
+
+  /**
+   * In the case of partialPlanning planning, this indicates whether this order
+   * should be integrated into the planning or not.
+   */
+  hard?: boolean | null;
+
+  /**
+   * In the case of partialPlanning planning, this indicates the weight of this
+   * order.
+   */
+  hardWeight?: number | null;
+
+  /**
+   * Warm start for the arrival time. Use this to speed up the solver and to start
+   * from an initial solution.
+   */
+  initialArrival?: string | null;
+
+  /**
+   * Warm start for the assigned resource: name of the vehicle to which this job is
+   * planned. Use this to speed up the solver and to start from an initial solution.
+   */
+  initialResource?: string | null;
+
+  /**
+   * Load
+   */
+  load?: Array<number> | null;
+
+  /**
+   * Geographical Location in WGS-84
+   */
+  location?: Location | null;
+
+  /**
+   * Padding time before and after the job. In seconds
+   */
+  padding?: number | null;
+
+  /**
+   * Planned arrival time The second of day at which the order is planned to
+   * complete. The difference with the actual arrival time is scaled in the score
+   * with plannedWeight.
+   */
+  plannedArrival?: string | null;
+
+  /**
+   * Fixed date on which this order is already planned and should hence be taken into
+   * account in the planning.
+   */
+  plannedDate?: string | null;
+
+  /**
+   * Name of the resource to which this order is already planned and should hence be
+   * taken into account in the next planning.
+   */
+  plannedResource?: string | null;
+
+  /**
+   * Priority of the job will ensure that it is included in the planning over other
+   * lower priority jobs. We evaluate the priority multiplied with the duration of
+   * the job. The higher the priority, the more likely it is that the job will be
+   * included in the planning. Defaults to 1.
+   */
+  priority?: number | null;
+
+  /**
+   * Rankings define resource preferences for this job, where lower values indicate
+   * stronger preference for specific resources.
+   */
+  rankings?: Array<Job.Ranking> | null;
+
+  /**
+   * Enables job interruption by resource unavailability breaks. When true, the job
+   * can start before a break, pause during the break, and resume afterward. Default:
+   * false.
+   */
+  resumable?: boolean | null;
+
+  /**
+   * A tag is a string that can be used to link jobs to resources.
+   */
+  tags?: Array<Job.Tag> | null;
+
+  /**
+   * Urgency of the job will ensure that it is likely to be scheduled before jobs
+   * with a lower urgency.
+   */
+  urgency?: number | null;
+
+  /**
+   * List of start/end date/time combinations.
+   */
+  windows?: Array<Job.Window> | null;
+}
+
+export namespace Job {
+  /**
+   * A ranking is a measure of the affinity of a `Resource` towards a `Job`.
+   */
+  export interface Ranking {
+    /**
+     * The name of the Resource
+     */
+    name: string;
+
+    /**
+     * Resource ranking for this tag (1-100). Lower ranking means more preferred
+     * resource. When a job is assigned to a resource, the score is penalised based on
+     * the ranking.
+     */
+    ranking?: number | null;
+  }
+
+  /**
+   * A tag is a match between a `Job` and a `Resource`.
+   */
+  export interface Tag {
+    /**
+     * Tag restriction name which can force some Jobs to be scheduled by Resources with
+     * the same tag
+     */
+    name: string;
+
+    /**
+     * Hard or soft constraint.
+     */
+    hard?: boolean | null;
+
+    /**
+     * Value of the weight. This will be on the same level as travel time in the case
+     * of soft constraint.
+     */
+    weight?: number | null;
+  }
+
+  /**
+   * Window in which the job can be executed
+   */
+  export interface Window {
+    /**
+     * Date time start of window
+     */
+    from: string;
+
+    /**
+     * Date time end of window
+     */
+    to: string;
+
+    /**
+     * Hard constraint violation of DateWindow
+     */
+    hard?: boolean | null;
+
+    /**
+     * Weight constraint modifier
+     */
+    weight?: number | null;
+  }
+}
+
+/**
  * Geographical Location in WGS-84
  */
 export interface Location {
@@ -196,12 +395,12 @@ export interface OnRouteRequest {
   /**
    * List of Jobs
    */
-  jobs: Array<OnRouteRequest.Job>;
+  jobs: Array<Job>;
 
   /**
    * List of Resources
    */
-  resources: Array<OnRouteRequest.Resource>;
+  resources: Array<Resource>;
 
   /**
    * Webhook endpoint to receive POST request with the id.
@@ -224,409 +423,6 @@ export interface OnRouteRequest {
 }
 
 export namespace OnRouteRequest {
-  /**
-   * A job to be performed by a resource.
-   */
-  export interface Job {
-    /**
-     * Unique description
-     */
-    name: string;
-
-    /**
-     * @deprecated List of vehicle names that are allowed to be assigned to this order.
-     */
-    allowedResources?: Array<string> | null;
-
-    /**
-     * Complexity of the job
-     */
-    complexity?: number | null;
-
-    /**
-     * List of vehicle names that are allowed to be assigned to this order.
-     */
-    disallowedResources?: Array<string> | null;
-
-    /**
-     * Service duration of the job
-     */
-    duration?: number | null;
-
-    /**
-     * When a job is performed at the same location as another job, `durationSquash`
-     * ensures that the 2nd job' service time is reduced to this value. Example:
-     * `duration=600` and `durationSquash=30` means that the 2nd job will only take 30
-     * seconds to perform.
-     */
-    durationSquash?: number | null;
-
-    /**
-     * In the case of partialPlanning planning, this indicates whether this order
-     * should be integrated into the planning or not.
-     */
-    hard?: boolean | null;
-
-    /**
-     * In the case of partialPlanning planning, this indicates the weight of this
-     * order.
-     */
-    hardWeight?: number | null;
-
-    /**
-     * Warm start for the arrival time. Use this to speed up the solver and to start
-     * from an initial solution.
-     */
-    initialArrival?: string | null;
-
-    /**
-     * Warm start for the assigned resource: name of the vehicle to which this job is
-     * planned. Use this to speed up the solver and to start from an initial solution.
-     */
-    initialResource?: string | null;
-
-    /**
-     * Load
-     */
-    load?: Array<number> | null;
-
-    /**
-     * Geographical Location in WGS-84
-     */
-    location?: VrpAPI.Location | null;
-
-    /**
-     * Padding time before and after the job. In seconds
-     */
-    padding?: number | null;
-
-    /**
-     * Planned arrival time The second of day at which the order is planned to
-     * complete. The difference with the actual arrival time is scaled in the score
-     * with plannedWeight.
-     */
-    plannedArrival?: string | null;
-
-    /**
-     * Fixed date on which this order is already planned and should hence be taken into
-     * account in the planning.
-     */
-    plannedDate?: string | null;
-
-    /**
-     * Name of the resource to which this order is already planned and should hence be
-     * taken into account in the next planning.
-     */
-    plannedResource?: string | null;
-
-    /**
-     * Priority of the job will ensure that it is included in the planning over other
-     * lower priority jobs. We evaluate the priority multiplied with the duration of
-     * the job. The higher the priority, the more likely it is that the job will be
-     * included in the planning. Defaults to 1.
-     */
-    priority?: number | null;
-
-    /**
-     * Rankings define resource preferences for this job, where lower values indicate
-     * stronger preference for specific resources.
-     */
-    rankings?: Array<Job.Ranking> | null;
-
-    /**
-     * Enables job interruption by resource unavailability breaks. When true, the job
-     * can start before a break, pause during the break, and resume afterward. Default:
-     * false.
-     */
-    resumable?: boolean | null;
-
-    /**
-     * A tag is a string that can be used to link jobs to resources.
-     */
-    tags?: Array<Job.Tag> | null;
-
-    /**
-     * Urgency of the job will ensure that it is likely to be scheduled before jobs
-     * with a lower urgency.
-     */
-    urgency?: number | null;
-
-    /**
-     * List of start/end date/time combinations.
-     */
-    windows?: Array<Job.Window> | null;
-  }
-
-  export namespace Job {
-    /**
-     * A ranking is a measure of the affinity of a `Resource` towards a `Job`.
-     */
-    export interface Ranking {
-      /**
-       * The name of the Resource
-       */
-      name: string;
-
-      /**
-       * Resource ranking for this tag (1-100). Lower ranking means more preferred
-       * resource. When a job is assigned to a resource, the score is penalised based on
-       * the ranking.
-       */
-      ranking?: number | null;
-    }
-
-    /**
-     * A tag is a match between a `Job` and a `Resource`.
-     */
-    export interface Tag {
-      /**
-       * Tag restriction name which can force some Jobs to be scheduled by Resources with
-       * the same tag
-       */
-      name: string;
-
-      /**
-       * Hard or soft constraint.
-       */
-      hard?: boolean | null;
-
-      /**
-       * Value of the weight. This will be on the same level as travel time in the case
-       * of soft constraint.
-       */
-      weight?: number | null;
-    }
-
-    /**
-     * Window in which the job can be executed
-     */
-    export interface Window {
-      /**
-       * Date time start of window
-       */
-      from: string;
-
-      /**
-       * Date time end of window
-       */
-      to: string;
-
-      /**
-       * Hard constraint violation of DateWindow
-       */
-      hard?: boolean | null;
-
-      /**
-       * Weight constraint modifier
-       */
-      weight?: number | null;
-    }
-  }
-
-  /**
-   * Resource (vehicle, employee)
-   */
-  export interface Resource {
-    /**
-     * Unique name
-     */
-    name: string;
-
-    /**
-     * Shift definition of a Resource over course of planning period
-     */
-    shifts: Array<Resource.Shift> | null;
-
-    /**
-     * Capacity
-     */
-    capacity?: Array<number> | null;
-
-    /**
-     * Transportation type for the resource
-     */
-    category?: 'CAR' | 'BIKE' | 'TRUCK' | null;
-
-    /**
-     * @deprecated Geographical Location in WGS-84
-     */
-    end?: VrpAPI.Location | null;
-
-    /**
-     * Financial cost per hour per resource. Only calculated when working (driving,
-     * servicing or waiting)
-     */
-    hourlyCost?: number | null;
-
-    maxDriveTime?: number | null;
-
-    /**
-     * Maximum drive time in seconds
-     */
-    maxDriveTimeInSeconds?: unknown;
-
-    maxDriveTimeJob?: number | null;
-
-    /**
-     * Geographical Location in WGS-84
-     */
-    region?: VrpAPI.Location | null;
-
-    /**
-     * Periodic Rules
-     */
-    rules?: Array<Resource.Rule> | null;
-
-    /**
-     * @deprecated Geographical Location in WGS-84
-     */
-    start?: VrpAPI.Location | null;
-
-    /**
-     * Tag requirements
-     */
-    tags?: Array<string> | null;
-  }
-
-  export namespace Resource {
-    /**
-     * Shift definition. Every potential shift of a resource should be defined here.
-     * Every shift can be a trip.
-     */
-    export interface Shift {
-      /**
-       * Start of the shift datetime
-       */
-      from: string;
-
-      /**
-       * End of the shift datetime
-       */
-      to: string;
-
-      /**
-       * Windowed breaks definitions.
-       */
-      breaks?: Array<Shift.Break> | null;
-
-      /**
-       * Geographical Location in WGS-84
-       */
-      end?: VrpAPI.Location | null;
-
-      /**
-       * Ignore the travel time from the last order to the optional end location
-       */
-      ignoreTravelTimeFromLastJob?: boolean | null;
-
-      /**
-       * Ignore the travel time from the start location to the first order
-       */
-      ignoreTravelTimeToFirstJob?: boolean | null;
-
-      /**
-       * @deprecated Can go into overtime.
-       */
-      overtime?: unknown;
-
-      /**
-       * Maximum overtime time.
-       */
-      overtimeEnd?: string | null;
-
-      /**
-       * Geographical Location in WGS-84
-       */
-      start?: VrpAPI.Location | null;
-
-      /**
-       * Shift tags will ensure that this resource can only do Jobs of this tag during
-       * this shift. This allows for tag based availability.
-       */
-      tags?: Array<string> | null;
-    }
-
-    export namespace Shift {
-      export interface Break {
-        /**
-         * Type of break that can be defined for a resource
-         */
-        type: 'WINDOWED' | 'DRIVE' | 'UNAVAILABILITY';
-      }
-    }
-
-    /**
-     * Periodic time rule for a resource
-     */
-    export interface Rule {
-      /**
-       * Maximum drive time in seconds
-       */
-      maxDriveTime?: number | null;
-
-      /**
-       * Sum of the complexity of the jobs completed by this resource should not go over
-       * this value
-       */
-      maxJobComplexity?: number | null;
-
-      /**
-       * Maximum service time in seconds
-       */
-      maxServiceTime?: number | null;
-
-      /**
-       * Maximum work time in seconds. Work time is service time + drive/travel time.
-       */
-      maxWorkTime?: number | null;
-
-      /**
-       * Minimum drive time in seconds
-       */
-      minDriveTime?: number | null;
-
-      /**
-       * Sum of the complexity of the jobs completed by this resource should reach this
-       * value
-       */
-      minJobComplexity?: number | null;
-
-      /**
-       * Minimum service time in seconds
-       */
-      minServiceTime?: number | null;
-
-      /**
-       * Minimum work time in seconds. Work time is service time + drive/travel time.
-       */
-      minWorkTime?: number | null;
-
-      /**
-       * Subset of the planning period
-       */
-      period?: Rule.Period;
-    }
-
-    export namespace Rule {
-      /**
-       * Subset of the planning period
-       */
-      export interface Period {
-        /**
-         * End date-time
-         */
-        end: unknown;
-
-        /**
-         * Start date-time
-         */
-        from: string;
-
-        to: string;
-      }
-    }
-  }
-
   /**
    * Relation between two jobs.
    */
@@ -779,6 +575,210 @@ export interface Options {
 }
 
 /**
+ * Resource (vehicle, employee)
+ */
+export interface Resource {
+  /**
+   * Unique name
+   */
+  name: string;
+
+  /**
+   * Shift definition of a Resource over course of planning period
+   */
+  shifts: Array<Resource.Shift> | null;
+
+  /**
+   * Capacity
+   */
+  capacity?: Array<number> | null;
+
+  /**
+   * Transportation type for the resource
+   */
+  category?: 'CAR' | 'BIKE' | 'TRUCK' | null;
+
+  /**
+   * @deprecated Geographical Location in WGS-84
+   */
+  end?: Location | null;
+
+  /**
+   * Financial cost per hour per resource. Only calculated when working (driving,
+   * servicing or waiting)
+   */
+  hourlyCost?: number | null;
+
+  maxDriveTime?: number | null;
+
+  /**
+   * Maximum drive time in seconds
+   */
+  maxDriveTimeInSeconds?: unknown;
+
+  maxDriveTimeJob?: number | null;
+
+  /**
+   * Geographical Location in WGS-84
+   */
+  region?: Location | null;
+
+  /**
+   * Periodic Rules
+   */
+  rules?: Array<Resource.Rule> | null;
+
+  /**
+   * @deprecated Geographical Location in WGS-84
+   */
+  start?: Location | null;
+
+  /**
+   * Tag requirements
+   */
+  tags?: Array<string> | null;
+}
+
+export namespace Resource {
+  /**
+   * Shift definition. Every potential shift of a resource should be defined here.
+   * Every shift can be a trip.
+   */
+  export interface Shift {
+    /**
+     * Start of the shift datetime
+     */
+    from: string;
+
+    /**
+     * End of the shift datetime
+     */
+    to: string;
+
+    /**
+     * Windowed breaks definitions.
+     */
+    breaks?: Array<Shift.Break> | null;
+
+    /**
+     * Geographical Location in WGS-84
+     */
+    end?: VrpAPI.Location | null;
+
+    /**
+     * Ignore the travel time from the last order to the optional end location
+     */
+    ignoreTravelTimeFromLastJob?: boolean | null;
+
+    /**
+     * Ignore the travel time from the start location to the first order
+     */
+    ignoreTravelTimeToFirstJob?: boolean | null;
+
+    /**
+     * @deprecated Can go into overtime.
+     */
+    overtime?: unknown;
+
+    /**
+     * Maximum overtime time.
+     */
+    overtimeEnd?: string | null;
+
+    /**
+     * Geographical Location in WGS-84
+     */
+    start?: VrpAPI.Location | null;
+
+    /**
+     * Shift tags will ensure that this resource can only do Jobs of this tag during
+     * this shift. This allows for tag based availability.
+     */
+    tags?: Array<string> | null;
+  }
+
+  export namespace Shift {
+    export interface Break {
+      /**
+       * Type of break that can be defined for a resource
+       */
+      type: 'WINDOWED' | 'DRIVE' | 'UNAVAILABILITY';
+    }
+  }
+
+  /**
+   * Periodic time rule for a resource
+   */
+  export interface Rule {
+    /**
+     * Maximum drive time in seconds
+     */
+    maxDriveTime?: number | null;
+
+    /**
+     * Sum of the complexity of the jobs completed by this resource should not go over
+     * this value
+     */
+    maxJobComplexity?: number | null;
+
+    /**
+     * Maximum service time in seconds
+     */
+    maxServiceTime?: number | null;
+
+    /**
+     * Maximum work time in seconds. Work time is service time + drive/travel time.
+     */
+    maxWorkTime?: number | null;
+
+    /**
+     * Minimum drive time in seconds
+     */
+    minDriveTime?: number | null;
+
+    /**
+     * Sum of the complexity of the jobs completed by this resource should reach this
+     * value
+     */
+    minJobComplexity?: number | null;
+
+    /**
+     * Minimum service time in seconds
+     */
+    minServiceTime?: number | null;
+
+    /**
+     * Minimum work time in seconds. Work time is service time + drive/travel time.
+     */
+    minWorkTime?: number | null;
+
+    /**
+     * Subset of the planning period
+     */
+    period?: Rule.Period;
+  }
+
+  export namespace Rule {
+    /**
+     * Subset of the planning period
+     */
+    export interface Period {
+      /**
+       * End date-time
+       */
+      end: unknown;
+
+      /**
+       * Start date-time
+       */
+      from: string;
+
+      to: string;
+    }
+  }
+}
+
+/**
  * Status of a solve job
  */
 export interface SolviceStatusJob {
@@ -885,12 +885,12 @@ export interface VrpEvaluateParams {
   /**
    * List of Jobs
    */
-  jobs: Array<VrpEvaluateParams.Job>;
+  jobs: Array<Job>;
 
   /**
    * List of Resources
    */
-  resources: Array<VrpEvaluateParams.Resource>;
+  resources: Array<Resource>;
 
   /**
    * Webhook endpoint to receive POST request with the id.
@@ -913,409 +913,6 @@ export interface VrpEvaluateParams {
 }
 
 export namespace VrpEvaluateParams {
-  /**
-   * A job to be performed by a resource.
-   */
-  export interface Job {
-    /**
-     * Unique description
-     */
-    name: string;
-
-    /**
-     * @deprecated List of vehicle names that are allowed to be assigned to this order.
-     */
-    allowedResources?: Array<string> | null;
-
-    /**
-     * Complexity of the job
-     */
-    complexity?: number | null;
-
-    /**
-     * List of vehicle names that are allowed to be assigned to this order.
-     */
-    disallowedResources?: Array<string> | null;
-
-    /**
-     * Service duration of the job
-     */
-    duration?: number | null;
-
-    /**
-     * When a job is performed at the same location as another job, `durationSquash`
-     * ensures that the 2nd job' service time is reduced to this value. Example:
-     * `duration=600` and `durationSquash=30` means that the 2nd job will only take 30
-     * seconds to perform.
-     */
-    durationSquash?: number | null;
-
-    /**
-     * In the case of partialPlanning planning, this indicates whether this order
-     * should be integrated into the planning or not.
-     */
-    hard?: boolean | null;
-
-    /**
-     * In the case of partialPlanning planning, this indicates the weight of this
-     * order.
-     */
-    hardWeight?: number | null;
-
-    /**
-     * Warm start for the arrival time. Use this to speed up the solver and to start
-     * from an initial solution.
-     */
-    initialArrival?: string | null;
-
-    /**
-     * Warm start for the assigned resource: name of the vehicle to which this job is
-     * planned. Use this to speed up the solver and to start from an initial solution.
-     */
-    initialResource?: string | null;
-
-    /**
-     * Load
-     */
-    load?: Array<number> | null;
-
-    /**
-     * Geographical Location in WGS-84
-     */
-    location?: VrpAPI.Location | null;
-
-    /**
-     * Padding time before and after the job. In seconds
-     */
-    padding?: number | null;
-
-    /**
-     * Planned arrival time The second of day at which the order is planned to
-     * complete. The difference with the actual arrival time is scaled in the score
-     * with plannedWeight.
-     */
-    plannedArrival?: string | null;
-
-    /**
-     * Fixed date on which this order is already planned and should hence be taken into
-     * account in the planning.
-     */
-    plannedDate?: string | null;
-
-    /**
-     * Name of the resource to which this order is already planned and should hence be
-     * taken into account in the next planning.
-     */
-    plannedResource?: string | null;
-
-    /**
-     * Priority of the job will ensure that it is included in the planning over other
-     * lower priority jobs. We evaluate the priority multiplied with the duration of
-     * the job. The higher the priority, the more likely it is that the job will be
-     * included in the planning. Defaults to 1.
-     */
-    priority?: number | null;
-
-    /**
-     * Rankings define resource preferences for this job, where lower values indicate
-     * stronger preference for specific resources.
-     */
-    rankings?: Array<Job.Ranking> | null;
-
-    /**
-     * Enables job interruption by resource unavailability breaks. When true, the job
-     * can start before a break, pause during the break, and resume afterward. Default:
-     * false.
-     */
-    resumable?: boolean | null;
-
-    /**
-     * A tag is a string that can be used to link jobs to resources.
-     */
-    tags?: Array<Job.Tag> | null;
-
-    /**
-     * Urgency of the job will ensure that it is likely to be scheduled before jobs
-     * with a lower urgency.
-     */
-    urgency?: number | null;
-
-    /**
-     * List of start/end date/time combinations.
-     */
-    windows?: Array<Job.Window> | null;
-  }
-
-  export namespace Job {
-    /**
-     * A ranking is a measure of the affinity of a `Resource` towards a `Job`.
-     */
-    export interface Ranking {
-      /**
-       * The name of the Resource
-       */
-      name: string;
-
-      /**
-       * Resource ranking for this tag (1-100). Lower ranking means more preferred
-       * resource. When a job is assigned to a resource, the score is penalised based on
-       * the ranking.
-       */
-      ranking?: number | null;
-    }
-
-    /**
-     * A tag is a match between a `Job` and a `Resource`.
-     */
-    export interface Tag {
-      /**
-       * Tag restriction name which can force some Jobs to be scheduled by Resources with
-       * the same tag
-       */
-      name: string;
-
-      /**
-       * Hard or soft constraint.
-       */
-      hard?: boolean | null;
-
-      /**
-       * Value of the weight. This will be on the same level as travel time in the case
-       * of soft constraint.
-       */
-      weight?: number | null;
-    }
-
-    /**
-     * Window in which the job can be executed
-     */
-    export interface Window {
-      /**
-       * Date time start of window
-       */
-      from: string;
-
-      /**
-       * Date time end of window
-       */
-      to: string;
-
-      /**
-       * Hard constraint violation of DateWindow
-       */
-      hard?: boolean | null;
-
-      /**
-       * Weight constraint modifier
-       */
-      weight?: number | null;
-    }
-  }
-
-  /**
-   * Resource (vehicle, employee)
-   */
-  export interface Resource {
-    /**
-     * Unique name
-     */
-    name: string;
-
-    /**
-     * Shift definition of a Resource over course of planning period
-     */
-    shifts: Array<Resource.Shift> | null;
-
-    /**
-     * Capacity
-     */
-    capacity?: Array<number> | null;
-
-    /**
-     * Transportation type for the resource
-     */
-    category?: 'CAR' | 'BIKE' | 'TRUCK' | null;
-
-    /**
-     * @deprecated Geographical Location in WGS-84
-     */
-    end?: VrpAPI.Location | null;
-
-    /**
-     * Financial cost per hour per resource. Only calculated when working (driving,
-     * servicing or waiting)
-     */
-    hourlyCost?: number | null;
-
-    maxDriveTime?: number | null;
-
-    /**
-     * Maximum drive time in seconds
-     */
-    maxDriveTimeInSeconds?: unknown;
-
-    maxDriveTimeJob?: number | null;
-
-    /**
-     * Geographical Location in WGS-84
-     */
-    region?: VrpAPI.Location | null;
-
-    /**
-     * Periodic Rules
-     */
-    rules?: Array<Resource.Rule> | null;
-
-    /**
-     * @deprecated Geographical Location in WGS-84
-     */
-    start?: VrpAPI.Location | null;
-
-    /**
-     * Tag requirements
-     */
-    tags?: Array<string> | null;
-  }
-
-  export namespace Resource {
-    /**
-     * Shift definition. Every potential shift of a resource should be defined here.
-     * Every shift can be a trip.
-     */
-    export interface Shift {
-      /**
-       * Start of the shift datetime
-       */
-      from: string;
-
-      /**
-       * End of the shift datetime
-       */
-      to: string;
-
-      /**
-       * Windowed breaks definitions.
-       */
-      breaks?: Array<Shift.Break> | null;
-
-      /**
-       * Geographical Location in WGS-84
-       */
-      end?: VrpAPI.Location | null;
-
-      /**
-       * Ignore the travel time from the last order to the optional end location
-       */
-      ignoreTravelTimeFromLastJob?: boolean | null;
-
-      /**
-       * Ignore the travel time from the start location to the first order
-       */
-      ignoreTravelTimeToFirstJob?: boolean | null;
-
-      /**
-       * @deprecated Can go into overtime.
-       */
-      overtime?: unknown;
-
-      /**
-       * Maximum overtime time.
-       */
-      overtimeEnd?: string | null;
-
-      /**
-       * Geographical Location in WGS-84
-       */
-      start?: VrpAPI.Location | null;
-
-      /**
-       * Shift tags will ensure that this resource can only do Jobs of this tag during
-       * this shift. This allows for tag based availability.
-       */
-      tags?: Array<string> | null;
-    }
-
-    export namespace Shift {
-      export interface Break {
-        /**
-         * Type of break that can be defined for a resource
-         */
-        type: 'WINDOWED' | 'DRIVE' | 'UNAVAILABILITY';
-      }
-    }
-
-    /**
-     * Periodic time rule for a resource
-     */
-    export interface Rule {
-      /**
-       * Maximum drive time in seconds
-       */
-      maxDriveTime?: number | null;
-
-      /**
-       * Sum of the complexity of the jobs completed by this resource should not go over
-       * this value
-       */
-      maxJobComplexity?: number | null;
-
-      /**
-       * Maximum service time in seconds
-       */
-      maxServiceTime?: number | null;
-
-      /**
-       * Maximum work time in seconds. Work time is service time + drive/travel time.
-       */
-      maxWorkTime?: number | null;
-
-      /**
-       * Minimum drive time in seconds
-       */
-      minDriveTime?: number | null;
-
-      /**
-       * Sum of the complexity of the jobs completed by this resource should reach this
-       * value
-       */
-      minJobComplexity?: number | null;
-
-      /**
-       * Minimum service time in seconds
-       */
-      minServiceTime?: number | null;
-
-      /**
-       * Minimum work time in seconds. Work time is service time + drive/travel time.
-       */
-      minWorkTime?: number | null;
-
-      /**
-       * Subset of the planning period
-       */
-      period?: Rule.Period;
-    }
-
-    export namespace Rule {
-      /**
-       * Subset of the planning period
-       */
-      export interface Period {
-        /**
-         * End date-time
-         */
-        end: unknown;
-
-        /**
-         * Start date-time
-         */
-        from: string;
-
-        to: string;
-      }
-    }
-  }
-
   /**
    * Relation between two jobs.
    */
@@ -1384,12 +981,12 @@ export interface VrpSolveParams {
   /**
    * Body param: List of Jobs
    */
-  jobs: Array<VrpSolveParams.Job>;
+  jobs: Array<Job>;
 
   /**
    * Body param: List of Resources
    */
-  resources: Array<VrpSolveParams.Resource>;
+  resources: Array<Resource>;
 
   /**
    * Query param:
@@ -1428,409 +1025,6 @@ export interface VrpSolveParams {
 }
 
 export namespace VrpSolveParams {
-  /**
-   * A job to be performed by a resource.
-   */
-  export interface Job {
-    /**
-     * Unique description
-     */
-    name: string;
-
-    /**
-     * @deprecated List of vehicle names that are allowed to be assigned to this order.
-     */
-    allowedResources?: Array<string> | null;
-
-    /**
-     * Complexity of the job
-     */
-    complexity?: number | null;
-
-    /**
-     * List of vehicle names that are allowed to be assigned to this order.
-     */
-    disallowedResources?: Array<string> | null;
-
-    /**
-     * Service duration of the job
-     */
-    duration?: number | null;
-
-    /**
-     * When a job is performed at the same location as another job, `durationSquash`
-     * ensures that the 2nd job' service time is reduced to this value. Example:
-     * `duration=600` and `durationSquash=30` means that the 2nd job will only take 30
-     * seconds to perform.
-     */
-    durationSquash?: number | null;
-
-    /**
-     * In the case of partialPlanning planning, this indicates whether this order
-     * should be integrated into the planning or not.
-     */
-    hard?: boolean | null;
-
-    /**
-     * In the case of partialPlanning planning, this indicates the weight of this
-     * order.
-     */
-    hardWeight?: number | null;
-
-    /**
-     * Warm start for the arrival time. Use this to speed up the solver and to start
-     * from an initial solution.
-     */
-    initialArrival?: string | null;
-
-    /**
-     * Warm start for the assigned resource: name of the vehicle to which this job is
-     * planned. Use this to speed up the solver and to start from an initial solution.
-     */
-    initialResource?: string | null;
-
-    /**
-     * Load
-     */
-    load?: Array<number> | null;
-
-    /**
-     * Geographical Location in WGS-84
-     */
-    location?: VrpAPI.Location | null;
-
-    /**
-     * Padding time before and after the job. In seconds
-     */
-    padding?: number | null;
-
-    /**
-     * Planned arrival time The second of day at which the order is planned to
-     * complete. The difference with the actual arrival time is scaled in the score
-     * with plannedWeight.
-     */
-    plannedArrival?: string | null;
-
-    /**
-     * Fixed date on which this order is already planned and should hence be taken into
-     * account in the planning.
-     */
-    plannedDate?: string | null;
-
-    /**
-     * Name of the resource to which this order is already planned and should hence be
-     * taken into account in the next planning.
-     */
-    plannedResource?: string | null;
-
-    /**
-     * Priority of the job will ensure that it is included in the planning over other
-     * lower priority jobs. We evaluate the priority multiplied with the duration of
-     * the job. The higher the priority, the more likely it is that the job will be
-     * included in the planning. Defaults to 1.
-     */
-    priority?: number | null;
-
-    /**
-     * Rankings define resource preferences for this job, where lower values indicate
-     * stronger preference for specific resources.
-     */
-    rankings?: Array<Job.Ranking> | null;
-
-    /**
-     * Enables job interruption by resource unavailability breaks. When true, the job
-     * can start before a break, pause during the break, and resume afterward. Default:
-     * false.
-     */
-    resumable?: boolean | null;
-
-    /**
-     * A tag is a string that can be used to link jobs to resources.
-     */
-    tags?: Array<Job.Tag> | null;
-
-    /**
-     * Urgency of the job will ensure that it is likely to be scheduled before jobs
-     * with a lower urgency.
-     */
-    urgency?: number | null;
-
-    /**
-     * List of start/end date/time combinations.
-     */
-    windows?: Array<Job.Window> | null;
-  }
-
-  export namespace Job {
-    /**
-     * A ranking is a measure of the affinity of a `Resource` towards a `Job`.
-     */
-    export interface Ranking {
-      /**
-       * The name of the Resource
-       */
-      name: string;
-
-      /**
-       * Resource ranking for this tag (1-100). Lower ranking means more preferred
-       * resource. When a job is assigned to a resource, the score is penalised based on
-       * the ranking.
-       */
-      ranking?: number | null;
-    }
-
-    /**
-     * A tag is a match between a `Job` and a `Resource`.
-     */
-    export interface Tag {
-      /**
-       * Tag restriction name which can force some Jobs to be scheduled by Resources with
-       * the same tag
-       */
-      name: string;
-
-      /**
-       * Hard or soft constraint.
-       */
-      hard?: boolean | null;
-
-      /**
-       * Value of the weight. This will be on the same level as travel time in the case
-       * of soft constraint.
-       */
-      weight?: number | null;
-    }
-
-    /**
-     * Window in which the job can be executed
-     */
-    export interface Window {
-      /**
-       * Date time start of window
-       */
-      from: string;
-
-      /**
-       * Date time end of window
-       */
-      to: string;
-
-      /**
-       * Hard constraint violation of DateWindow
-       */
-      hard?: boolean | null;
-
-      /**
-       * Weight constraint modifier
-       */
-      weight?: number | null;
-    }
-  }
-
-  /**
-   * Resource (vehicle, employee)
-   */
-  export interface Resource {
-    /**
-     * Unique name
-     */
-    name: string;
-
-    /**
-     * Shift definition of a Resource over course of planning period
-     */
-    shifts: Array<Resource.Shift> | null;
-
-    /**
-     * Capacity
-     */
-    capacity?: Array<number> | null;
-
-    /**
-     * Transportation type for the resource
-     */
-    category?: 'CAR' | 'BIKE' | 'TRUCK' | null;
-
-    /**
-     * @deprecated Geographical Location in WGS-84
-     */
-    end?: VrpAPI.Location | null;
-
-    /**
-     * Financial cost per hour per resource. Only calculated when working (driving,
-     * servicing or waiting)
-     */
-    hourlyCost?: number | null;
-
-    maxDriveTime?: number | null;
-
-    /**
-     * Maximum drive time in seconds
-     */
-    maxDriveTimeInSeconds?: unknown;
-
-    maxDriveTimeJob?: number | null;
-
-    /**
-     * Geographical Location in WGS-84
-     */
-    region?: VrpAPI.Location | null;
-
-    /**
-     * Periodic Rules
-     */
-    rules?: Array<Resource.Rule> | null;
-
-    /**
-     * @deprecated Geographical Location in WGS-84
-     */
-    start?: VrpAPI.Location | null;
-
-    /**
-     * Tag requirements
-     */
-    tags?: Array<string> | null;
-  }
-
-  export namespace Resource {
-    /**
-     * Shift definition. Every potential shift of a resource should be defined here.
-     * Every shift can be a trip.
-     */
-    export interface Shift {
-      /**
-       * Start of the shift datetime
-       */
-      from: string;
-
-      /**
-       * End of the shift datetime
-       */
-      to: string;
-
-      /**
-       * Windowed breaks definitions.
-       */
-      breaks?: Array<Shift.Break> | null;
-
-      /**
-       * Geographical Location in WGS-84
-       */
-      end?: VrpAPI.Location | null;
-
-      /**
-       * Ignore the travel time from the last order to the optional end location
-       */
-      ignoreTravelTimeFromLastJob?: boolean | null;
-
-      /**
-       * Ignore the travel time from the start location to the first order
-       */
-      ignoreTravelTimeToFirstJob?: boolean | null;
-
-      /**
-       * @deprecated Can go into overtime.
-       */
-      overtime?: unknown;
-
-      /**
-       * Maximum overtime time.
-       */
-      overtimeEnd?: string | null;
-
-      /**
-       * Geographical Location in WGS-84
-       */
-      start?: VrpAPI.Location | null;
-
-      /**
-       * Shift tags will ensure that this resource can only do Jobs of this tag during
-       * this shift. This allows for tag based availability.
-       */
-      tags?: Array<string> | null;
-    }
-
-    export namespace Shift {
-      export interface Break {
-        /**
-         * Type of break that can be defined for a resource
-         */
-        type: 'WINDOWED' | 'DRIVE' | 'UNAVAILABILITY';
-      }
-    }
-
-    /**
-     * Periodic time rule for a resource
-     */
-    export interface Rule {
-      /**
-       * Maximum drive time in seconds
-       */
-      maxDriveTime?: number | null;
-
-      /**
-       * Sum of the complexity of the jobs completed by this resource should not go over
-       * this value
-       */
-      maxJobComplexity?: number | null;
-
-      /**
-       * Maximum service time in seconds
-       */
-      maxServiceTime?: number | null;
-
-      /**
-       * Maximum work time in seconds. Work time is service time + drive/travel time.
-       */
-      maxWorkTime?: number | null;
-
-      /**
-       * Minimum drive time in seconds
-       */
-      minDriveTime?: number | null;
-
-      /**
-       * Sum of the complexity of the jobs completed by this resource should reach this
-       * value
-       */
-      minJobComplexity?: number | null;
-
-      /**
-       * Minimum service time in seconds
-       */
-      minServiceTime?: number | null;
-
-      /**
-       * Minimum work time in seconds. Work time is service time + drive/travel time.
-       */
-      minWorkTime?: number | null;
-
-      /**
-       * Subset of the planning period
-       */
-      period?: Rule.Period;
-    }
-
-    export namespace Rule {
-      /**
-       * Subset of the planning period
-       */
-      export interface Period {
-        /**
-         * End date-time
-         */
-        end: unknown;
-
-        /**
-         * Start date-time
-         */
-        from: string;
-
-        to: string;
-      }
-    }
-  }
-
   /**
    * Relation between two jobs.
    */
@@ -1899,12 +1093,12 @@ export interface VrpSuggestParams {
   /**
    * Body param: List of Jobs
    */
-  jobs: Array<VrpSuggestParams.Job>;
+  jobs: Array<Job>;
 
   /**
    * Body param: List of Resources
    */
-  resources: Array<VrpSuggestParams.Resource>;
+  resources: Array<Resource>;
 
   /**
    * Query param:
@@ -1938,409 +1132,6 @@ export interface VrpSuggestParams {
 }
 
 export namespace VrpSuggestParams {
-  /**
-   * A job to be performed by a resource.
-   */
-  export interface Job {
-    /**
-     * Unique description
-     */
-    name: string;
-
-    /**
-     * @deprecated List of vehicle names that are allowed to be assigned to this order.
-     */
-    allowedResources?: Array<string> | null;
-
-    /**
-     * Complexity of the job
-     */
-    complexity?: number | null;
-
-    /**
-     * List of vehicle names that are allowed to be assigned to this order.
-     */
-    disallowedResources?: Array<string> | null;
-
-    /**
-     * Service duration of the job
-     */
-    duration?: number | null;
-
-    /**
-     * When a job is performed at the same location as another job, `durationSquash`
-     * ensures that the 2nd job' service time is reduced to this value. Example:
-     * `duration=600` and `durationSquash=30` means that the 2nd job will only take 30
-     * seconds to perform.
-     */
-    durationSquash?: number | null;
-
-    /**
-     * In the case of partialPlanning planning, this indicates whether this order
-     * should be integrated into the planning or not.
-     */
-    hard?: boolean | null;
-
-    /**
-     * In the case of partialPlanning planning, this indicates the weight of this
-     * order.
-     */
-    hardWeight?: number | null;
-
-    /**
-     * Warm start for the arrival time. Use this to speed up the solver and to start
-     * from an initial solution.
-     */
-    initialArrival?: string | null;
-
-    /**
-     * Warm start for the assigned resource: name of the vehicle to which this job is
-     * planned. Use this to speed up the solver and to start from an initial solution.
-     */
-    initialResource?: string | null;
-
-    /**
-     * Load
-     */
-    load?: Array<number> | null;
-
-    /**
-     * Geographical Location in WGS-84
-     */
-    location?: VrpAPI.Location | null;
-
-    /**
-     * Padding time before and after the job. In seconds
-     */
-    padding?: number | null;
-
-    /**
-     * Planned arrival time The second of day at which the order is planned to
-     * complete. The difference with the actual arrival time is scaled in the score
-     * with plannedWeight.
-     */
-    plannedArrival?: string | null;
-
-    /**
-     * Fixed date on which this order is already planned and should hence be taken into
-     * account in the planning.
-     */
-    plannedDate?: string | null;
-
-    /**
-     * Name of the resource to which this order is already planned and should hence be
-     * taken into account in the next planning.
-     */
-    plannedResource?: string | null;
-
-    /**
-     * Priority of the job will ensure that it is included in the planning over other
-     * lower priority jobs. We evaluate the priority multiplied with the duration of
-     * the job. The higher the priority, the more likely it is that the job will be
-     * included in the planning. Defaults to 1.
-     */
-    priority?: number | null;
-
-    /**
-     * Rankings define resource preferences for this job, where lower values indicate
-     * stronger preference for specific resources.
-     */
-    rankings?: Array<Job.Ranking> | null;
-
-    /**
-     * Enables job interruption by resource unavailability breaks. When true, the job
-     * can start before a break, pause during the break, and resume afterward. Default:
-     * false.
-     */
-    resumable?: boolean | null;
-
-    /**
-     * A tag is a string that can be used to link jobs to resources.
-     */
-    tags?: Array<Job.Tag> | null;
-
-    /**
-     * Urgency of the job will ensure that it is likely to be scheduled before jobs
-     * with a lower urgency.
-     */
-    urgency?: number | null;
-
-    /**
-     * List of start/end date/time combinations.
-     */
-    windows?: Array<Job.Window> | null;
-  }
-
-  export namespace Job {
-    /**
-     * A ranking is a measure of the affinity of a `Resource` towards a `Job`.
-     */
-    export interface Ranking {
-      /**
-       * The name of the Resource
-       */
-      name: string;
-
-      /**
-       * Resource ranking for this tag (1-100). Lower ranking means more preferred
-       * resource. When a job is assigned to a resource, the score is penalised based on
-       * the ranking.
-       */
-      ranking?: number | null;
-    }
-
-    /**
-     * A tag is a match between a `Job` and a `Resource`.
-     */
-    export interface Tag {
-      /**
-       * Tag restriction name which can force some Jobs to be scheduled by Resources with
-       * the same tag
-       */
-      name: string;
-
-      /**
-       * Hard or soft constraint.
-       */
-      hard?: boolean | null;
-
-      /**
-       * Value of the weight. This will be on the same level as travel time in the case
-       * of soft constraint.
-       */
-      weight?: number | null;
-    }
-
-    /**
-     * Window in which the job can be executed
-     */
-    export interface Window {
-      /**
-       * Date time start of window
-       */
-      from: string;
-
-      /**
-       * Date time end of window
-       */
-      to: string;
-
-      /**
-       * Hard constraint violation of DateWindow
-       */
-      hard?: boolean | null;
-
-      /**
-       * Weight constraint modifier
-       */
-      weight?: number | null;
-    }
-  }
-
-  /**
-   * Resource (vehicle, employee)
-   */
-  export interface Resource {
-    /**
-     * Unique name
-     */
-    name: string;
-
-    /**
-     * Shift definition of a Resource over course of planning period
-     */
-    shifts: Array<Resource.Shift> | null;
-
-    /**
-     * Capacity
-     */
-    capacity?: Array<number> | null;
-
-    /**
-     * Transportation type for the resource
-     */
-    category?: 'CAR' | 'BIKE' | 'TRUCK' | null;
-
-    /**
-     * @deprecated Geographical Location in WGS-84
-     */
-    end?: VrpAPI.Location | null;
-
-    /**
-     * Financial cost per hour per resource. Only calculated when working (driving,
-     * servicing or waiting)
-     */
-    hourlyCost?: number | null;
-
-    maxDriveTime?: number | null;
-
-    /**
-     * Maximum drive time in seconds
-     */
-    maxDriveTimeInSeconds?: unknown;
-
-    maxDriveTimeJob?: number | null;
-
-    /**
-     * Geographical Location in WGS-84
-     */
-    region?: VrpAPI.Location | null;
-
-    /**
-     * Periodic Rules
-     */
-    rules?: Array<Resource.Rule> | null;
-
-    /**
-     * @deprecated Geographical Location in WGS-84
-     */
-    start?: VrpAPI.Location | null;
-
-    /**
-     * Tag requirements
-     */
-    tags?: Array<string> | null;
-  }
-
-  export namespace Resource {
-    /**
-     * Shift definition. Every potential shift of a resource should be defined here.
-     * Every shift can be a trip.
-     */
-    export interface Shift {
-      /**
-       * Start of the shift datetime
-       */
-      from: string;
-
-      /**
-       * End of the shift datetime
-       */
-      to: string;
-
-      /**
-       * Windowed breaks definitions.
-       */
-      breaks?: Array<Shift.Break> | null;
-
-      /**
-       * Geographical Location in WGS-84
-       */
-      end?: VrpAPI.Location | null;
-
-      /**
-       * Ignore the travel time from the last order to the optional end location
-       */
-      ignoreTravelTimeFromLastJob?: boolean | null;
-
-      /**
-       * Ignore the travel time from the start location to the first order
-       */
-      ignoreTravelTimeToFirstJob?: boolean | null;
-
-      /**
-       * @deprecated Can go into overtime.
-       */
-      overtime?: unknown;
-
-      /**
-       * Maximum overtime time.
-       */
-      overtimeEnd?: string | null;
-
-      /**
-       * Geographical Location in WGS-84
-       */
-      start?: VrpAPI.Location | null;
-
-      /**
-       * Shift tags will ensure that this resource can only do Jobs of this tag during
-       * this shift. This allows for tag based availability.
-       */
-      tags?: Array<string> | null;
-    }
-
-    export namespace Shift {
-      export interface Break {
-        /**
-         * Type of break that can be defined for a resource
-         */
-        type: 'WINDOWED' | 'DRIVE' | 'UNAVAILABILITY';
-      }
-    }
-
-    /**
-     * Periodic time rule for a resource
-     */
-    export interface Rule {
-      /**
-       * Maximum drive time in seconds
-       */
-      maxDriveTime?: number | null;
-
-      /**
-       * Sum of the complexity of the jobs completed by this resource should not go over
-       * this value
-       */
-      maxJobComplexity?: number | null;
-
-      /**
-       * Maximum service time in seconds
-       */
-      maxServiceTime?: number | null;
-
-      /**
-       * Maximum work time in seconds. Work time is service time + drive/travel time.
-       */
-      maxWorkTime?: number | null;
-
-      /**
-       * Minimum drive time in seconds
-       */
-      minDriveTime?: number | null;
-
-      /**
-       * Sum of the complexity of the jobs completed by this resource should reach this
-       * value
-       */
-      minJobComplexity?: number | null;
-
-      /**
-       * Minimum service time in seconds
-       */
-      minServiceTime?: number | null;
-
-      /**
-       * Minimum work time in seconds. Work time is service time + drive/travel time.
-       */
-      minWorkTime?: number | null;
-
-      /**
-       * Subset of the planning period
-       */
-      period?: Rule.Period;
-    }
-
-    export namespace Rule {
-      /**
-       * Subset of the planning period
-       */
-      export interface Period {
-        /**
-         * End date-time
-         */
-        end: unknown;
-
-        /**
-         * Start date-time
-         */
-        from: string;
-
-        to: string;
-      }
-    }
-  }
-
   /**
    * Relation between two jobs.
    */
@@ -2409,12 +1200,12 @@ export interface VrpSyncParams {
   /**
    * Body param: List of Jobs
    */
-  jobs: Array<VrpSyncParams.Job>;
+  jobs: Array<Job>;
 
   /**
    * Body param: List of Resources
    */
-  resources: Array<VrpSyncParams.Resource>;
+  resources: Array<Resource>;
 
   /**
    * Query param:
@@ -2448,409 +1239,6 @@ export interface VrpSyncParams {
 }
 
 export namespace VrpSyncParams {
-  /**
-   * A job to be performed by a resource.
-   */
-  export interface Job {
-    /**
-     * Unique description
-     */
-    name: string;
-
-    /**
-     * @deprecated List of vehicle names that are allowed to be assigned to this order.
-     */
-    allowedResources?: Array<string> | null;
-
-    /**
-     * Complexity of the job
-     */
-    complexity?: number | null;
-
-    /**
-     * List of vehicle names that are allowed to be assigned to this order.
-     */
-    disallowedResources?: Array<string> | null;
-
-    /**
-     * Service duration of the job
-     */
-    duration?: number | null;
-
-    /**
-     * When a job is performed at the same location as another job, `durationSquash`
-     * ensures that the 2nd job' service time is reduced to this value. Example:
-     * `duration=600` and `durationSquash=30` means that the 2nd job will only take 30
-     * seconds to perform.
-     */
-    durationSquash?: number | null;
-
-    /**
-     * In the case of partialPlanning planning, this indicates whether this order
-     * should be integrated into the planning or not.
-     */
-    hard?: boolean | null;
-
-    /**
-     * In the case of partialPlanning planning, this indicates the weight of this
-     * order.
-     */
-    hardWeight?: number | null;
-
-    /**
-     * Warm start for the arrival time. Use this to speed up the solver and to start
-     * from an initial solution.
-     */
-    initialArrival?: string | null;
-
-    /**
-     * Warm start for the assigned resource: name of the vehicle to which this job is
-     * planned. Use this to speed up the solver and to start from an initial solution.
-     */
-    initialResource?: string | null;
-
-    /**
-     * Load
-     */
-    load?: Array<number> | null;
-
-    /**
-     * Geographical Location in WGS-84
-     */
-    location?: VrpAPI.Location | null;
-
-    /**
-     * Padding time before and after the job. In seconds
-     */
-    padding?: number | null;
-
-    /**
-     * Planned arrival time The second of day at which the order is planned to
-     * complete. The difference with the actual arrival time is scaled in the score
-     * with plannedWeight.
-     */
-    plannedArrival?: string | null;
-
-    /**
-     * Fixed date on which this order is already planned and should hence be taken into
-     * account in the planning.
-     */
-    plannedDate?: string | null;
-
-    /**
-     * Name of the resource to which this order is already planned and should hence be
-     * taken into account in the next planning.
-     */
-    plannedResource?: string | null;
-
-    /**
-     * Priority of the job will ensure that it is included in the planning over other
-     * lower priority jobs. We evaluate the priority multiplied with the duration of
-     * the job. The higher the priority, the more likely it is that the job will be
-     * included in the planning. Defaults to 1.
-     */
-    priority?: number | null;
-
-    /**
-     * Rankings define resource preferences for this job, where lower values indicate
-     * stronger preference for specific resources.
-     */
-    rankings?: Array<Job.Ranking> | null;
-
-    /**
-     * Enables job interruption by resource unavailability breaks. When true, the job
-     * can start before a break, pause during the break, and resume afterward. Default:
-     * false.
-     */
-    resumable?: boolean | null;
-
-    /**
-     * A tag is a string that can be used to link jobs to resources.
-     */
-    tags?: Array<Job.Tag> | null;
-
-    /**
-     * Urgency of the job will ensure that it is likely to be scheduled before jobs
-     * with a lower urgency.
-     */
-    urgency?: number | null;
-
-    /**
-     * List of start/end date/time combinations.
-     */
-    windows?: Array<Job.Window> | null;
-  }
-
-  export namespace Job {
-    /**
-     * A ranking is a measure of the affinity of a `Resource` towards a `Job`.
-     */
-    export interface Ranking {
-      /**
-       * The name of the Resource
-       */
-      name: string;
-
-      /**
-       * Resource ranking for this tag (1-100). Lower ranking means more preferred
-       * resource. When a job is assigned to a resource, the score is penalised based on
-       * the ranking.
-       */
-      ranking?: number | null;
-    }
-
-    /**
-     * A tag is a match between a `Job` and a `Resource`.
-     */
-    export interface Tag {
-      /**
-       * Tag restriction name which can force some Jobs to be scheduled by Resources with
-       * the same tag
-       */
-      name: string;
-
-      /**
-       * Hard or soft constraint.
-       */
-      hard?: boolean | null;
-
-      /**
-       * Value of the weight. This will be on the same level as travel time in the case
-       * of soft constraint.
-       */
-      weight?: number | null;
-    }
-
-    /**
-     * Window in which the job can be executed
-     */
-    export interface Window {
-      /**
-       * Date time start of window
-       */
-      from: string;
-
-      /**
-       * Date time end of window
-       */
-      to: string;
-
-      /**
-       * Hard constraint violation of DateWindow
-       */
-      hard?: boolean | null;
-
-      /**
-       * Weight constraint modifier
-       */
-      weight?: number | null;
-    }
-  }
-
-  /**
-   * Resource (vehicle, employee)
-   */
-  export interface Resource {
-    /**
-     * Unique name
-     */
-    name: string;
-
-    /**
-     * Shift definition of a Resource over course of planning period
-     */
-    shifts: Array<Resource.Shift> | null;
-
-    /**
-     * Capacity
-     */
-    capacity?: Array<number> | null;
-
-    /**
-     * Transportation type for the resource
-     */
-    category?: 'CAR' | 'BIKE' | 'TRUCK' | null;
-
-    /**
-     * @deprecated Geographical Location in WGS-84
-     */
-    end?: VrpAPI.Location | null;
-
-    /**
-     * Financial cost per hour per resource. Only calculated when working (driving,
-     * servicing or waiting)
-     */
-    hourlyCost?: number | null;
-
-    maxDriveTime?: number | null;
-
-    /**
-     * Maximum drive time in seconds
-     */
-    maxDriveTimeInSeconds?: unknown;
-
-    maxDriveTimeJob?: number | null;
-
-    /**
-     * Geographical Location in WGS-84
-     */
-    region?: VrpAPI.Location | null;
-
-    /**
-     * Periodic Rules
-     */
-    rules?: Array<Resource.Rule> | null;
-
-    /**
-     * @deprecated Geographical Location in WGS-84
-     */
-    start?: VrpAPI.Location | null;
-
-    /**
-     * Tag requirements
-     */
-    tags?: Array<string> | null;
-  }
-
-  export namespace Resource {
-    /**
-     * Shift definition. Every potential shift of a resource should be defined here.
-     * Every shift can be a trip.
-     */
-    export interface Shift {
-      /**
-       * Start of the shift datetime
-       */
-      from: string;
-
-      /**
-       * End of the shift datetime
-       */
-      to: string;
-
-      /**
-       * Windowed breaks definitions.
-       */
-      breaks?: Array<Shift.Break> | null;
-
-      /**
-       * Geographical Location in WGS-84
-       */
-      end?: VrpAPI.Location | null;
-
-      /**
-       * Ignore the travel time from the last order to the optional end location
-       */
-      ignoreTravelTimeFromLastJob?: boolean | null;
-
-      /**
-       * Ignore the travel time from the start location to the first order
-       */
-      ignoreTravelTimeToFirstJob?: boolean | null;
-
-      /**
-       * @deprecated Can go into overtime.
-       */
-      overtime?: unknown;
-
-      /**
-       * Maximum overtime time.
-       */
-      overtimeEnd?: string | null;
-
-      /**
-       * Geographical Location in WGS-84
-       */
-      start?: VrpAPI.Location | null;
-
-      /**
-       * Shift tags will ensure that this resource can only do Jobs of this tag during
-       * this shift. This allows for tag based availability.
-       */
-      tags?: Array<string> | null;
-    }
-
-    export namespace Shift {
-      export interface Break {
-        /**
-         * Type of break that can be defined for a resource
-         */
-        type: 'WINDOWED' | 'DRIVE' | 'UNAVAILABILITY';
-      }
-    }
-
-    /**
-     * Periodic time rule for a resource
-     */
-    export interface Rule {
-      /**
-       * Maximum drive time in seconds
-       */
-      maxDriveTime?: number | null;
-
-      /**
-       * Sum of the complexity of the jobs completed by this resource should not go over
-       * this value
-       */
-      maxJobComplexity?: number | null;
-
-      /**
-       * Maximum service time in seconds
-       */
-      maxServiceTime?: number | null;
-
-      /**
-       * Maximum work time in seconds. Work time is service time + drive/travel time.
-       */
-      maxWorkTime?: number | null;
-
-      /**
-       * Minimum drive time in seconds
-       */
-      minDriveTime?: number | null;
-
-      /**
-       * Sum of the complexity of the jobs completed by this resource should reach this
-       * value
-       */
-      minJobComplexity?: number | null;
-
-      /**
-       * Minimum service time in seconds
-       */
-      minServiceTime?: number | null;
-
-      /**
-       * Minimum work time in seconds. Work time is service time + drive/travel time.
-       */
-      minWorkTime?: number | null;
-
-      /**
-       * Subset of the planning period
-       */
-      period?: Rule.Period;
-    }
-
-    export namespace Rule {
-      /**
-       * Subset of the planning period
-       */
-      export interface Period {
-        /**
-         * End date-time
-         */
-        end: unknown;
-
-        /**
-         * Start date-time
-         */
-        from: string;
-
-        to: string;
-      }
-    }
-  }
-
   /**
    * Relation between two jobs.
    */
@@ -2920,10 +1308,12 @@ Vrp.Jobs = Jobs;
 export declare namespace Vrp {
   export {
     type ExplanationOptions as ExplanationOptions,
+    type Job as Job,
     type Location as Location,
     type Message as Message,
     type OnRouteRequest as OnRouteRequest,
     type Options as Options,
+    type Resource as Resource,
     type SolviceStatusJob as SolviceStatusJob,
     type Weights as Weights,
     type VrpDemoParams as VrpDemoParams,
