@@ -1,21 +1,19 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../../core/resource';
-import * as SolvesAPI from './solves';
+import * as JobsAPI from './jobs';
 import * as VrpAPI from './vrp';
 import { APIPromise } from '../../core/api-promise';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
-export class Solves extends APIResource {
+export class Jobs extends APIResource {
   /**
    * Return original request
    *
    * @example
    * ```ts
-   * const onRouteRequest = await client.vrp.solves.retrieve(
-   *   'id',
-   * );
+   * const onRouteRequest = await client.vrp.jobs.retrieve('id');
    * ```
    */
   retrieve(id: string, options?: RequestOptions): APIPromise<VrpAPI.OnRouteRequest> {
@@ -27,10 +25,10 @@ export class Solves extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.vrp.solves.explanation('id');
+   * const response = await client.vrp.jobs.explanation('id');
    * ```
    */
-  explanation(id: string, options?: RequestOptions): APIPromise<SolveExplanationResponse> {
+  explanation(id: string, options?: RequestOptions): APIPromise<JobExplanationResponse> {
     return this._client.get(path`/v2/vrp/jobs/${id}/explanation`, options);
   }
 
@@ -39,7 +37,7 @@ export class Solves extends APIResource {
    *
    * @example
    * ```ts
-   * const onRouteResponse = await client.vrp.solves.solution(
+   * const onRouteResponse = await client.vrp.jobs.solution(
    *   'id',
    * );
    * ```
@@ -53,9 +51,7 @@ export class Solves extends APIResource {
    *
    * @example
    * ```ts
-   * const solviceStatusJob = await client.vrp.solves.status(
-   *   'id',
-   * );
+   * const solviceStatusJob = await client.vrp.jobs.status('id');
    * ```
    */
   status(id: string, options?: RequestOptions): APIPromise<VrpAPI.SolviceStatusJob> {
@@ -151,7 +147,7 @@ export namespace OnRouteResponse {
     /**
      * List of visits for a resource and a date.
      */
-    visits: Array<SolvesAPI.Visit>;
+    visits: Array<JobsAPI.Visit>;
 
     /**
      * Date
@@ -169,7 +165,7 @@ export namespace OnRouteResponse {
      * Single visit for a resource. Holds information of the actual arrival time, the
      * job, the location and the latlng.
      */
-    end?: SolvesAPI.Visit | null;
+    end?: JobsAPI.Visit | null;
 
     /**
      * How full this trip is in terms of work time over capacity. Eg 80%
@@ -195,7 +191,7 @@ export namespace OnRouteResponse {
      * Single visit for a resource. Holds information of the actual arrival time, the
      * job, the location and the latlng.
      */
-    start?: SolvesAPI.Visit | null;
+    start?: JobsAPI.Visit | null;
 
     /**
      * Travel time in seconds
@@ -289,7 +285,7 @@ export namespace OnRouteResponse {
 
       suggestedInitialArrival?: string | null;
 
-      violations?: Array<SolvesAPI.Unresolved | null> | null;
+      violations?: Array<JobsAPI.Unresolved | null> | null;
     }
 
     export namespace Assignment {
@@ -323,7 +319,7 @@ export namespace OnRouteResponse {
         /**
          * Types of constraints that can be violated in a routing solution
          */
-        constraint: SolvesAPI.OnrouteConstraint;
+        constraint: JobsAPI.OnrouteConstraint;
 
         /**
          * Score impact of this conflict.
@@ -524,11 +520,11 @@ export interface Visit {
  * Explains the conflicts of a certain routing solution and the unresolved
  * constraints.
  */
-export interface SolveExplanationResponse {
+export interface JobExplanationResponse {
   /**
    * Score of the solution.
    */
-  score: SolveExplanationResponse.Score | null;
+  score: JobExplanationResponse.Score | null;
 
   /**
    * When `options.explanation.enabled` is set to `true`, this field will contain the
@@ -541,15 +537,15 @@ export interface SolveExplanationResponse {
   /**
    * Conflicts in the solution
    */
-  conflicts?: SolveExplanationResponse.Conflicts | null;
+  conflicts?: JobExplanationResponse.Conflicts | null;
 
   /**
    * Unresolved constraints in the solution
    */
-  unresolved?: SolveExplanationResponse.Unresolved | null;
+  unresolved?: JobExplanationResponse.Unresolved | null;
 }
 
-export namespace SolveExplanationResponse {
+export namespace JobExplanationResponse {
   /**
    * Score of the solution.
    */
@@ -612,7 +608,7 @@ export namespace SolveExplanationResponse {
     /**
      * Types of constraints that can be violated in a routing solution
      */
-    constraint: SolvesAPI.OnrouteConstraint;
+    constraint: JobsAPI.OnrouteConstraint;
 
     /**
      * Score impact of this conflict.
@@ -621,12 +617,12 @@ export namespace SolveExplanationResponse {
   }
 }
 
-export declare namespace Solves {
+export declare namespace Jobs {
   export {
     type OnRouteResponse as OnRouteResponse,
     type OnrouteConstraint as OnrouteConstraint,
     type Unresolved as Unresolved,
     type Visit as Visit,
-    type SolveExplanationResponse as SolveExplanationResponse,
+    type JobExplanationResponse as JobExplanationResponse,
   };
 }
