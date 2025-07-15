@@ -27,6 +27,7 @@ Types:
 
 - <code><a href="./src/resources/vrp/jobs.ts">OnRouteResponse</a></code>
 - <code><a href="./src/resources/vrp/jobs.ts">OnrouteConstraint</a></code>
+- <code><a href="./src/resources/vrp/jobs.ts">SolviceStatusJob</a></code>
 - <code><a href="./src/resources/vrp/jobs.ts">Unresolved</a></code>
 - <code><a href="./src/resources/vrp/jobs.ts">Visit</a></code>
 - <code><a href="./src/resources/vrp/jobs.ts">JobExplanationResponse</a></code>
