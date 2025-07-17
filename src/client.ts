@@ -24,11 +24,14 @@ import {
   OnRouteRequest,
   Options,
   Resource,
+  Shift,
   Vrp,
   VrpDemoParams,
   VrpEvaluateParams,
   VrpSolveParams,
   VrpSuggestParams,
+  VrpSyncSolveParams,
+  VrpSyncSuggestParams,
   Weights,
 } from './resources/vrp/vrp';
 import { type Fetch } from './internal/builtin-types';
@@ -743,10 +746,13 @@ export declare namespace SolviceVrpSolver {
     type OnRouteRequest as OnRouteRequest,
     type Options as Options,
     type Resource as Resource,
+    type Shift as Shift,
     type Weights as Weights,
     type VrpDemoParams as VrpDemoParams,
     type VrpEvaluateParams as VrpEvaluateParams,
     type VrpSolveParams as VrpSolveParams,
     type VrpSuggestParams as VrpSuggestParams,
+    type VrpSyncSolveParams as VrpSyncSolveParams,
+    type VrpSyncSuggestParams as VrpSyncSuggestParams,
   };
 }
