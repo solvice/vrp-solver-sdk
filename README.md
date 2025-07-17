@@ -23,7 +23,7 @@ The full API of this library can be found in [api.md](api.md).
 import SolviceVrpSolver from 'solvice-vrp-solver';
 
 const client = new SolviceVrpSolver({
-  apiKey: process.env['SOLVICE_VRP_SOLVER_API_KEY'], // This is the default and can be omitted
+  apiKey: process.env['SOLVICE_API_KEY'], // This is the default and can be omitted
 });
 
 const onRouteRequest = await client.vrp.demo();
@@ -40,7 +40,7 @@ This library includes TypeScript definitions for all request params and response
 import SolviceVrpSolver from 'solvice-vrp-solver';
 
 const client = new SolviceVrpSolver({
-  apiKey: process.env['SOLVICE_VRP_SOLVER_API_KEY'], // This is the default and can be omitted
+  apiKey: process.env['SOLVICE_API_KEY'], // This is the default and can be omitted
 });
 
 const onRouteRequest: SolviceVrpSolver.OnRouteRequest = await client.vrp.demo();

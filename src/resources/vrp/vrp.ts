@@ -116,6 +116,31 @@ export class Vrp extends APIResource {
   }
 
   /**
+   * Synchronous evaluate operation for low latency results
+   *
+   * @example
+   * ```ts
+   * const onRouteResponse = await client.vrp.syncEvaluate({
+   *   jobs: [{ name: '1' }, { name: '2' }],
+   *   resources: [
+   *     {
+   *       name: '1',
+   *       shifts: [
+   *         {
+   *           from: '2023-01-13T08:00:00Z',
+   *           to: '2023-01-13T17:00:00Z',
+   *         },
+   *       ],
+   *     },
+   *   ],
+   * });
+   * ```
+   */
+  syncEvaluate(body: VrpSyncEvaluateParams, options?: RequestOptions): APIPromise<JobsAPI.OnRouteResponse> {
+    return this._client.post('/v2/vrp/sync/evaluate', { body, ...options });
+  }
+
+  /**
    * Synchronous solve operation for low latency results
    *
    * @example
@@ -1396,6 +1421,128 @@ export namespace VrpSuggestParams {
   }
 }
 
+export interface VrpSyncEvaluateParams {
+  /**
+   * List of jobs/tasks to be assigned to resources. Each job specifies service
+   * requirements, location, time constraints, duration, and resource preferences.
+   * Jobs represent the work that needs to be scheduled and optimized. At least one
+   * job is required, with a maximum of 10,000 jobs per request.
+   */
+  jobs: Array<Job>;
+
+  /**
+   * List of available resources (vehicles, drivers, workers) that can be assigned to
+   * perform jobs. Each resource defines their working schedules, location
+   * constraints, capacity limits, and capabilities. At least one resource is
+   * required, with a maximum of 2000 resources per request.
+   */
+  resources: Array<Resource>;
+
+  /**
+   * Optional webhook URL that will receive a POST request with the job ID when the
+   * optimization is complete. This enables asynchronous processing where you can
+   * submit a request and be notified when results are ready, rather than waiting for
+   * the synchronous response.
+   */
+  hook?: string | null;
+
+  label?: string | null;
+
+  /**
+   * Options to tweak the routing engine
+   */
+  options?: Options | null;
+
+  relations?: Array<VrpSyncEvaluateParams.Relation> | null;
+
+  /**
+   * OnRoute Weights
+   */
+  weights?: Weights | null;
+}
+
+export namespace VrpSyncEvaluateParams {
+  /**
+   * Relation between two jobs.
+   */
+  export interface Relation {
+    /**
+     * List of job names involved in this relation. For sequence-based relations, the
+     * order matters - jobs will be executed in the order specified. For other
+     * relations, order may be irrelevant. All job names must exist in the request's
+     * jobs list.
+     */
+    jobs: Array<string>;
+
+    /**
+     * Determines if the time interval between jobs should be measured from arrival or
+     * departure
+     */
+    timeInterval: 'FROM_ARRIVAL' | 'FROM_DEPARTURE';
+
+    /**
+     * Type of relation between jobs
+     */
+    type:
+      | 'SAME_TRIP'
+      | 'SEQUENCE'
+      | 'DIRECT_SEQUENCE'
+      | 'SAME_TIME'
+      | 'NEIGHBOR'
+      | 'PICKUP_AND_DELIVERY'
+      | 'SAME_RESOURCE'
+      | 'SAME_DAY'
+      | 'GROUP_SEQUENCE';
+
+    /**
+     * Maximum time interval in seconds allowed between consecutive jobs in sequence
+     * relations. This prevents excessive delays between related jobs and ensures
+     * timely completion of job sequences. Only applies to SEQUENCE, DIRECT_SEQUENCE,
+     * and SAME_TIME relations.
+     */
+    maxTimeInterval?: number | null;
+
+    /**
+     * Maximum waiting time in seconds between jobs in a SAME_TIME relation. This
+     * defines how much time synchronization tolerance is allowed - jobs can start
+     * within this time window of each other. Defaults to 1200 seconds (20 minutes) if
+     * not specified.
+     */
+    maxWaitingTime?: number | null;
+
+    /**
+     * Minimum time interval in seconds that must pass between consecutive jobs in
+     * sequence relations. This ensures adequate time for travel, setup, or processing
+     * between related jobs. Only applies to SEQUENCE, DIRECT_SEQUENCE, and SAME_TIME
+     * relations.
+     */
+    minTimeInterval?: number | null;
+
+    /**
+     * Allows the solver to include only some jobs from this relation in the final
+     * solution when the full relation cannot be satisfied due to constraints. When
+     * false, either all jobs in the relation are assigned or none are, maintaining the
+     * relation's integrity.
+     */
+    partialPlanning?: boolean;
+
+    /**
+     * Optional resource constraint for this relation. When specified, all jobs in the
+     * relation must be assigned to this specific resource. This creates a hard
+     * constraint that can help enforce resource-specific workflows or capabilities.
+     */
+    resource?: string | null;
+
+    /**
+     * List of tag names used to define job groups in GROUP_SEQUENCE relations. Jobs
+     * with matching tags form groups that must be executed in sequence. This allows
+     * for complex sequencing rules based on job characteristics rather than explicit
+     * job names.
+     */
+    tags?: Array<string> | null;
+  }
+}
+
 export interface VrpSyncSolveParams {
   /**
    * Body param: List of jobs/tasks to be assigned to resources. Each job specifies
@@ -1679,6 +1826,7 @@ export declare namespace Vrp {
     type VrpEvaluateParams as VrpEvaluateParams,
     type VrpSolveParams as VrpSolveParams,
     type VrpSuggestParams as VrpSuggestParams,
+    type VrpSyncEvaluateParams as VrpSyncEvaluateParams,
     type VrpSyncSolveParams as VrpSyncSolveParams,
     type VrpSyncSuggestParams as VrpSyncSuggestParams,
   };
