@@ -1023,6 +1023,9 @@ export interface Weights {
 export interface VrpDemoParams {
   geolocation?: string | null;
 
+  /**
+   * The number of jobs to be created for this demo request. Default is `20`
+   */
   jobs?: number | null;
 
   radius?: number | null;
@@ -1168,7 +1171,7 @@ export interface VrpSolveParams {
   resources: Array<Resource>;
 
   /**
-   * Query param:
+   * Query param: Maximum solve time in millis
    */
   millis?: string | null;
 
@@ -1201,7 +1204,7 @@ export interface VrpSolveParams {
   weights?: Weights | null;
 
   /**
-   * Header param:
+   * Header param: Compute instance type. Only `normal` for now
    */
   instance?: string;
 }
