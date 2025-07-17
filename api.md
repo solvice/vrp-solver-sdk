@@ -18,8 +18,6 @@ Methods:
 - <code title="post /v2/vrp/evaluate">client.vrp.<a href="./src/resources/vrp/vrp.ts">evaluate</a>({ ...params }) -> SolviceStatusJob</code>
 - <code title="post /v2/vrp/solve">client.vrp.<a href="./src/resources/vrp/vrp.ts">solve</a>({ ...params }) -> SolviceStatusJob</code>
 - <code title="post /v2/vrp/suggest">client.vrp.<a href="./src/resources/vrp/vrp.ts">suggest</a>({ ...params }) -> SolviceStatusJob</code>
-- <code title="post /v2/vrp/sync/solve">client.vrp.<a href="./src/resources/vrp/vrp.ts">syncSolve</a>({ ...params }) -> OnRouteResponse</code>
-- <code title="post /v2/vrp/sync/suggest">client.vrp.<a href="./src/resources/vrp/vrp.ts">syncSuggest</a>({ ...params }) -> OnRouteResponse</code>
 
 ## Jobs
 

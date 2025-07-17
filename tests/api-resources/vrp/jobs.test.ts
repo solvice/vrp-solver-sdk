@@ -8,8 +8,7 @@ const client = new SolviceVrpSolver({
 });
 
 describe('resource jobs', () => {
-  // skipped: tests are disabled for the time being
-  test.skip('retrieve', async () => {
+  test('retrieve', async () => {
     const responsePromise = client.vrp.jobs.retrieve('id');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -20,8 +19,7 @@ describe('resource jobs', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // skipped: tests are disabled for the time being
-  test.skip('explanation', async () => {
+  test('explanation', async () => {
     const responsePromise = client.vrp.jobs.explanation('id');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -32,8 +30,7 @@ describe('resource jobs', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // skipped: tests are disabled for the time being
-  test.skip('solution', async () => {
+  test('solution', async () => {
     const responsePromise = client.vrp.jobs.solution('id');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -44,8 +41,7 @@ describe('resource jobs', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // skipped: tests are disabled for the time being
-  test.skip('status', async () => {
+  test('status', async () => {
     const responsePromise = client.vrp.jobs.status('id');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);

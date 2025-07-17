@@ -1,4 +1,4 @@
-configured_endpoints: 10
-openapi_spec_url: https://storage.googleapis.com/stainless-sdk-openapi-specs/solvice%2Fsolvice-vrp-solver-ec9c25f88b136b72d9226e565546d53a3ade7a8fc5f9bec39eb91909a9060589.yml
-openapi_spec_hash: 6ac81265cfdf86480620f8ea43293b7b
-config_hash: 1bd97132bc6346eba36b45ba8a7753bb
+configured_endpoints: 8
+openapi_spec_url: https://storage.googleapis.com/stainless-sdk-openapi-specs/solvice%2Fsolvice-vrp-solver-ab22101f5a38e8f92511471c31031292f3cdd69229473cb979a332808e780f63.yml
+openapi_spec_hash: 5991ea57774cfa87c5ec30d78ecaedaa
+config_hash: 5906381decb84fbd4667880644c23897
