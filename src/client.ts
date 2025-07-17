@@ -30,6 +30,8 @@ import {
   VrpEvaluateParams,
   VrpSolveParams,
   VrpSuggestParams,
+  VrpSyncSolveParams,
+  VrpSyncSuggestParams,
   Weights,
 } from './resources/vrp/vrp';
 import { type Fetch } from './internal/builtin-types';
@@ -750,5 +752,7 @@ export declare namespace SolviceVrpSolver {
     type VrpEvaluateParams as VrpEvaluateParams,
     type VrpSolveParams as VrpSolveParams,
     type VrpSuggestParams as VrpSuggestParams,
+    type VrpSyncSolveParams as VrpSyncSolveParams,
+    type VrpSyncSuggestParams as VrpSyncSuggestParams,
   };
 }
