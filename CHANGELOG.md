@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.1 (2025-07-17)
+
+Full Changelog: [v0.2.0...v0.2.1](https://github.com/solvice/vrp-solver-sdk/compare/v0.2.0...v0.2.1)
+
+### Chores
+
+* **ts:** reorder package.json imports ([76e4ac9](https://github.com/solvice/vrp-solver-sdk/commit/76e4ac98d8baeb5f109e61c1764e1e19c3de6b43))
+
 ## 0.2.0 (2025-07-15)
 
 Full Changelog: [v0.1.1...v0.2.0](https://github.com/solvice/vrp-solver-sdk/compare/v0.1.1...v0.2.0)
