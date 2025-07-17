@@ -18,9 +18,12 @@ export {
   type OnRouteRequest,
   type Options,
   type Resource,
+  type Shift,
   type Weights,
   type VrpDemoParams,
   type VrpEvaluateParams,
   type VrpSolveParams,
   type VrpSuggestParams,
+  type VrpSyncSolveParams,
+  type VrpSyncSuggestParams,
 } from './vrp';
