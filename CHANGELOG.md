@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.0 (2025-07-17)
+
+Full Changelog: [v0.3.0...v0.4.0](https://github.com/solvice/vrp-solver-sdk/compare/v0.3.0...v0.4.0)
+
+### Features
+
+* **api:** api update ([4f4ce70](https://github.com/solvice/vrp-solver-sdk/commit/4f4ce709f31c17113ea34f81fadfa11ca2e31e70))
+* **api:** enable mocks ([699663a](https://github.com/solvice/vrp-solver-sdk/commit/699663accab6f6a7ddf592ca69b6f093dc163e6b))
+
 ## 0.3.0 (2025-07-17)
 
 Full Changelog: [v0.2.0...v0.3.0](https://github.com/solvice/vrp-solver-sdk/compare/v0.2.0...v0.3.0)
