@@ -26,9 +26,12 @@ const client = new SolviceVrpSolver({
   apiKey: process.env['SOLVICE_API_KEY'], // This is the default and can be omitted
 });
 
-const onRouteRequest = await client.vrp.demo();
+const onRouteResponse = await client.vrp.syncSolve({
+  jobs: [{ name: '1' }, { name: '2' }],
+  resources: [{ name: '1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] }],
+});
 
-console.log(onRouteRequest.jobs);
+console.log(onRouteResponse.id);
 ```
 
 ### Request & Response types
@@ -222,7 +225,7 @@ parameter. This library doesn't validate at runtime that the request matches the
 send will be sent as-is.
 
 ```ts
-client.vrp.demo({
+client.vrp.syncSolve({
   // ...
   // @ts-expect-error baz is not yet public
   baz: 'undocumented option',
