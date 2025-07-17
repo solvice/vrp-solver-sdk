@@ -24,6 +24,4 @@ export {
   type VrpEvaluateParams,
   type VrpSolveParams,
   type VrpSuggestParams,
-  type VrpSyncSolveParams,
-  type VrpSyncSuggestParams,
 } from './vrp';

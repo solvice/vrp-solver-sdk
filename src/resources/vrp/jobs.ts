@@ -90,7 +90,7 @@ export interface OnRouteResponse {
   score?: OnRouteResponse.Score | null;
 
   /**
-   * Status of the solve job.
+   * Status of the Response
    */
   status?: 'ERROR' | 'QUEUED' | 'SOLVING' | 'SOLVED' | null;
 
