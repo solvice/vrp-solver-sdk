@@ -23,10 +23,10 @@ export class Vrp extends APIResource {
    *
    * @example
    * ```ts
-   * const onRouteRequest = await client.vrp.demo();
+   * const request = await client.vrp.demo();
    * ```
    */
-  demo(query: VrpDemoParams | null | undefined = {}, options?: RequestOptions): APIPromise<OnRouteRequest> {
+  demo(query: VrpDemoParams | null | undefined = {}, options?: RequestOptions): APIPromise<Request> {
     return this._client.get('/v2/vrp/demo', { query, ...options });
   }
 
@@ -363,7 +363,7 @@ export interface Job {
    * scheduling. Multiple windows allow for flexible scheduling across different time
    * periods. Jobs can only be assigned within these time boundaries.
    */
-  windows?: Array<Job.Window> | null;
+  windows?: Array<Window> | null;
 }
 
 export namespace Job {
@@ -416,31 +416,6 @@ export namespace Job {
      */
     weight?: number | null;
   }
-
-  /**
-   * Window in which the job can be executed
-   */
-  export interface Window {
-    /**
-     * Date time start of window
-     */
-    from: string;
-
-    /**
-     * Date time end of window
-     */
-    to: string;
-
-    /**
-     * Hard constraint violation of DateWindow
-     */
-    hard?: boolean | null;
-
-    /**
-     * Weight constraint modifier
-     */
-    weight?: number | null;
-  }
 }
 
 /**
@@ -471,131 +446,6 @@ export interface Message {
    * Error code
    */
   code?: number;
-}
-
-/**
- * OnRoute Request for solving, evaluating
- */
-export interface OnRouteRequest {
-  /**
-   * List of jobs/tasks to be assigned to resources. Each job specifies service
-   * requirements, location, time constraints, duration, and resource preferences.
-   * Jobs represent the work that needs to be scheduled and optimized. At least one
-   * job is required, with a maximum of 10,000 jobs per request.
-   */
-  jobs: Array<Job>;
-
-  /**
-   * List of available resources (vehicles, drivers, workers) that can be assigned to
-   * perform jobs. Each resource defines their working schedules, location
-   * constraints, capacity limits, and capabilities. At least one resource is
-   * required, with a maximum of 2000 resources per request.
-   */
-  resources: Array<Resource>;
-
-  /**
-   * Optional webhook URL that will receive a POST request with the job ID when the
-   * optimization is complete. This enables asynchronous processing where you can
-   * submit a request and be notified when results are ready, rather than waiting for
-   * the synchronous response.
-   */
-  hook?: string | null;
-
-  label?: string | null;
-
-  /**
-   * Options to tweak the routing engine
-   */
-  options?: Options | null;
-
-  relations?: Array<OnRouteRequest.Relation> | null;
-
-  /**
-   * OnRoute Weights
-   */
-  weights?: Weights | null;
-}
-
-export namespace OnRouteRequest {
-  /**
-   * Relation between two jobs.
-   */
-  export interface Relation {
-    /**
-     * List of job names involved in this relation. For sequence-based relations, the
-     * order matters - jobs will be executed in the order specified. For other
-     * relations, order may be irrelevant. All job names must exist in the request's
-     * jobs list.
-     */
-    jobs: Array<string>;
-
-    /**
-     * Determines if the time interval between jobs should be measured from arrival or
-     * departure
-     */
-    timeInterval: 'FROM_ARRIVAL' | 'FROM_DEPARTURE';
-
-    /**
-     * Type of relation between jobs
-     */
-    type:
-      | 'SAME_TRIP'
-      | 'SEQUENCE'
-      | 'DIRECT_SEQUENCE'
-      | 'SAME_TIME'
-      | 'NEIGHBOR'
-      | 'PICKUP_AND_DELIVERY'
-      | 'SAME_RESOURCE'
-      | 'SAME_DAY'
-      | 'GROUP_SEQUENCE';
-
-    /**
-     * Maximum time interval in seconds allowed between consecutive jobs in sequence
-     * relations. This prevents excessive delays between related jobs and ensures
-     * timely completion of job sequences. Only applies to SEQUENCE, DIRECT_SEQUENCE,
-     * and SAME_TIME relations.
-     */
-    maxTimeInterval?: number | null;
-
-    /**
-     * Maximum waiting time in seconds between jobs in a SAME_TIME relation. This
-     * defines how much time synchronization tolerance is allowed - jobs can start
-     * within this time window of each other. Defaults to 1200 seconds (20 minutes) if
-     * not specified.
-     */
-    maxWaitingTime?: number | null;
-
-    /**
-     * Minimum time interval in seconds that must pass between consecutive jobs in
-     * sequence relations. This ensures adequate time for travel, setup, or processing
-     * between related jobs. Only applies to SEQUENCE, DIRECT_SEQUENCE, and SAME_TIME
-     * relations.
-     */
-    minTimeInterval?: number | null;
-
-    /**
-     * Allows the solver to include only some jobs from this relation in the final
-     * solution when the full relation cannot be satisfied due to constraints. When
-     * false, either all jobs in the relation are assigned or none are, maintaining the
-     * relation's integrity.
-     */
-    partialPlanning?: boolean;
-
-    /**
-     * Optional resource constraint for this relation. When specified, all jobs in the
-     * relation must be assigned to this specific resource. This creates a hard
-     * constraint that can help enforce resource-specific workflows or capabilities.
-     */
-    resource?: string | null;
-
-    /**
-     * List of tag names used to define job groups in GROUP_SEQUENCE relations. Jobs
-     * with matching tags form groups that must be executed in sequence. This allows
-     * for complex sequencing rules based on job characteristics rather than explicit
-     * job names.
-     */
-    tags?: Array<string> | null;
-  }
 }
 
 /**
@@ -706,6 +556,151 @@ export interface Options {
 }
 
 /**
+ * Subset of the planning period
+ */
+export interface Period {
+  /**
+   * End date-time
+   */
+  end: unknown;
+
+  /**
+   * Start date-time
+   */
+  from: string;
+
+  to: string;
+}
+
+/**
+ * Relation between two jobs.
+ */
+export interface Relation {
+  /**
+   * List of job names involved in this relation. For sequence-based relations, the
+   * order matters - jobs will be executed in the order specified. For other
+   * relations, order may be irrelevant. All job names must exist in the request's
+   * jobs list.
+   */
+  jobs: Array<string>;
+
+  /**
+   * Determines if the time interval between jobs should be measured from arrival or
+   * departure
+   */
+  timeInterval: 'FROM_ARRIVAL' | 'FROM_DEPARTURE';
+
+  /**
+   * Type of relation between jobs
+   */
+  type: RelationType;
+
+  /**
+   * Maximum time interval in seconds allowed between consecutive jobs in sequence
+   * relations. This prevents excessive delays between related jobs and ensures
+   * timely completion of job sequences. Only applies to SEQUENCE, DIRECT_SEQUENCE,
+   * and SAME_TIME relations.
+   */
+  maxTimeInterval?: number | null;
+
+  /**
+   * Maximum waiting time in seconds between jobs in a SAME_TIME relation. This
+   * defines how much time synchronization tolerance is allowed - jobs can start
+   * within this time window of each other. Defaults to 1200 seconds (20 minutes) if
+   * not specified.
+   */
+  maxWaitingTime?: number | null;
+
+  /**
+   * Minimum time interval in seconds that must pass between consecutive jobs in
+   * sequence relations. This ensures adequate time for travel, setup, or processing
+   * between related jobs. Only applies to SEQUENCE, DIRECT_SEQUENCE, and SAME_TIME
+   * relations.
+   */
+  minTimeInterval?: number | null;
+
+  /**
+   * Allows the solver to include only some jobs from this relation in the final
+   * solution when the full relation cannot be satisfied due to constraints. When
+   * false, either all jobs in the relation are assigned or none are, maintaining the
+   * relation's integrity.
+   */
+  partialPlanning?: boolean;
+
+  /**
+   * Optional resource constraint for this relation. When specified, all jobs in the
+   * relation must be assigned to this specific resource. This creates a hard
+   * constraint that can help enforce resource-specific workflows or capabilities.
+   */
+  resource?: string | null;
+
+  /**
+   * List of tag names used to define job groups in GROUP_SEQUENCE relations. Jobs
+   * with matching tags form groups that must be executed in sequence. This allows
+   * for complex sequencing rules based on job characteristics rather than explicit
+   * job names.
+   */
+  tags?: Array<string> | null;
+}
+
+/**
+ * Type of relation between jobs
+ */
+export type RelationType =
+  | 'SAME_TRIP'
+  | 'SEQUENCE'
+  | 'DIRECT_SEQUENCE'
+  | 'SAME_TIME'
+  | 'NEIGHBOR'
+  | 'PICKUP_AND_DELIVERY'
+  | 'SAME_RESOURCE'
+  | 'SAME_DAY'
+  | 'GROUP_SEQUENCE';
+
+/**
+ * OnRoute Request for solving, evaluating
+ */
+export interface Request {
+  /**
+   * List of jobs/tasks to be assigned to resources. Each job specifies service
+   * requirements, location, time constraints, duration, and resource preferences.
+   * Jobs represent the work that needs to be scheduled and optimized. At least one
+   * job is required, with a maximum of 10,000 jobs per request.
+   */
+  jobs: Array<Job>;
+
+  /**
+   * List of available resources (vehicles, drivers, workers) that can be assigned to
+   * perform jobs. Each resource defines their working schedules, location
+   * constraints, capacity limits, and capabilities. At least one resource is
+   * required, with a maximum of 2000 resources per request.
+   */
+  resources: Array<Resource>;
+
+  /**
+   * Optional webhook URL that will receive a POST request with the job ID when the
+   * optimization is complete. This enables asynchronous processing where you can
+   * submit a request and be notified when results are ready, rather than waiting for
+   * the synchronous response.
+   */
+  hook?: string | null;
+
+  label?: string | null;
+
+  /**
+   * Options to tweak the routing engine
+   */
+  options?: Options | null;
+
+  relations?: Array<Relation> | null;
+
+  /**
+   * OnRoute Weights
+   */
+  weights?: Weights | null;
+}
+
+/**
  * Resource (vehicle, employee)
  */
 export interface Resource {
@@ -772,7 +767,7 @@ export interface Resource {
    * or job complexity limits. These constraints ensure compliance with labor
    * regulations, operational policies, or capacity limitations.
    */
-  rules?: Array<Resource.Rule> | null;
+  rules?: Array<Rule> | null;
 
   /**
    * @deprecated Geographical Location in WGS-84
@@ -788,77 +783,56 @@ export interface Resource {
   tags?: Array<string> | null;
 }
 
-export namespace Resource {
+/**
+ * Periodic time rule for a resource
+ */
+export interface Rule {
   /**
-   * Periodic time rule for a resource
+   * Maximum drive time in seconds
    */
-  export interface Rule {
-    /**
-     * Maximum drive time in seconds
-     */
-    maxDriveTime?: number | null;
+  maxDriveTime?: number | null;
 
-    /**
-     * Sum of the complexity of the jobs completed by this resource should not go over
-     * this value
-     */
-    maxJobComplexity?: number | null;
+  /**
+   * Sum of the complexity of the jobs completed by this resource should not go over
+   * this value
+   */
+  maxJobComplexity?: number | null;
 
-    /**
-     * Maximum service time in seconds
-     */
-    maxServiceTime?: number | null;
+  /**
+   * Maximum service time in seconds
+   */
+  maxServiceTime?: number | null;
 
-    /**
-     * Maximum work time in seconds. Work time is service time + drive/travel time.
-     */
-    maxWorkTime?: number | null;
+  /**
+   * Maximum work time in seconds. Work time is service time + drive/travel time.
+   */
+  maxWorkTime?: number | null;
 
-    /**
-     * Minimum drive time in seconds
-     */
-    minDriveTime?: number | null;
+  /**
+   * Minimum drive time in seconds
+   */
+  minDriveTime?: number | null;
 
-    /**
-     * Sum of the complexity of the jobs completed by this resource should reach this
-     * value
-     */
-    minJobComplexity?: number | null;
+  /**
+   * Sum of the complexity of the jobs completed by this resource should reach this
+   * value
+   */
+  minJobComplexity?: number | null;
 
-    /**
-     * Minimum service time in seconds
-     */
-    minServiceTime?: number | null;
+  /**
+   * Minimum service time in seconds
+   */
+  minServiceTime?: number | null;
 
-    /**
-     * Minimum work time in seconds. Work time is service time + drive/travel time.
-     */
-    minWorkTime?: number | null;
+  /**
+   * Minimum work time in seconds. Work time is service time + drive/travel time.
+   */
+  minWorkTime?: number | null;
 
-    /**
-     * Subset of the planning period
-     */
-    period?: Rule.Period;
-  }
-
-  export namespace Rule {
-    /**
-     * Subset of the planning period
-     */
-    export interface Period {
-      /**
-       * End date-time
-       */
-      end: unknown;
-
-      /**
-       * Start date-time
-       */
-      from: string;
-
-      to: string;
-    }
-  }
+  /**
+   * Subset of the planning period
+   */
+  period?: Period;
 }
 
 /**
@@ -1020,12 +994,34 @@ export interface Weights {
   workloadSpreadWeight?: number | null;
 }
 
+/**
+ * Window in which the job can be executed
+ */
+export interface Window {
+  /**
+   * Date time start of window
+   */
+  from: string;
+
+  /**
+   * Date time end of window
+   */
+  to: string;
+
+  /**
+   * Hard constraint violation of DateWindow
+   */
+  hard?: boolean | null;
+
+  /**
+   * Weight constraint modifier
+   */
+  weight?: number | null;
+}
+
 export interface VrpDemoParams {
   geolocation?: string | null;
 
-  /**
-   * The number of jobs to be created for this demo request. Default is `20`
-   */
   jobs?: number | null;
 
   radius?: number | null;
@@ -1063,94 +1059,12 @@ export interface VrpEvaluateParams {
    */
   options?: Options | null;
 
-  relations?: Array<VrpEvaluateParams.Relation> | null;
+  relations?: Array<Relation> | null;
 
   /**
    * OnRoute Weights
    */
   weights?: Weights | null;
-}
-
-export namespace VrpEvaluateParams {
-  /**
-   * Relation between two jobs.
-   */
-  export interface Relation {
-    /**
-     * List of job names involved in this relation. For sequence-based relations, the
-     * order matters - jobs will be executed in the order specified. For other
-     * relations, order may be irrelevant. All job names must exist in the request's
-     * jobs list.
-     */
-    jobs: Array<string>;
-
-    /**
-     * Determines if the time interval between jobs should be measured from arrival or
-     * departure
-     */
-    timeInterval: 'FROM_ARRIVAL' | 'FROM_DEPARTURE';
-
-    /**
-     * Type of relation between jobs
-     */
-    type:
-      | 'SAME_TRIP'
-      | 'SEQUENCE'
-      | 'DIRECT_SEQUENCE'
-      | 'SAME_TIME'
-      | 'NEIGHBOR'
-      | 'PICKUP_AND_DELIVERY'
-      | 'SAME_RESOURCE'
-      | 'SAME_DAY'
-      | 'GROUP_SEQUENCE';
-
-    /**
-     * Maximum time interval in seconds allowed between consecutive jobs in sequence
-     * relations. This prevents excessive delays between related jobs and ensures
-     * timely completion of job sequences. Only applies to SEQUENCE, DIRECT_SEQUENCE,
-     * and SAME_TIME relations.
-     */
-    maxTimeInterval?: number | null;
-
-    /**
-     * Maximum waiting time in seconds between jobs in a SAME_TIME relation. This
-     * defines how much time synchronization tolerance is allowed - jobs can start
-     * within this time window of each other. Defaults to 1200 seconds (20 minutes) if
-     * not specified.
-     */
-    maxWaitingTime?: number | null;
-
-    /**
-     * Minimum time interval in seconds that must pass between consecutive jobs in
-     * sequence relations. This ensures adequate time for travel, setup, or processing
-     * between related jobs. Only applies to SEQUENCE, DIRECT_SEQUENCE, and SAME_TIME
-     * relations.
-     */
-    minTimeInterval?: number | null;
-
-    /**
-     * Allows the solver to include only some jobs from this relation in the final
-     * solution when the full relation cannot be satisfied due to constraints. When
-     * false, either all jobs in the relation are assigned or none are, maintaining the
-     * relation's integrity.
-     */
-    partialPlanning?: boolean;
-
-    /**
-     * Optional resource constraint for this relation. When specified, all jobs in the
-     * relation must be assigned to this specific resource. This creates a hard
-     * constraint that can help enforce resource-specific workflows or capabilities.
-     */
-    resource?: string | null;
-
-    /**
-     * List of tag names used to define job groups in GROUP_SEQUENCE relations. Jobs
-     * with matching tags form groups that must be executed in sequence. This allows
-     * for complex sequencing rules based on job characteristics rather than explicit
-     * job names.
-     */
-    tags?: Array<string> | null;
-  }
 }
 
 export interface VrpSolveParams {
@@ -1171,7 +1085,7 @@ export interface VrpSolveParams {
   resources: Array<Resource>;
 
   /**
-   * Query param: Maximum solve time in millis
+   * Query param:
    */
   millis?: string | null;
 
@@ -1196,7 +1110,7 @@ export interface VrpSolveParams {
   /**
    * Body param:
    */
-  relations?: Array<VrpSolveParams.Relation> | null;
+  relations?: Array<Relation> | null;
 
   /**
    * Body param: OnRoute Weights
@@ -1204,91 +1118,9 @@ export interface VrpSolveParams {
   weights?: Weights | null;
 
   /**
-   * Header param: Compute instance type. Only `normal` for now
+   * Header param:
    */
   instance?: string;
-}
-
-export namespace VrpSolveParams {
-  /**
-   * Relation between two jobs.
-   */
-  export interface Relation {
-    /**
-     * List of job names involved in this relation. For sequence-based relations, the
-     * order matters - jobs will be executed in the order specified. For other
-     * relations, order may be irrelevant. All job names must exist in the request's
-     * jobs list.
-     */
-    jobs: Array<string>;
-
-    /**
-     * Determines if the time interval between jobs should be measured from arrival or
-     * departure
-     */
-    timeInterval: 'FROM_ARRIVAL' | 'FROM_DEPARTURE';
-
-    /**
-     * Type of relation between jobs
-     */
-    type:
-      | 'SAME_TRIP'
-      | 'SEQUENCE'
-      | 'DIRECT_SEQUENCE'
-      | 'SAME_TIME'
-      | 'NEIGHBOR'
-      | 'PICKUP_AND_DELIVERY'
-      | 'SAME_RESOURCE'
-      | 'SAME_DAY'
-      | 'GROUP_SEQUENCE';
-
-    /**
-     * Maximum time interval in seconds allowed between consecutive jobs in sequence
-     * relations. This prevents excessive delays between related jobs and ensures
-     * timely completion of job sequences. Only applies to SEQUENCE, DIRECT_SEQUENCE,
-     * and SAME_TIME relations.
-     */
-    maxTimeInterval?: number | null;
-
-    /**
-     * Maximum waiting time in seconds between jobs in a SAME_TIME relation. This
-     * defines how much time synchronization tolerance is allowed - jobs can start
-     * within this time window of each other. Defaults to 1200 seconds (20 minutes) if
-     * not specified.
-     */
-    maxWaitingTime?: number | null;
-
-    /**
-     * Minimum time interval in seconds that must pass between consecutive jobs in
-     * sequence relations. This ensures adequate time for travel, setup, or processing
-     * between related jobs. Only applies to SEQUENCE, DIRECT_SEQUENCE, and SAME_TIME
-     * relations.
-     */
-    minTimeInterval?: number | null;
-
-    /**
-     * Allows the solver to include only some jobs from this relation in the final
-     * solution when the full relation cannot be satisfied due to constraints. When
-     * false, either all jobs in the relation are assigned or none are, maintaining the
-     * relation's integrity.
-     */
-    partialPlanning?: boolean;
-
-    /**
-     * Optional resource constraint for this relation. When specified, all jobs in the
-     * relation must be assigned to this specific resource. This creates a hard
-     * constraint that can help enforce resource-specific workflows or capabilities.
-     */
-    resource?: string | null;
-
-    /**
-     * List of tag names used to define job groups in GROUP_SEQUENCE relations. Jobs
-     * with matching tags form groups that must be executed in sequence. This allows
-     * for complex sequencing rules based on job characteristics rather than explicit
-     * job names.
-     */
-    tags?: Array<string> | null;
-  }
 }
 
 export interface VrpSuggestParams {
@@ -1334,94 +1166,12 @@ export interface VrpSuggestParams {
   /**
    * Body param:
    */
-  relations?: Array<VrpSuggestParams.Relation> | null;
+  relations?: Array<Relation> | null;
 
   /**
    * Body param: OnRoute Weights
    */
   weights?: Weights | null;
-}
-
-export namespace VrpSuggestParams {
-  /**
-   * Relation between two jobs.
-   */
-  export interface Relation {
-    /**
-     * List of job names involved in this relation. For sequence-based relations, the
-     * order matters - jobs will be executed in the order specified. For other
-     * relations, order may be irrelevant. All job names must exist in the request's
-     * jobs list.
-     */
-    jobs: Array<string>;
-
-    /**
-     * Determines if the time interval between jobs should be measured from arrival or
-     * departure
-     */
-    timeInterval: 'FROM_ARRIVAL' | 'FROM_DEPARTURE';
-
-    /**
-     * Type of relation between jobs
-     */
-    type:
-      | 'SAME_TRIP'
-      | 'SEQUENCE'
-      | 'DIRECT_SEQUENCE'
-      | 'SAME_TIME'
-      | 'NEIGHBOR'
-      | 'PICKUP_AND_DELIVERY'
-      | 'SAME_RESOURCE'
-      | 'SAME_DAY'
-      | 'GROUP_SEQUENCE';
-
-    /**
-     * Maximum time interval in seconds allowed between consecutive jobs in sequence
-     * relations. This prevents excessive delays between related jobs and ensures
-     * timely completion of job sequences. Only applies to SEQUENCE, DIRECT_SEQUENCE,
-     * and SAME_TIME relations.
-     */
-    maxTimeInterval?: number | null;
-
-    /**
-     * Maximum waiting time in seconds between jobs in a SAME_TIME relation. This
-     * defines how much time synchronization tolerance is allowed - jobs can start
-     * within this time window of each other. Defaults to 1200 seconds (20 minutes) if
-     * not specified.
-     */
-    maxWaitingTime?: number | null;
-
-    /**
-     * Minimum time interval in seconds that must pass between consecutive jobs in
-     * sequence relations. This ensures adequate time for travel, setup, or processing
-     * between related jobs. Only applies to SEQUENCE, DIRECT_SEQUENCE, and SAME_TIME
-     * relations.
-     */
-    minTimeInterval?: number | null;
-
-    /**
-     * Allows the solver to include only some jobs from this relation in the final
-     * solution when the full relation cannot be satisfied due to constraints. When
-     * false, either all jobs in the relation are assigned or none are, maintaining the
-     * relation's integrity.
-     */
-    partialPlanning?: boolean;
-
-    /**
-     * Optional resource constraint for this relation. When specified, all jobs in the
-     * relation must be assigned to this specific resource. This creates a hard
-     * constraint that can help enforce resource-specific workflows or capabilities.
-     */
-    resource?: string | null;
-
-    /**
-     * List of tag names used to define job groups in GROUP_SEQUENCE relations. Jobs
-     * with matching tags form groups that must be executed in sequence. This allows
-     * for complex sequencing rules based on job characteristics rather than explicit
-     * job names.
-     */
-    tags?: Array<string> | null;
-  }
 }
 
 export interface VrpSyncEvaluateParams {
@@ -1456,94 +1206,12 @@ export interface VrpSyncEvaluateParams {
    */
   options?: Options | null;
 
-  relations?: Array<VrpSyncEvaluateParams.Relation> | null;
+  relations?: Array<Relation> | null;
 
   /**
    * OnRoute Weights
    */
   weights?: Weights | null;
-}
-
-export namespace VrpSyncEvaluateParams {
-  /**
-   * Relation between two jobs.
-   */
-  export interface Relation {
-    /**
-     * List of job names involved in this relation. For sequence-based relations, the
-     * order matters - jobs will be executed in the order specified. For other
-     * relations, order may be irrelevant. All job names must exist in the request's
-     * jobs list.
-     */
-    jobs: Array<string>;
-
-    /**
-     * Determines if the time interval between jobs should be measured from arrival or
-     * departure
-     */
-    timeInterval: 'FROM_ARRIVAL' | 'FROM_DEPARTURE';
-
-    /**
-     * Type of relation between jobs
-     */
-    type:
-      | 'SAME_TRIP'
-      | 'SEQUENCE'
-      | 'DIRECT_SEQUENCE'
-      | 'SAME_TIME'
-      | 'NEIGHBOR'
-      | 'PICKUP_AND_DELIVERY'
-      | 'SAME_RESOURCE'
-      | 'SAME_DAY'
-      | 'GROUP_SEQUENCE';
-
-    /**
-     * Maximum time interval in seconds allowed between consecutive jobs in sequence
-     * relations. This prevents excessive delays between related jobs and ensures
-     * timely completion of job sequences. Only applies to SEQUENCE, DIRECT_SEQUENCE,
-     * and SAME_TIME relations.
-     */
-    maxTimeInterval?: number | null;
-
-    /**
-     * Maximum waiting time in seconds between jobs in a SAME_TIME relation. This
-     * defines how much time synchronization tolerance is allowed - jobs can start
-     * within this time window of each other. Defaults to 1200 seconds (20 minutes) if
-     * not specified.
-     */
-    maxWaitingTime?: number | null;
-
-    /**
-     * Minimum time interval in seconds that must pass between consecutive jobs in
-     * sequence relations. This ensures adequate time for travel, setup, or processing
-     * between related jobs. Only applies to SEQUENCE, DIRECT_SEQUENCE, and SAME_TIME
-     * relations.
-     */
-    minTimeInterval?: number | null;
-
-    /**
-     * Allows the solver to include only some jobs from this relation in the final
-     * solution when the full relation cannot be satisfied due to constraints. When
-     * false, either all jobs in the relation are assigned or none are, maintaining the
-     * relation's integrity.
-     */
-    partialPlanning?: boolean;
-
-    /**
-     * Optional resource constraint for this relation. When specified, all jobs in the
-     * relation must be assigned to this specific resource. This creates a hard
-     * constraint that can help enforce resource-specific workflows or capabilities.
-     */
-    resource?: string | null;
-
-    /**
-     * List of tag names used to define job groups in GROUP_SEQUENCE relations. Jobs
-     * with matching tags form groups that must be executed in sequence. This allows
-     * for complex sequencing rules based on job characteristics rather than explicit
-     * job names.
-     */
-    tags?: Array<string> | null;
-  }
 }
 
 export interface VrpSyncSolveParams {
@@ -1589,94 +1257,12 @@ export interface VrpSyncSolveParams {
   /**
    * Body param:
    */
-  relations?: Array<VrpSyncSolveParams.Relation> | null;
+  relations?: Array<Relation> | null;
 
   /**
    * Body param: OnRoute Weights
    */
   weights?: Weights | null;
-}
-
-export namespace VrpSyncSolveParams {
-  /**
-   * Relation between two jobs.
-   */
-  export interface Relation {
-    /**
-     * List of job names involved in this relation. For sequence-based relations, the
-     * order matters - jobs will be executed in the order specified. For other
-     * relations, order may be irrelevant. All job names must exist in the request's
-     * jobs list.
-     */
-    jobs: Array<string>;
-
-    /**
-     * Determines if the time interval between jobs should be measured from arrival or
-     * departure
-     */
-    timeInterval: 'FROM_ARRIVAL' | 'FROM_DEPARTURE';
-
-    /**
-     * Type of relation between jobs
-     */
-    type:
-      | 'SAME_TRIP'
-      | 'SEQUENCE'
-      | 'DIRECT_SEQUENCE'
-      | 'SAME_TIME'
-      | 'NEIGHBOR'
-      | 'PICKUP_AND_DELIVERY'
-      | 'SAME_RESOURCE'
-      | 'SAME_DAY'
-      | 'GROUP_SEQUENCE';
-
-    /**
-     * Maximum time interval in seconds allowed between consecutive jobs in sequence
-     * relations. This prevents excessive delays between related jobs and ensures
-     * timely completion of job sequences. Only applies to SEQUENCE, DIRECT_SEQUENCE,
-     * and SAME_TIME relations.
-     */
-    maxTimeInterval?: number | null;
-
-    /**
-     * Maximum waiting time in seconds between jobs in a SAME_TIME relation. This
-     * defines how much time synchronization tolerance is allowed - jobs can start
-     * within this time window of each other. Defaults to 1200 seconds (20 minutes) if
-     * not specified.
-     */
-    maxWaitingTime?: number | null;
-
-    /**
-     * Minimum time interval in seconds that must pass between consecutive jobs in
-     * sequence relations. This ensures adequate time for travel, setup, or processing
-     * between related jobs. Only applies to SEQUENCE, DIRECT_SEQUENCE, and SAME_TIME
-     * relations.
-     */
-    minTimeInterval?: number | null;
-
-    /**
-     * Allows the solver to include only some jobs from this relation in the final
-     * solution when the full relation cannot be satisfied due to constraints. When
-     * false, either all jobs in the relation are assigned or none are, maintaining the
-     * relation's integrity.
-     */
-    partialPlanning?: boolean;
-
-    /**
-     * Optional resource constraint for this relation. When specified, all jobs in the
-     * relation must be assigned to this specific resource. This creates a hard
-     * constraint that can help enforce resource-specific workflows or capabilities.
-     */
-    resource?: string | null;
-
-    /**
-     * List of tag names used to define job groups in GROUP_SEQUENCE relations. Jobs
-     * with matching tags form groups that must be executed in sequence. This allows
-     * for complex sequencing rules based on job characteristics rather than explicit
-     * job names.
-     */
-    tags?: Array<string> | null;
-  }
 }
 
 export interface VrpSyncSuggestParams {
@@ -1722,94 +1308,12 @@ export interface VrpSyncSuggestParams {
   /**
    * Body param:
    */
-  relations?: Array<VrpSyncSuggestParams.Relation> | null;
+  relations?: Array<Relation> | null;
 
   /**
    * Body param: OnRoute Weights
    */
   weights?: Weights | null;
-}
-
-export namespace VrpSyncSuggestParams {
-  /**
-   * Relation between two jobs.
-   */
-  export interface Relation {
-    /**
-     * List of job names involved in this relation. For sequence-based relations, the
-     * order matters - jobs will be executed in the order specified. For other
-     * relations, order may be irrelevant. All job names must exist in the request's
-     * jobs list.
-     */
-    jobs: Array<string>;
-
-    /**
-     * Determines if the time interval between jobs should be measured from arrival or
-     * departure
-     */
-    timeInterval: 'FROM_ARRIVAL' | 'FROM_DEPARTURE';
-
-    /**
-     * Type of relation between jobs
-     */
-    type:
-      | 'SAME_TRIP'
-      | 'SEQUENCE'
-      | 'DIRECT_SEQUENCE'
-      | 'SAME_TIME'
-      | 'NEIGHBOR'
-      | 'PICKUP_AND_DELIVERY'
-      | 'SAME_RESOURCE'
-      | 'SAME_DAY'
-      | 'GROUP_SEQUENCE';
-
-    /**
-     * Maximum time interval in seconds allowed between consecutive jobs in sequence
-     * relations. This prevents excessive delays between related jobs and ensures
-     * timely completion of job sequences. Only applies to SEQUENCE, DIRECT_SEQUENCE,
-     * and SAME_TIME relations.
-     */
-    maxTimeInterval?: number | null;
-
-    /**
-     * Maximum waiting time in seconds between jobs in a SAME_TIME relation. This
-     * defines how much time synchronization tolerance is allowed - jobs can start
-     * within this time window of each other. Defaults to 1200 seconds (20 minutes) if
-     * not specified.
-     */
-    maxWaitingTime?: number | null;
-
-    /**
-     * Minimum time interval in seconds that must pass between consecutive jobs in
-     * sequence relations. This ensures adequate time for travel, setup, or processing
-     * between related jobs. Only applies to SEQUENCE, DIRECT_SEQUENCE, and SAME_TIME
-     * relations.
-     */
-    minTimeInterval?: number | null;
-
-    /**
-     * Allows the solver to include only some jobs from this relation in the final
-     * solution when the full relation cannot be satisfied due to constraints. When
-     * false, either all jobs in the relation are assigned or none are, maintaining the
-     * relation's integrity.
-     */
-    partialPlanning?: boolean;
-
-    /**
-     * Optional resource constraint for this relation. When specified, all jobs in the
-     * relation must be assigned to this specific resource. This creates a hard
-     * constraint that can help enforce resource-specific workflows or capabilities.
-     */
-    resource?: string | null;
-
-    /**
-     * List of tag names used to define job groups in GROUP_SEQUENCE relations. Jobs
-     * with matching tags form groups that must be executed in sequence. This allows
-     * for complex sequencing rules based on job characteristics rather than explicit
-     * job names.
-     */
-    tags?: Array<string> | null;
-  }
 }
 
 Vrp.Jobs = Jobs;
@@ -1820,11 +1324,16 @@ export declare namespace Vrp {
     type Job as Job,
     type Location as Location,
     type Message as Message,
-    type OnRouteRequest as OnRouteRequest,
     type Options as Options,
+    type Period as Period,
+    type Relation as Relation,
+    type RelationType as RelationType,
+    type Request as Request,
     type Resource as Resource,
+    type Rule as Rule,
     type Shift as Shift,
     type Weights as Weights,
+    type Window as Window,
     type VrpDemoParams as VrpDemoParams,
     type VrpEvaluateParams as VrpEvaluateParams,
     type VrpSolveParams as VrpSolveParams,

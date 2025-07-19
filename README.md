@@ -46,7 +46,7 @@ const client = new SolviceVrpSolver({
   apiKey: process.env['SOLVICE_API_KEY'], // This is the default and can be omitted
 });
 
-const onRouteRequest: SolviceVrpSolver.OnRouteRequest = await client.vrp.demo();
+const request: SolviceVrpSolver.Request = await client.vrp.demo();
 ```
 
 Documentation for each method, request param, and response field are available in docstrings and will appear on hover in most modern editors.
@@ -59,7 +59,7 @@ a subclass of `APIError` will be thrown:
 
 <!-- prettier-ignore -->
 ```ts
-const onRouteRequest = await client.vrp.demo().catch(async (err) => {
+const request = await client.vrp.demo().catch(async (err) => {
   if (err instanceof SolviceVrpSolver.APIError) {
     console.log(err.status); // 400
     console.log(err.name); // BadRequestError
@@ -143,9 +143,9 @@ const response = await client.vrp.demo().asResponse();
 console.log(response.headers.get('X-My-Header'));
 console.log(response.statusText); // access the underlying Response object
 
-const { data: onRouteRequest, response: raw } = await client.vrp.demo().withResponse();
+const { data: request, response: raw } = await client.vrp.demo().withResponse();
 console.log(raw.headers.get('X-My-Header'));
-console.log(onRouteRequest.jobs);
+console.log(request.jobs);
 ```
 
 ### Logging
