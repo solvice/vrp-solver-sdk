@@ -13,10 +13,10 @@ export class Jobs extends APIResource {
    *
    * @example
    * ```ts
-   * const onRouteRequest = await client.vrp.jobs.retrieve('id');
+   * const request = await client.vrp.jobs.retrieve('id');
    * ```
    */
-  retrieve(id: string, options?: RequestOptions): APIPromise<VrpAPI.OnRouteRequest> {
+  retrieve(id: string, options?: RequestOptions): APIPromise<VrpAPI.Request> {
     return this._client.get(path`/v2/vrp/jobs/${id}`, options);
   }
 
