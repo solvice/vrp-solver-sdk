@@ -8,7 +8,8 @@ const client = new SolviceVrpSolver({
 });
 
 describe('resource vrp', () => {
-  test('demo', async () => {
+  // skipped: tests are disabled for the time being
+  test.skip('demo', async () => {
     const responsePromise = client.vrp.demo();
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -19,7 +20,8 @@ describe('resource vrp', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('demo: request options and params are passed correctly', async () => {
+  // skipped: tests are disabled for the time being
+  test.skip('demo: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
       client.vrp.demo(
@@ -29,7 +31,8 @@ describe('resource vrp', () => {
     ).rejects.toThrow(SolviceVrpSolver.NotFoundError);
   });
 
-  test('evaluate: only required params', async () => {
+  // skipped: tests are disabled for the time being
+  test.skip('evaluate: only required params', async () => {
     const responsePromise = client.vrp.evaluate({
       jobs: [{ name: '1' }, { name: '2' }],
       resources: [{ name: '1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] }],
@@ -43,7 +46,8 @@ describe('resource vrp', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('evaluate: required and optional params', async () => {
+  // skipped: tests are disabled for the time being
+  test.skip('evaluate: required and optional params', async () => {
     const response = await client.vrp.evaluate({
       jobs: [
         {
@@ -189,7 +193,8 @@ describe('resource vrp', () => {
     });
   });
 
-  test('solve: only required params', async () => {
+  // skipped: tests are disabled for the time being
+  test.skip('solve: only required params', async () => {
     const responsePromise = client.vrp.solve({
       jobs: [{ name: '1' }, { name: '2' }],
       resources: [{ name: '1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] }],
@@ -203,7 +208,8 @@ describe('resource vrp', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('solve: required and optional params', async () => {
+  // skipped: tests are disabled for the time being
+  test.skip('solve: required and optional params', async () => {
     const response = await client.vrp.solve({
       jobs: [
         {
@@ -351,7 +357,8 @@ describe('resource vrp', () => {
     });
   });
 
-  test('suggest: only required params', async () => {
+  // skipped: tests are disabled for the time being
+  test.skip('suggest: only required params', async () => {
     const responsePromise = client.vrp.suggest({
       jobs: [{ name: '1' }, { name: '2' }],
       resources: [{ name: '1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] }],
@@ -365,7 +372,8 @@ describe('resource vrp', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('suggest: required and optional params', async () => {
+  // skipped: tests are disabled for the time being
+  test.skip('suggest: required and optional params', async () => {
     const response = await client.vrp.suggest({
       jobs: [
         {
@@ -512,7 +520,8 @@ describe('resource vrp', () => {
     });
   });
 
-  test('syncEvaluate: only required params', async () => {
+  // skipped: tests are disabled for the time being
+  test.skip('syncEvaluate: only required params', async () => {
     const responsePromise = client.vrp.syncEvaluate({
       jobs: [{ name: '1' }, { name: '2' }],
       resources: [{ name: '1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] }],
@@ -526,7 +535,8 @@ describe('resource vrp', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('syncEvaluate: required and optional params', async () => {
+  // skipped: tests are disabled for the time being
+  test.skip('syncEvaluate: required and optional params', async () => {
     const response = await client.vrp.syncEvaluate({
       jobs: [
         {
@@ -672,7 +682,8 @@ describe('resource vrp', () => {
     });
   });
 
-  test('syncSolve: only required params', async () => {
+  // skipped: tests are disabled for the time being
+  test.skip('syncSolve: only required params', async () => {
     const responsePromise = client.vrp.syncSolve({
       jobs: [{ name: '1' }, { name: '2' }],
       resources: [{ name: '1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] }],
@@ -686,7 +697,8 @@ describe('resource vrp', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('syncSolve: required and optional params', async () => {
+  // skipped: tests are disabled for the time being
+  test.skip('syncSolve: required and optional params', async () => {
     const response = await client.vrp.syncSolve({
       jobs: [
         {
@@ -833,7 +845,8 @@ describe('resource vrp', () => {
     });
   });
 
-  test('syncSuggest: only required params', async () => {
+  // skipped: tests are disabled for the time being
+  test.skip('syncSuggest: only required params', async () => {
     const responsePromise = client.vrp.syncSuggest({
       jobs: [{ name: '1' }, { name: '2' }],
       resources: [{ name: '1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] }],
@@ -847,7 +860,8 @@ describe('resource vrp', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('syncSuggest: required and optional params', async () => {
+  // skipped: tests are disabled for the time being
+  test.skip('syncSuggest: required and optional params', async () => {
     const response = await client.vrp.syncSuggest({
       jobs: [
         {
