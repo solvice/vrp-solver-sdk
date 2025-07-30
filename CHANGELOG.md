@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.1 (2025-07-30)
+
+Full Changelog: [v0.6.0...v0.6.1](https://github.com/solvice/vrp-solver-sdk/compare/v0.6.0...v0.6.1)
+
+### Chores
+
+* **internal:** remove redundant imports config ([78f78f2](https://github.com/solvice/vrp-solver-sdk/commit/78f78f21c2c87ccfa99e1cd3bcee93c5efd4b63e))
+
 ## 0.6.0 (2025-07-19)
 
 Full Changelog: [v0.5.0...v0.6.0](https://github.com/solvice/vrp-solver-sdk/compare/v0.5.0...v0.6.0)
