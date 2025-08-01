@@ -276,6 +276,12 @@ export interface Job {
   initialResource?: string | null;
 
   /**
+   * List of job types that this job represents. Used to enforce job type limitations
+   * per resource per timeframe.
+   */
+  jobTypes?: Array<string> | null;
+
+  /**
    * Load
    */
   load?: Array<number> | null;
@@ -788,6 +794,11 @@ export interface Resource {
  */
 export interface Rule {
   /**
+   * Map of job type to maximum count allowed per period. Null means no limitations.
+   */
+  jobTypeLimitations?: { [key: string]: number } | null;
+
+  /**
    * Maximum drive time in seconds
    */
   maxDriveTime?: number | null;
@@ -869,6 +880,11 @@ export interface Shift {
    * Ignore the travel time from the start location to the first order
    */
   ignoreTravelTimeToFirstJob?: boolean | null;
+
+  /**
+   * Map of job type to maximum count allowed per shift. Null means no limitations.
+   */
+  jobTypeLimitations?: { [key: string]: number } | null;
 
   /**
    * @deprecated Can go into overtime.
