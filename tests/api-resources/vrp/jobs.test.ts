@@ -8,7 +8,7 @@ const client = new SolviceVrpSolver({
 });
 
 describe('resource jobs', () => {
-  // skipped: tests are disabled for the time being
+  // Prism tests are disabled
   test.skip('retrieve', async () => {
     const responsePromise = client.vrp.jobs.retrieve('id');
     const rawResponse = await responsePromise.asResponse();
@@ -20,7 +20,7 @@ describe('resource jobs', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // skipped: tests are disabled for the time being
+  // Prism tests are disabled
   test.skip('explanation', async () => {
     const responsePromise = client.vrp.jobs.explanation('id');
     const rawResponse = await responsePromise.asResponse();
@@ -32,7 +32,7 @@ describe('resource jobs', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // skipped: tests are disabled for the time being
+  // Prism tests are disabled
   test.skip('solution', async () => {
     const responsePromise = client.vrp.jobs.solution('id');
     const rawResponse = await responsePromise.asResponse();
@@ -44,7 +44,7 @@ describe('resource jobs', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // skipped: tests are disabled for the time being
+  // Prism tests are disabled
   test.skip('status', async () => {
     const responsePromise = client.vrp.jobs.status('id');
     const rawResponse = await responsePromise.asResponse();
