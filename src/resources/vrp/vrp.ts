@@ -602,6 +602,12 @@ export interface Relation {
   type: RelationType;
 
   /**
+   * When true, enforces resource compatibility checking for SAME_TIME relations.
+   * Only compatible resources can work together on linked jobs.
+   */
+  enforceCompatibility?: boolean;
+
+  /**
    * Maximum time interval in seconds allowed between consecutive jobs in sequence
    * relations. This prevents excessive delays between related jobs and ensures
    * timely completion of job sequences. Only applies to SEQUENCE, DIRECT_SEQUENCE,
@@ -736,6 +742,12 @@ export interface Resource {
    * Transportation type for the resource
    */
   category?: 'CAR' | 'BIKE' | 'TRUCK' | null;
+
+  /**
+   * List of resource names that this resource is compatible to work with on linked
+   * jobs requiring cooperation
+   */
+  compatibleResources?: Array<string> | null;
 
   /**
    * @deprecated Geographical Location in WGS-84
