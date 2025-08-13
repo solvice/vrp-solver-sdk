@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.8.0 (2025-08-13)
+
+Full Changelog: [v0.7.0...v0.8.0](https://github.com/solvice/vrp-solver-sdk/compare/v0.7.0...v0.8.0)
+
+### Features
+
+* **api:** api update ([6fbcf55](https://github.com/solvice/vrp-solver-sdk/commit/6fbcf55e957c9bd2359179749d8266e4b8470387))
+
+
+### Chores
+
+* **internal:** codegen related update ([0bbb3fb](https://github.com/solvice/vrp-solver-sdk/commit/0bbb3fbfa88b29e776ed1fafcbc5dfe220924394))
+* **internal:** move publish config ([d829b0f](https://github.com/solvice/vrp-solver-sdk/commit/d829b0fcf0dbb3c312b92ba26edd48227f87d223))
+* **internal:** update comment in script ([cc0803b](https://github.com/solvice/vrp-solver-sdk/commit/cc0803bc7622834812836ec7f79e023f8129b99e))
+* update @stainless-api/prism-cli to v5.15.0 ([2fae3fc](https://github.com/solvice/vrp-solver-sdk/commit/2fae3fc38a6bae27e8dc306dc1505c26536356cc))
+
 ## 0.7.0 (2025-08-01)
 
 Full Changelog: [v0.6.0...v0.7.0](https://github.com/solvice/vrp-solver-sdk/compare/v0.6.0...v0.7.0)
