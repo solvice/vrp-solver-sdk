@@ -739,7 +739,9 @@ export class SolviceVrpSolver {
 
   vrp: API.Vrp = new API.Vrp(this);
 }
+
 SolviceVrpSolver.Vrp = Vrp;
+
 export declare namespace SolviceVrpSolver {
   export type RequestOptions = Opts.RequestOptions;
 
