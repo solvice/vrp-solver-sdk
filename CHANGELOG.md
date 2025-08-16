@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.8.1 (2025-08-16)
+
+Full Changelog: [v0.8.0...v0.8.1](https://github.com/solvice/vrp-solver-sdk/compare/v0.8.0...v0.8.1)
+
+### Chores
+
+* **deps:** update dependency @types/node to v20.17.58 ([730b0ef](https://github.com/solvice/vrp-solver-sdk/commit/730b0ef928d25b7c960a1828768ecde604ef2dd7))
+* **internal:** formatting change ([931b415](https://github.com/solvice/vrp-solver-sdk/commit/931b415abf0c38e0e0d8adf1bde3eeb3404bd35d))
+
 ## 0.8.0 (2025-08-13)
 
 Full Changelog: [v0.7.0...v0.8.0](https://github.com/solvice/vrp-solver-sdk/compare/v0.7.0...v0.8.0)
