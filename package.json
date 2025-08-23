@@ -1,6 +1,6 @@
 {
   "name": "solvice-vrp-solver",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "The official TypeScript library for the Solvice Vrp Solver API",
   "author": "Solvice Vrp Solver <info@solvice.io>",
   "types": "dist/index.d.ts",
