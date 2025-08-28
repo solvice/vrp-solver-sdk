@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.9.0 (2025-08-28)
+
+Full Changelog: [v0.8.0...v0.9.0](https://github.com/solvice/vrp-solver-sdk/compare/v0.8.0...v0.9.0)
+
+### Features
+
+* **api:** api update ([b6111e9](https://github.com/solvice/vrp-solver-sdk/commit/b6111e9d063a38570c618199f5e15fccf7cabe22))
+* **mcp:** add code execution tool ([f1722c5](https://github.com/solvice/vrp-solver-sdk/commit/f1722c520bf79cd0fd45a79a43897e175b20beff))
+
+
+### Chores
+
+* add package to package.json ([cd968f3](https://github.com/solvice/vrp-solver-sdk/commit/cd968f3fc7f79de1c2b3a34b81414fdca9bd21ff))
+* **client:** qualify global Blob ([5b9390b](https://github.com/solvice/vrp-solver-sdk/commit/5b9390b39647081381ad107e52b1c81725e2fb95))
+* **deps:** update dependency @types/node to v20.17.58 ([730b0ef](https://github.com/solvice/vrp-solver-sdk/commit/730b0ef928d25b7c960a1828768ecde604ef2dd7))
+* **internal:** formatting change ([931b415](https://github.com/solvice/vrp-solver-sdk/commit/931b415abf0c38e0e0d8adf1bde3eeb3404bd35d))
+* update CI script ([5c81fe1](https://github.com/solvice/vrp-solver-sdk/commit/5c81fe1de5ba594a8af19b0afc595e713f0f71b7))
+
 ## 0.8.0 (2025-08-13)
 
 Full Changelog: [v0.7.0...v0.8.0](https://github.com/solvice/vrp-solver-sdk/compare/v0.7.0...v0.8.0)
