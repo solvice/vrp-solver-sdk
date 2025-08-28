@@ -608,6 +608,14 @@ export interface Relation {
   enforceCompatibility?: boolean;
 
   /**
+   * When true (default), the minimum time interval constraint is enforced as a hard
+   * constraint. When false, it becomes a soft constraint that can be violated with
+   * penalty. Useful for SEQUENCE and SAME_TIME relations where timing flexibility is
+   * acceptable.
+   */
+  hardMinWait?: boolean;
+
+  /**
    * Maximum time interval in seconds allowed between consecutive jobs in sequence
    * relations. This prevents excessive delays between related jobs and ensures
    * timely completion of job sequences. Only applies to SEQUENCE, DIRECT_SEQUENCE,
