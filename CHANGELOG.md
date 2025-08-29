@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.1 (2025-08-29)
+
+Full Changelog: [v0.9.0...v0.9.1](https://github.com/solvice/vrp-solver-sdk/compare/v0.9.0...v0.9.1)
+
+### Chores
+
+* **internal:** update global Error reference ([0976023](https://github.com/solvice/vrp-solver-sdk/commit/0976023e7336a7f3c5377a9250e841dfb7069af8))
+
 ## 0.9.0 (2025-08-28)
 
 Full Changelog: [v0.8.0...v0.9.0](https://github.com/solvice/vrp-solver-sdk/compare/v0.8.0...v0.9.0)
