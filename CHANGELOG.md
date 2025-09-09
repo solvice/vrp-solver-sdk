@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.9.1 (2025-09-09)
+
+Full Changelog: [v0.9.0...v0.9.1](https://github.com/solvice/vrp-solver-sdk/compare/v0.9.0...v0.9.1)
+
+### Bug Fixes
+
+* coerce nullable values to undefined ([b6e5970](https://github.com/solvice/vrp-solver-sdk/commit/b6e59704c16d15fb57739081b6a6f55e551f5ba8))
+
+
+### Chores
+
+* **internal:** codegen related update ([31df902](https://github.com/solvice/vrp-solver-sdk/commit/31df9025e8f820ad5965f7adc9bb2cea1e861b3b))
+* **internal:** update global Error reference ([0976023](https://github.com/solvice/vrp-solver-sdk/commit/0976023e7336a7f3c5377a9250e841dfb7069af8))
+
 ## 0.9.0 (2025-08-28)
 
 Full Changelog: [v0.8.0...v0.9.0](https://github.com/solvice/vrp-solver-sdk/compare/v0.8.0...v0.9.0)
