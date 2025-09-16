@@ -150,6 +150,17 @@ describe('resource vrp', () => {
           tags: ['string'],
         },
       ],
+      customDistanceMatrices: {
+        matrixServiceUrl: 'https://custom-matrix-service.com/api',
+        profileMatrices: {
+          CAR: {
+            '6': 'matrix-car-morning-123',
+            '9': 'matrix-car-midday-456',
+            '16': 'matrix-car-evening-789',
+          },
+          TRUCK: { '6': 'matrix-truck-morning-abc', '9': 'matrix-truck-midday-def' },
+        },
+      },
       hook: 'https://example.com',
       label: 'label',
       options: {
@@ -320,6 +331,17 @@ describe('resource vrp', () => {
         },
       ],
       millis: 'millis',
+      customDistanceMatrices: {
+        matrixServiceUrl: 'https://custom-matrix-service.com/api',
+        profileMatrices: {
+          CAR: {
+            '6': 'matrix-car-morning-123',
+            '9': 'matrix-car-midday-456',
+            '16': 'matrix-car-evening-789',
+          },
+          TRUCK: { '6': 'matrix-truck-morning-abc', '9': 'matrix-truck-midday-def' },
+        },
+      },
       hook: 'https://example.com',
       label: 'label',
       options: {
@@ -491,6 +513,17 @@ describe('resource vrp', () => {
         },
       ],
       millis: 'millis',
+      customDistanceMatrices: {
+        matrixServiceUrl: 'https://custom-matrix-service.com/api',
+        profileMatrices: {
+          CAR: {
+            '6': 'matrix-car-morning-123',
+            '9': 'matrix-car-midday-456',
+            '16': 'matrix-car-evening-789',
+          },
+          TRUCK: { '6': 'matrix-truck-morning-abc', '9': 'matrix-truck-midday-def' },
+        },
+      },
       hook: 'https://example.com',
       label: 'label',
       options: {
@@ -660,6 +693,17 @@ describe('resource vrp', () => {
           tags: ['string'],
         },
       ],
+      customDistanceMatrices: {
+        matrixServiceUrl: 'https://custom-matrix-service.com/api',
+        profileMatrices: {
+          CAR: {
+            '6': 'matrix-car-morning-123',
+            '9': 'matrix-car-midday-456',
+            '16': 'matrix-car-evening-789',
+          },
+          TRUCK: { '6': 'matrix-truck-morning-abc', '9': 'matrix-truck-midday-def' },
+        },
+      },
       hook: 'https://example.com',
       label: 'label',
       options: {
@@ -830,6 +874,17 @@ describe('resource vrp', () => {
         },
       ],
       millis: 'millis',
+      customDistanceMatrices: {
+        matrixServiceUrl: 'https://custom-matrix-service.com/api',
+        profileMatrices: {
+          CAR: {
+            '6': 'matrix-car-morning-123',
+            '9': 'matrix-car-midday-456',
+            '16': 'matrix-car-evening-789',
+          },
+          TRUCK: { '6': 'matrix-truck-morning-abc', '9': 'matrix-truck-midday-def' },
+        },
+      },
       hook: 'https://example.com',
       label: 'label',
       options: {
@@ -1000,6 +1055,17 @@ describe('resource vrp', () => {
         },
       ],
       millis: 'millis',
+      customDistanceMatrices: {
+        matrixServiceUrl: 'https://custom-matrix-service.com/api',
+        profileMatrices: {
+          CAR: {
+            '6': 'matrix-car-morning-123',
+            '9': 'matrix-car-midday-456',
+            '16': 'matrix-car-evening-789',
+          },
+          TRUCK: { '6': 'matrix-truck-morning-abc', '9': 'matrix-truck-midday-def' },
+        },
+      },
       hook: 'https://example.com',
       label: 'label',
       options: {
