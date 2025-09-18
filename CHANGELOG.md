@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.11.0 (2025-09-18)
+
+Full Changelog: [v0.10.0...v0.11.0](https://github.com/solvice/vrp-solver-sdk/compare/v0.10.0...v0.11.0)
+
+### Features
+
+* **api:** api update ([7d23cdd](https://github.com/solvice/vrp-solver-sdk/commit/7d23cdda68e2aee9980b65b894b0ca3ad2d6d9e6))
+
 ## 0.10.0 (2025-09-16)
 
 Full Changelog: [v0.9.1...v0.10.0](https://github.com/solvice/vrp-solver-sdk/compare/v0.9.1...v0.10.0)
