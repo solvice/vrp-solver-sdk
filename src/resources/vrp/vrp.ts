@@ -661,6 +661,12 @@ export interface Relation {
    * job names.
    */
   tags?: Array<string> | null;
+
+  /**
+   * Weight modifier for this relation. This can be used to modify the weight of a
+   * relation to make it more or less important than other relations.
+   */
+  weight?: number | null;
 }
 
 /**
