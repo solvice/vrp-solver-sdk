@@ -193,6 +193,7 @@ describe('resource vrp', () => {
           partialPlanning: false,
           resource: 'vehicle-1',
           tags: ['urgent'],
+          weight: 1,
         },
       ],
       weights: {
@@ -374,6 +375,7 @@ describe('resource vrp', () => {
           partialPlanning: false,
           resource: 'vehicle-1',
           tags: ['urgent'],
+          weight: 1,
         },
       ],
       weights: {
@@ -556,6 +558,7 @@ describe('resource vrp', () => {
           partialPlanning: false,
           resource: 'vehicle-1',
           tags: ['urgent'],
+          weight: 1,
         },
       ],
       weights: {
@@ -736,6 +739,7 @@ describe('resource vrp', () => {
           partialPlanning: false,
           resource: 'vehicle-1',
           tags: ['urgent'],
+          weight: 1,
         },
       ],
       weights: {
@@ -917,6 +921,7 @@ describe('resource vrp', () => {
           partialPlanning: false,
           resource: 'vehicle-1',
           tags: ['urgent'],
+          weight: 1,
         },
       ],
       weights: {
@@ -1098,6 +1103,7 @@ describe('resource vrp', () => {
           partialPlanning: false,
           resource: 'vehicle-1',
           tags: ['urgent'],
+          weight: 1,
         },
       ],
       weights: {
