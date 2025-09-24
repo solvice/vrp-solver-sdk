@@ -34,8 +34,10 @@ describe('resource vrp', () => {
   // Prism tests are disabled
   test.skip('evaluate: only required params', async () => {
     const responsePromise = client.vrp.evaluate({
-      jobs: [{ name: '1' }, { name: '2' }],
-      resources: [{ name: '1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] }],
+      jobs: [{ name: 'Job-1' }],
+      resources: [
+        { name: 'vehicle-1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] },
+      ],
     });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -51,36 +53,11 @@ describe('resource vrp', () => {
     const response = await client.vrp.evaluate({
       jobs: [
         {
-          name: '1',
+          name: 'Job-1',
           allowedResources: ['string'],
           complexity: 1,
           disallowedResources: ['vehicle-3', 'vehicle-4'],
-          duration: 3600,
-          durationSquash: 30,
-          hard: true,
-          hardWeight: 1,
-          initialArrival: '2023-01-13T09:00:00Z',
-          initialResource: 'vehicle-1',
-          jobTypes: ['Initial Appointment', 'Wound Care'],
-          load: [5, 10],
-          location: { latitude: 51.0543, longitude: 3.7174 },
-          padding: 300,
-          plannedArrival: '2023-01-13T09:00:00Z',
-          plannedDate: '2023-01-13',
-          plannedResource: 'vehicle-1',
-          priority: 100,
-          rankings: [{ name: 'certified-technician', ranking: 5 }],
-          resumable: true,
-          tags: [{ name: 'plumbing', hard: false, weight: 300 }],
-          urgency: 80,
-          windows: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T12:00:00Z', hard: true, weight: 1 }],
-        },
-        {
-          name: '2',
-          allowedResources: ['string'],
-          complexity: 1,
-          disallowedResources: ['vehicle-3', 'vehicle-4'],
-          duration: 3600,
+          duration: 600,
           durationSquash: 30,
           hard: true,
           hardWeight: 1,
@@ -103,7 +80,7 @@ describe('resource vrp', () => {
       ],
       resources: [
         {
-          name: '1',
+          name: 'vehicle-1',
           shifts: [
             {
               from: '2023-01-13T08:00:00Z',
@@ -215,8 +192,10 @@ describe('resource vrp', () => {
   // Prism tests are disabled
   test.skip('solve: only required params', async () => {
     const responsePromise = client.vrp.solve({
-      jobs: [{ name: '1' }, { name: '2' }],
-      resources: [{ name: '1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] }],
+      jobs: [{ name: 'Job-1' }],
+      resources: [
+        { name: 'vehicle-1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] },
+      ],
     });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -232,36 +211,11 @@ describe('resource vrp', () => {
     const response = await client.vrp.solve({
       jobs: [
         {
-          name: '1',
+          name: 'Job-1',
           allowedResources: ['string'],
           complexity: 1,
           disallowedResources: ['vehicle-3', 'vehicle-4'],
-          duration: 3600,
-          durationSquash: 30,
-          hard: true,
-          hardWeight: 1,
-          initialArrival: '2023-01-13T09:00:00Z',
-          initialResource: 'vehicle-1',
-          jobTypes: ['Initial Appointment', 'Wound Care'],
-          load: [5, 10],
-          location: { latitude: 51.0543, longitude: 3.7174 },
-          padding: 300,
-          plannedArrival: '2023-01-13T09:00:00Z',
-          plannedDate: '2023-01-13',
-          plannedResource: 'vehicle-1',
-          priority: 100,
-          rankings: [{ name: 'certified-technician', ranking: 5 }],
-          resumable: true,
-          tags: [{ name: 'plumbing', hard: false, weight: 300 }],
-          urgency: 80,
-          windows: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T12:00:00Z', hard: true, weight: 1 }],
-        },
-        {
-          name: '2',
-          allowedResources: ['string'],
-          complexity: 1,
-          disallowedResources: ['vehicle-3', 'vehicle-4'],
-          duration: 3600,
+          duration: 600,
           durationSquash: 30,
           hard: true,
           hardWeight: 1,
@@ -284,7 +238,7 @@ describe('resource vrp', () => {
       ],
       resources: [
         {
-          name: '1',
+          name: 'vehicle-1',
           shifts: [
             {
               from: '2023-01-13T08:00:00Z',
@@ -398,8 +352,10 @@ describe('resource vrp', () => {
   // Prism tests are disabled
   test.skip('suggest: only required params', async () => {
     const responsePromise = client.vrp.suggest({
-      jobs: [{ name: '1' }, { name: '2' }],
-      resources: [{ name: '1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] }],
+      jobs: [{ name: 'Job-1' }],
+      resources: [
+        { name: 'vehicle-1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] },
+      ],
     });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -415,36 +371,11 @@ describe('resource vrp', () => {
     const response = await client.vrp.suggest({
       jobs: [
         {
-          name: '1',
+          name: 'Job-1',
           allowedResources: ['string'],
           complexity: 1,
           disallowedResources: ['vehicle-3', 'vehicle-4'],
-          duration: 3600,
-          durationSquash: 30,
-          hard: true,
-          hardWeight: 1,
-          initialArrival: '2023-01-13T09:00:00Z',
-          initialResource: 'vehicle-1',
-          jobTypes: ['Initial Appointment', 'Wound Care'],
-          load: [5, 10],
-          location: { latitude: 51.0543, longitude: 3.7174 },
-          padding: 300,
-          plannedArrival: '2023-01-13T09:00:00Z',
-          plannedDate: '2023-01-13',
-          plannedResource: 'vehicle-1',
-          priority: 100,
-          rankings: [{ name: 'certified-technician', ranking: 5 }],
-          resumable: true,
-          tags: [{ name: 'plumbing', hard: false, weight: 300 }],
-          urgency: 80,
-          windows: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T12:00:00Z', hard: true, weight: 1 }],
-        },
-        {
-          name: '2',
-          allowedResources: ['string'],
-          complexity: 1,
-          disallowedResources: ['vehicle-3', 'vehicle-4'],
-          duration: 3600,
+          duration: 600,
           durationSquash: 30,
           hard: true,
           hardWeight: 1,
@@ -467,7 +398,7 @@ describe('resource vrp', () => {
       ],
       resources: [
         {
-          name: '1',
+          name: 'vehicle-1',
           shifts: [
             {
               from: '2023-01-13T08:00:00Z',
@@ -580,8 +511,10 @@ describe('resource vrp', () => {
   // Prism tests are disabled
   test.skip('syncEvaluate: only required params', async () => {
     const responsePromise = client.vrp.syncEvaluate({
-      jobs: [{ name: '1' }, { name: '2' }],
-      resources: [{ name: '1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] }],
+      jobs: [{ name: 'Job-1' }],
+      resources: [
+        { name: 'vehicle-1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] },
+      ],
     });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -597,36 +530,11 @@ describe('resource vrp', () => {
     const response = await client.vrp.syncEvaluate({
       jobs: [
         {
-          name: '1',
+          name: 'Job-1',
           allowedResources: ['string'],
           complexity: 1,
           disallowedResources: ['vehicle-3', 'vehicle-4'],
-          duration: 3600,
-          durationSquash: 30,
-          hard: true,
-          hardWeight: 1,
-          initialArrival: '2023-01-13T09:00:00Z',
-          initialResource: 'vehicle-1',
-          jobTypes: ['Initial Appointment', 'Wound Care'],
-          load: [5, 10],
-          location: { latitude: 51.0543, longitude: 3.7174 },
-          padding: 300,
-          plannedArrival: '2023-01-13T09:00:00Z',
-          plannedDate: '2023-01-13',
-          plannedResource: 'vehicle-1',
-          priority: 100,
-          rankings: [{ name: 'certified-technician', ranking: 5 }],
-          resumable: true,
-          tags: [{ name: 'plumbing', hard: false, weight: 300 }],
-          urgency: 80,
-          windows: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T12:00:00Z', hard: true, weight: 1 }],
-        },
-        {
-          name: '2',
-          allowedResources: ['string'],
-          complexity: 1,
-          disallowedResources: ['vehicle-3', 'vehicle-4'],
-          duration: 3600,
+          duration: 600,
           durationSquash: 30,
           hard: true,
           hardWeight: 1,
@@ -649,7 +557,7 @@ describe('resource vrp', () => {
       ],
       resources: [
         {
-          name: '1',
+          name: 'vehicle-1',
           shifts: [
             {
               from: '2023-01-13T08:00:00Z',
@@ -761,8 +669,10 @@ describe('resource vrp', () => {
   // Prism tests are disabled
   test.skip('syncSolve: only required params', async () => {
     const responsePromise = client.vrp.syncSolve({
-      jobs: [{ name: '1' }, { name: '2' }],
-      resources: [{ name: '1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] }],
+      jobs: [{ name: 'Job-1' }],
+      resources: [
+        { name: 'vehicle-1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] },
+      ],
     });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -778,36 +688,11 @@ describe('resource vrp', () => {
     const response = await client.vrp.syncSolve({
       jobs: [
         {
-          name: '1',
+          name: 'Job-1',
           allowedResources: ['string'],
           complexity: 1,
           disallowedResources: ['vehicle-3', 'vehicle-4'],
-          duration: 3600,
-          durationSquash: 30,
-          hard: true,
-          hardWeight: 1,
-          initialArrival: '2023-01-13T09:00:00Z',
-          initialResource: 'vehicle-1',
-          jobTypes: ['Initial Appointment', 'Wound Care'],
-          load: [5, 10],
-          location: { latitude: 51.0543, longitude: 3.7174 },
-          padding: 300,
-          plannedArrival: '2023-01-13T09:00:00Z',
-          plannedDate: '2023-01-13',
-          plannedResource: 'vehicle-1',
-          priority: 100,
-          rankings: [{ name: 'certified-technician', ranking: 5 }],
-          resumable: true,
-          tags: [{ name: 'plumbing', hard: false, weight: 300 }],
-          urgency: 80,
-          windows: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T12:00:00Z', hard: true, weight: 1 }],
-        },
-        {
-          name: '2',
-          allowedResources: ['string'],
-          complexity: 1,
-          disallowedResources: ['vehicle-3', 'vehicle-4'],
-          duration: 3600,
+          duration: 600,
           durationSquash: 30,
           hard: true,
           hardWeight: 1,
@@ -830,7 +715,7 @@ describe('resource vrp', () => {
       ],
       resources: [
         {
-          name: '1',
+          name: 'vehicle-1',
           shifts: [
             {
               from: '2023-01-13T08:00:00Z',
@@ -943,8 +828,10 @@ describe('resource vrp', () => {
   // Prism tests are disabled
   test.skip('syncSuggest: only required params', async () => {
     const responsePromise = client.vrp.syncSuggest({
-      jobs: [{ name: '1' }, { name: '2' }],
-      resources: [{ name: '1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] }],
+      jobs: [{ name: 'Job-1' }],
+      resources: [
+        { name: 'vehicle-1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] },
+      ],
     });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -960,36 +847,11 @@ describe('resource vrp', () => {
     const response = await client.vrp.syncSuggest({
       jobs: [
         {
-          name: '1',
+          name: 'Job-1',
           allowedResources: ['string'],
           complexity: 1,
           disallowedResources: ['vehicle-3', 'vehicle-4'],
-          duration: 3600,
-          durationSquash: 30,
-          hard: true,
-          hardWeight: 1,
-          initialArrival: '2023-01-13T09:00:00Z',
-          initialResource: 'vehicle-1',
-          jobTypes: ['Initial Appointment', 'Wound Care'],
-          load: [5, 10],
-          location: { latitude: 51.0543, longitude: 3.7174 },
-          padding: 300,
-          plannedArrival: '2023-01-13T09:00:00Z',
-          plannedDate: '2023-01-13',
-          plannedResource: 'vehicle-1',
-          priority: 100,
-          rankings: [{ name: 'certified-technician', ranking: 5 }],
-          resumable: true,
-          tags: [{ name: 'plumbing', hard: false, weight: 300 }],
-          urgency: 80,
-          windows: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T12:00:00Z', hard: true, weight: 1 }],
-        },
-        {
-          name: '2',
-          allowedResources: ['string'],
-          complexity: 1,
-          disallowedResources: ['vehicle-3', 'vehicle-4'],
-          duration: 3600,
+          duration: 600,
           durationSquash: 30,
           hard: true,
           hardWeight: 1,
@@ -1012,7 +874,7 @@ describe('resource vrp', () => {
       ],
       resources: [
         {
-          name: '1',
+          name: 'vehicle-1',
           shifts: [
             {
               from: '2023-01-13T08:00:00Z',

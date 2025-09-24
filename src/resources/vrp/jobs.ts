@@ -85,7 +85,8 @@ export interface OnRouteResponse {
   occupancy?: number | null;
 
   /**
-   * Score tells you how good a solution is.
+   * The score of a solution shows how good this solution is w.r.t all the
+   * constraints. All solvers try to maximize the score.
    */
   score?: OnRouteResponse.Score | null;
 
@@ -210,7 +211,8 @@ export namespace OnRouteResponse {
   }
 
   /**
-   * Score tells you how good a solution is.
+   * The score of a solution shows how good this solution is w.r.t all the
+   * constraints. All solvers try to maximize the score.
    */
   export interface Score {
     feasible?: boolean | null;
@@ -269,14 +271,15 @@ export namespace OnRouteResponse {
       latestArrival?: string | null;
 
       /**
-       * Score of the assignment
+       * The score of a solution shows how good this solution is w.r.t all the
+       * constraints. All solvers try to maximize the score.
        */
       score?: Assignment.Score | null;
 
       /**
        * Unresolved constraints in this alternative solution
        */
-      scoreExplanation?: Assignment.ScoreExplanation | null;
+      scoreExplanation?: Assignment.ScoreExplanation;
 
       /**
        * Suggested arrival date-time
@@ -285,12 +288,13 @@ export namespace OnRouteResponse {
 
       suggestedInitialArrival?: string | null;
 
-      violations?: Array<JobsAPI.Unresolved | null> | null;
+      violations?: Array<JobsAPI.Unresolved> | null;
     }
 
     export namespace Assignment {
       /**
-       * Score of the assignment
+       * The score of a solution shows how good this solution is w.r.t all the
+       * constraints. All solvers try to maximize the score.
        */
       export interface Score {
         feasible?: boolean | null;
@@ -317,7 +321,7 @@ export namespace OnRouteResponse {
        */
       export interface ScoreExplanation {
         /**
-         * Types of constraints that can be violated in a routing solution
+         * Constraint type.
          */
         constraint: JobsAPI.OnrouteConstraint;
 
@@ -476,7 +480,7 @@ export interface SolviceStatusJob {
  */
 export interface Unresolved {
   /**
-   * Types of constraints that can be violated in a routing solution
+   * Constraint type.
    */
   constraint: OnrouteConstraint;
 
@@ -556,7 +560,7 @@ export interface JobExplanationResponse {
   /**
    * Score of the solution.
    */
-  score: JobExplanationResponse.Score | null;
+  score: JobExplanationResponse.Score;
 
   /**
    * When `options.explanation.enabled` is set to `true`, this field will contain the
@@ -569,12 +573,12 @@ export interface JobExplanationResponse {
   /**
    * Conflicts in the solution
    */
-  conflicts?: JobExplanationResponse.Conflicts | null;
+  conflicts?: Array<JobExplanationResponse.UnionMember0> | JobExplanationResponse.UnionMember1 | null;
 
   /**
    * Unresolved constraints in the solution
    */
-  unresolved?: JobExplanationResponse.Unresolved | null;
+  unresolved?: Array<Unresolved> | JobExplanationResponse.UnionMember1 | null;
 }
 
 export namespace JobExplanationResponse {
@@ -604,7 +608,39 @@ export namespace JobExplanationResponse {
   /**
    * Conflicts in the solution
    */
-  export interface Conflicts {
+  export interface UnionMember0 {
+    /**
+     * Constraint type.
+     */
+    constraint: string;
+
+    /**
+     * Score impact of this conflict.
+     */
+    score: string;
+
+    /**
+     * Job id.
+     */
+    job?: string | null;
+
+    relation?: string | null;
+
+    /**
+     * Resource id.
+     */
+    resource?: string | null;
+
+    /**
+     * Tag id.
+     */
+    tag?: string | null;
+  }
+
+  /**
+   * Conflicts in the solution
+   */
+  export interface UnionMember1 {
     /**
      * Constraint type.
      */
@@ -636,9 +672,9 @@ export namespace JobExplanationResponse {
   /**
    * Unresolved constraints in the solution
    */
-  export interface Unresolved {
+  export interface UnionMember1 {
     /**
-     * Types of constraints that can be violated in a routing solution
+     * Constraint type.
      */
     constraint: JobsAPI.OnrouteConstraint;
 
