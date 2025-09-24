@@ -36,10 +36,10 @@ export class Vrp extends APIResource {
    * @example
    * ```ts
    * const solviceStatusJob = await client.vrp.evaluate({
-   *   jobs: [{ name: '1' }, { name: '2' }],
+   *   jobs: [{ name: 'Job-1' }],
    *   resources: [
    *     {
-   *       name: '1',
+   *       name: 'vehicle-1',
    *       shifts: [
    *         {
    *           from: '2023-01-13T08:00:00Z',
@@ -61,10 +61,10 @@ export class Vrp extends APIResource {
    * @example
    * ```ts
    * const solviceStatusJob = await client.vrp.solve({
-   *   jobs: [{ name: '1' }, { name: '2' }],
+   *   jobs: [{ name: 'Job-1' }],
    *   resources: [
    *     {
-   *       name: '1',
+   *       name: 'vehicle-1',
    *       shifts: [
    *         {
    *           from: '2023-01-13T08:00:00Z',
@@ -95,10 +95,10 @@ export class Vrp extends APIResource {
    * @example
    * ```ts
    * const solviceStatusJob = await client.vrp.suggest({
-   *   jobs: [{ name: '1' }, { name: '2' }],
+   *   jobs: [{ name: 'Job-1' }],
    *   resources: [
    *     {
-   *       name: '1',
+   *       name: 'vehicle-1',
    *       shifts: [
    *         {
    *           from: '2023-01-13T08:00:00Z',
@@ -121,10 +121,10 @@ export class Vrp extends APIResource {
    * @example
    * ```ts
    * const onRouteResponse = await client.vrp.syncEvaluate({
-   *   jobs: [{ name: '1' }, { name: '2' }],
+   *   jobs: [{ name: 'Job-1' }],
    *   resources: [
    *     {
-   *       name: '1',
+   *       name: 'vehicle-1',
    *       shifts: [
    *         {
    *           from: '2023-01-13T08:00:00Z',
@@ -146,10 +146,10 @@ export class Vrp extends APIResource {
    * @example
    * ```ts
    * const onRouteResponse = await client.vrp.syncSolve({
-   *   jobs: [{ name: '1' }, { name: '2' }],
+   *   jobs: [{ name: 'Job-1' }],
    *   resources: [
    *     {
-   *       name: '1',
+   *       name: 'vehicle-1',
    *       shifts: [
    *         {
    *           from: '2023-01-13T08:00:00Z',
@@ -172,10 +172,10 @@ export class Vrp extends APIResource {
    * @example
    * ```ts
    * const onRouteResponse = await client.vrp.syncSuggest({
-   *   jobs: [{ name: '1' }, { name: '2' }],
+   *   jobs: [{ name: 'Job-1' }],
    *   resources: [
    *     {
-   *       name: '1',
+   *       name: 'vehicle-1',
    *       shifts: [
    *         {
    *           from: '2023-01-13T08:00:00Z',
@@ -591,13 +591,21 @@ export interface Relation {
   jobs: Array<string>;
 
   /**
-   * Determines if the time interval between jobs should be measured from arrival or
-   * departure
+   * Reference point for measuring time intervals between jobs in sequence relations.
+   * FROM_ARRIVAL (default) measures from when the first job's service begins to when
+   * the second job's service begins. FROM_DEPARTURE measures from when the first
+   * job's service ends to when the second job's service begins.
    */
   timeInterval: 'FROM_ARRIVAL' | 'FROM_DEPARTURE';
 
   /**
-   * Type of relation between jobs
+   * Type of relationship constraint between jobs. SAME_TRIP: jobs must be on the
+   * same vehicle/day. SEQUENCE: jobs must be done in order with optional time
+   * intervals. DIRECT_SEQUENCE: jobs must be consecutive with no other jobs between
+   * them. NEIGHBOR: jobs must be geographically close. SAME_TIME: jobs must be done
+   * simultaneously. PICKUP_AND_DELIVERY: first job is pickup, second is delivery.
+   * SAME_RESOURCE: jobs must use the same resource. SAME_DAY: jobs must be on the
+   * same day. GROUP_SEQUENCE: jobs with matching tags must be in sequence.
    */
   type: RelationType;
 
@@ -895,7 +903,7 @@ export interface Rule {
   /**
    * Subset of the planning period
    */
-  period?: Period;
+  period?: Period | null;
 }
 
 /**
@@ -1220,7 +1228,7 @@ export interface VrpSolveParams {
   /**
    * Header param:
    */
-  instance?: string;
+  instance?: string | null;
 }
 
 export namespace VrpSolveParams {
