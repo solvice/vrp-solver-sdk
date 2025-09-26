@@ -7,10 +7,9 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "baseUrl": "./",
     "paths": {
-      "solvice-vrp-solver/*": ["src/*"],
-      "solvice-vrp-solver": ["src/index.ts"]
+      "solvice-vrp-solver/*": ["./src/*"],
+      "solvice-vrp-solver": ["./src/index.ts"]
     },
     "noEmit": true,
 
