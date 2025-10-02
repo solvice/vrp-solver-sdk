@@ -494,6 +494,13 @@ export interface Options {
   fairWorkloadPerTrip?: boolean | null;
 
   /**
+   * The type of distance calculation to use for job proximity calculations
+   */
+  jobProximityDistanceType?: 'REAL' | 'HAVERSINE' | null;
+
+  jobProximityRadius?: number | null;
+
+  /**
    * Maximum number of alternative assignment suggestions to return when using the
    * suggestion endpoint. The solver generates multiple assignment options for
    * unassigned jobs, ranked by quality. A value of 0 (default) returns all possible
@@ -1004,6 +1011,15 @@ export interface Weights {
    * driving time, useful for fuel efficiency or driver fatigue management.
    */
   driveTimeWeight?: number | null;
+
+  /**
+   * Weight modifier for separating jobs that are geographically close to each other.
+   * When jobProximityRadius is set in options, this weight penalizes consecutive
+   * scheduling of jobs within that radius to different resources or non-consecutive
+   * scheduling. Higher values encourage grouping nearby jobs together in the same
+   * route segment.
+   */
+  jobProximityWeight?: number | null;
 
   /**
    * Weight modifier for minimizing the number of active resources per day/trip. The
