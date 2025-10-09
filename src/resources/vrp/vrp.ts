@@ -459,6 +459,24 @@ export interface Message {
  */
 export interface Options {
   /**
+   * Clustering threshold in meters defining the buffer zone around each route's
+   * bounding box. Routes whose expanded bounding boxes (including buffer) overlap
+   * will be penalized based on their actual overlap area. This threshold acts as a
+   * proximity trigger - routes should ideally stay at least this distance apart.
+   * Default: 10000 meters (10km).
+   */
+  clusteringThresholdMeters?: number;
+
+  /**
+   * Enable geographic clustering constraint to discourage route overlap. When
+   * enabled, routes are penalized if their bounding boxes overlap, encouraging
+   * visually distinct geographic territories for each route. This is a soft
+   * constraint that promotes clearer route separation without strictly enforcing
+   * non-overlapping regions. Default: false.
+   */
+  enableClustering?: boolean;
+
+  /**
    * Use euclidean distance calculations for travel time and distance instead of real
    * road networks. When true, straight-line distances are used which is faster but
    * less accurate. When false (default), routing engines like OSM, TomTom, or Google
@@ -498,6 +516,12 @@ export interface Options {
    */
   jobProximityDistanceType?: 'REAL' | 'HAVERSINE' | null;
 
+  /**
+   * Proximity radius in meters for grouping jobs as neighbors. Jobs within this
+   * distance of each other are considered neighbors for proximity-based constraints
+   * and optimizations. When set, the solver can leverage geographic proximity
+   * patterns to optimize routing decisions.
+   */
   jobProximityRadius?: number | null;
 
   /**
@@ -1003,6 +1027,15 @@ export interface Weights {
    * completion rates.
    */
   asapWeight?: number | null;
+
+  /**
+   * Weight modifier for geographic clustering constraint. Controls the penalty for
+   * route bounding box overlaps when clustering is enabled. Higher values more
+   * strongly discourage routes from overlapping in geographic space, promoting
+   * clearer territorial separation. The penalty is multiplied by this weight before
+   * being applied to the score.
+   */
+  clusteringWeight?: number | null;
 
   /**
    * Weight modifier for total driving time across all resources. Similar to
