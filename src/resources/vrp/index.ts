@@ -4,6 +4,7 @@ export {
   Jobs,
   type OnRouteResponse,
   type OnrouteConstraint,
+  type Score,
   type SolviceStatusJob,
   type Unresolved,
   type Visit,
@@ -11,6 +12,7 @@ export {
 } from './jobs';
 export {
   Vrp,
+  type CustomDistanceMatrices,
   type ExplanationOptions,
   type Job,
   type Location,

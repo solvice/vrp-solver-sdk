@@ -2,6 +2,7 @@
 
 export {
   Vrp,
+  type CustomDistanceMatrices,
   type ExplanationOptions,
   type Job,
   type Location,

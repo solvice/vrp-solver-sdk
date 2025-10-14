@@ -2,6 +2,7 @@
 
 Types:
 
+- <code><a href="./src/resources/vrp/vrp.ts">CustomDistanceMatrices</a></code>
 - <code><a href="./src/resources/vrp/vrp.ts">ExplanationOptions</a></code>
 - <code><a href="./src/resources/vrp/vrp.ts">Job</a></code>
 - <code><a href="./src/resources/vrp/vrp.ts">Location</a></code>
@@ -33,6 +34,7 @@ Types:
 
 - <code><a href="./src/resources/vrp/jobs.ts">OnRouteResponse</a></code>
 - <code><a href="./src/resources/vrp/jobs.ts">OnrouteConstraint</a></code>
+- <code><a href="./src/resources/vrp/jobs.ts">Score</a></code>
 - <code><a href="./src/resources/vrp/jobs.ts">SolviceStatusJob</a></code>
 - <code><a href="./src/resources/vrp/jobs.ts">Unresolved</a></code>
 - <code><a href="./src/resources/vrp/jobs.ts">Visit</a></code>
