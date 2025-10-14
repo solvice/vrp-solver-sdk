@@ -7,6 +7,7 @@ import {
   Jobs,
   OnRouteResponse,
   OnrouteConstraint,
+  Score,
   SolviceStatusJob,
   Unresolved,
   Visit,
@@ -191,6 +192,25 @@ export class Vrp extends APIResource {
     const { millis, ...body } = params;
     return this._client.post('/v2/vrp/sync/suggest', { query: { millis }, body, ...options });
   }
+}
+
+/**
+ * Custom distance matrix configuration for multi-profile and multi-slice scenarios
+ */
+export interface CustomDistanceMatrices {
+  /**
+   * Optional URL for external distance matrix service endpoint. If not provided,
+   * uses the default system service.
+   */
+  matrixServiceUrl?: string | null;
+
+  /**
+   * Map of vehicle profile names (CAR, BIKE, TRUCK) to time slice hour mappings.
+   * Each time slice hour maps to a matrix ID that should be fetched from the
+   * distance matrix service. Time slice hours correspond to: 6=MORNING_RUSH,
+   * 9=MORNING, 12=MIDDAY, 14=AFTERNOON, 16=EVENING_RUSH, 20=NIGHT.
+   */
+  profileMatrices?: { [key: string]: { [key: string]: string } } | null;
 }
 
 /**
@@ -745,7 +765,7 @@ export interface Request {
   /**
    * Custom distance matrix configuration for multi-profile and multi-slice scenarios
    */
-  customDistanceMatrices?: Request.CustomDistanceMatrices | null;
+  customDistanceMatrices?: CustomDistanceMatrices | null;
 
   /**
    * Optional webhook URL that will receive a POST request with the job ID when the
@@ -768,27 +788,6 @@ export interface Request {
    * OnRoute Weights
    */
   weights?: Weights | null;
-}
-
-export namespace Request {
-  /**
-   * Custom distance matrix configuration for multi-profile and multi-slice scenarios
-   */
-  export interface CustomDistanceMatrices {
-    /**
-     * Optional URL for external distance matrix service endpoint. If not provided,
-     * uses the default system service.
-     */
-    matrixServiceUrl?: string | null;
-
-    /**
-     * Map of vehicle profile names (CAR, BIKE, TRUCK) to time slice hour mappings.
-     * Each time slice hour maps to a matrix ID that should be fetched from the
-     * distance matrix service. Time slice hours correspond to: 6=MORNING_RUSH,
-     * 9=MORNING, 12=MIDDAY, 14=AFTERNOON, 16=EVENING_RUSH, 20=NIGHT.
-     */
-    profileMatrices?: { [key: string]: { [key: string]: string } } | null;
-  }
 }
 
 /**
@@ -1172,7 +1171,7 @@ export interface VrpEvaluateParams {
   /**
    * Custom distance matrix configuration for multi-profile and multi-slice scenarios
    */
-  customDistanceMatrices?: VrpEvaluateParams.CustomDistanceMatrices | null;
+  customDistanceMatrices?: CustomDistanceMatrices | null;
 
   /**
    * Optional webhook URL that will receive a POST request with the job ID when the
@@ -1195,27 +1194,6 @@ export interface VrpEvaluateParams {
    * OnRoute Weights
    */
   weights?: Weights | null;
-}
-
-export namespace VrpEvaluateParams {
-  /**
-   * Custom distance matrix configuration for multi-profile and multi-slice scenarios
-   */
-  export interface CustomDistanceMatrices {
-    /**
-     * Optional URL for external distance matrix service endpoint. If not provided,
-     * uses the default system service.
-     */
-    matrixServiceUrl?: string | null;
-
-    /**
-     * Map of vehicle profile names (CAR, BIKE, TRUCK) to time slice hour mappings.
-     * Each time slice hour maps to a matrix ID that should be fetched from the
-     * distance matrix service. Time slice hours correspond to: 6=MORNING_RUSH,
-     * 9=MORNING, 12=MIDDAY, 14=AFTERNOON, 16=EVENING_RUSH, 20=NIGHT.
-     */
-    profileMatrices?: { [key: string]: { [key: string]: string } } | null;
-  }
 }
 
 export interface VrpSolveParams {
@@ -1244,7 +1222,7 @@ export interface VrpSolveParams {
    * Body param: Custom distance matrix configuration for multi-profile and
    * multi-slice scenarios
    */
-  customDistanceMatrices?: VrpSolveParams.CustomDistanceMatrices | null;
+  customDistanceMatrices?: CustomDistanceMatrices | null;
 
   /**
    * Body param: Optional webhook URL that will receive a POST request with the job
@@ -1280,27 +1258,6 @@ export interface VrpSolveParams {
   instance?: string | null;
 }
 
-export namespace VrpSolveParams {
-  /**
-   * Custom distance matrix configuration for multi-profile and multi-slice scenarios
-   */
-  export interface CustomDistanceMatrices {
-    /**
-     * Optional URL for external distance matrix service endpoint. If not provided,
-     * uses the default system service.
-     */
-    matrixServiceUrl?: string | null;
-
-    /**
-     * Map of vehicle profile names (CAR, BIKE, TRUCK) to time slice hour mappings.
-     * Each time slice hour maps to a matrix ID that should be fetched from the
-     * distance matrix service. Time slice hours correspond to: 6=MORNING_RUSH,
-     * 9=MORNING, 12=MIDDAY, 14=AFTERNOON, 16=EVENING_RUSH, 20=NIGHT.
-     */
-    profileMatrices?: { [key: string]: { [key: string]: string } } | null;
-  }
-}
-
 export interface VrpSuggestParams {
   /**
    * Body param: List of jobs/tasks to be assigned to resources. Each job specifies
@@ -1327,7 +1284,7 @@ export interface VrpSuggestParams {
    * Body param: Custom distance matrix configuration for multi-profile and
    * multi-slice scenarios
    */
-  customDistanceMatrices?: VrpSuggestParams.CustomDistanceMatrices | null;
+  customDistanceMatrices?: CustomDistanceMatrices | null;
 
   /**
    * Body param: Optional webhook URL that will receive a POST request with the job
@@ -1358,27 +1315,6 @@ export interface VrpSuggestParams {
   weights?: Weights | null;
 }
 
-export namespace VrpSuggestParams {
-  /**
-   * Custom distance matrix configuration for multi-profile and multi-slice scenarios
-   */
-  export interface CustomDistanceMatrices {
-    /**
-     * Optional URL for external distance matrix service endpoint. If not provided,
-     * uses the default system service.
-     */
-    matrixServiceUrl?: string | null;
-
-    /**
-     * Map of vehicle profile names (CAR, BIKE, TRUCK) to time slice hour mappings.
-     * Each time slice hour maps to a matrix ID that should be fetched from the
-     * distance matrix service. Time slice hours correspond to: 6=MORNING_RUSH,
-     * 9=MORNING, 12=MIDDAY, 14=AFTERNOON, 16=EVENING_RUSH, 20=NIGHT.
-     */
-    profileMatrices?: { [key: string]: { [key: string]: string } } | null;
-  }
-}
-
 export interface VrpSyncEvaluateParams {
   /**
    * List of jobs/tasks to be assigned to resources. Each job specifies service
@@ -1399,7 +1335,7 @@ export interface VrpSyncEvaluateParams {
   /**
    * Custom distance matrix configuration for multi-profile and multi-slice scenarios
    */
-  customDistanceMatrices?: VrpSyncEvaluateParams.CustomDistanceMatrices | null;
+  customDistanceMatrices?: CustomDistanceMatrices | null;
 
   /**
    * Optional webhook URL that will receive a POST request with the job ID when the
@@ -1422,27 +1358,6 @@ export interface VrpSyncEvaluateParams {
    * OnRoute Weights
    */
   weights?: Weights | null;
-}
-
-export namespace VrpSyncEvaluateParams {
-  /**
-   * Custom distance matrix configuration for multi-profile and multi-slice scenarios
-   */
-  export interface CustomDistanceMatrices {
-    /**
-     * Optional URL for external distance matrix service endpoint. If not provided,
-     * uses the default system service.
-     */
-    matrixServiceUrl?: string | null;
-
-    /**
-     * Map of vehicle profile names (CAR, BIKE, TRUCK) to time slice hour mappings.
-     * Each time slice hour maps to a matrix ID that should be fetched from the
-     * distance matrix service. Time slice hours correspond to: 6=MORNING_RUSH,
-     * 9=MORNING, 12=MIDDAY, 14=AFTERNOON, 16=EVENING_RUSH, 20=NIGHT.
-     */
-    profileMatrices?: { [key: string]: { [key: string]: string } } | null;
-  }
 }
 
 export interface VrpSyncSolveParams {
@@ -1471,7 +1386,7 @@ export interface VrpSyncSolveParams {
    * Body param: Custom distance matrix configuration for multi-profile and
    * multi-slice scenarios
    */
-  customDistanceMatrices?: VrpSyncSolveParams.CustomDistanceMatrices | null;
+  customDistanceMatrices?: CustomDistanceMatrices | null;
 
   /**
    * Body param: Optional webhook URL that will receive a POST request with the job
@@ -1500,27 +1415,6 @@ export interface VrpSyncSolveParams {
    * Body param: OnRoute Weights
    */
   weights?: Weights | null;
-}
-
-export namespace VrpSyncSolveParams {
-  /**
-   * Custom distance matrix configuration for multi-profile and multi-slice scenarios
-   */
-  export interface CustomDistanceMatrices {
-    /**
-     * Optional URL for external distance matrix service endpoint. If not provided,
-     * uses the default system service.
-     */
-    matrixServiceUrl?: string | null;
-
-    /**
-     * Map of vehicle profile names (CAR, BIKE, TRUCK) to time slice hour mappings.
-     * Each time slice hour maps to a matrix ID that should be fetched from the
-     * distance matrix service. Time slice hours correspond to: 6=MORNING_RUSH,
-     * 9=MORNING, 12=MIDDAY, 14=AFTERNOON, 16=EVENING_RUSH, 20=NIGHT.
-     */
-    profileMatrices?: { [key: string]: { [key: string]: string } } | null;
-  }
 }
 
 export interface VrpSyncSuggestParams {
@@ -1549,7 +1443,7 @@ export interface VrpSyncSuggestParams {
    * Body param: Custom distance matrix configuration for multi-profile and
    * multi-slice scenarios
    */
-  customDistanceMatrices?: VrpSyncSuggestParams.CustomDistanceMatrices | null;
+  customDistanceMatrices?: CustomDistanceMatrices | null;
 
   /**
    * Body param: Optional webhook URL that will receive a POST request with the job
@@ -1580,31 +1474,11 @@ export interface VrpSyncSuggestParams {
   weights?: Weights | null;
 }
 
-export namespace VrpSyncSuggestParams {
-  /**
-   * Custom distance matrix configuration for multi-profile and multi-slice scenarios
-   */
-  export interface CustomDistanceMatrices {
-    /**
-     * Optional URL for external distance matrix service endpoint. If not provided,
-     * uses the default system service.
-     */
-    matrixServiceUrl?: string | null;
-
-    /**
-     * Map of vehicle profile names (CAR, BIKE, TRUCK) to time slice hour mappings.
-     * Each time slice hour maps to a matrix ID that should be fetched from the
-     * distance matrix service. Time slice hours correspond to: 6=MORNING_RUSH,
-     * 9=MORNING, 12=MIDDAY, 14=AFTERNOON, 16=EVENING_RUSH, 20=NIGHT.
-     */
-    profileMatrices?: { [key: string]: { [key: string]: string } } | null;
-  }
-}
-
 Vrp.Jobs = Jobs;
 
 export declare namespace Vrp {
   export {
+    type CustomDistanceMatrices as CustomDistanceMatrices,
     type ExplanationOptions as ExplanationOptions,
     type Job as Job,
     type Location as Location,
@@ -1632,6 +1506,7 @@ export declare namespace Vrp {
     Jobs as Jobs,
     type OnRouteResponse as OnRouteResponse,
     type OnrouteConstraint as OnrouteConstraint,
+    type Score as Score,
     type SolviceStatusJob as SolviceStatusJob,
     type Unresolved as Unresolved,
     type Visit as Visit,
