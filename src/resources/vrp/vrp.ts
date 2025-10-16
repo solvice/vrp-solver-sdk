@@ -840,6 +840,14 @@ export interface Resource {
    */
   hourlyCost?: number | null;
 
+  /**
+   * Maximum total distance allowed for this resource per shift or planning period.
+   * This constraint prevents excessive driving and ensures compliance with
+   * regulations or operational policies. Measured in meters and includes all travel
+   * between jobs but excludes service time.
+   */
+  maxDriveDistance?: number | null;
+
   maxDriveTime?: number | null;
 
   /**
