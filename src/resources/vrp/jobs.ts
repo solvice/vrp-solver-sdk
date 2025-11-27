@@ -371,7 +371,9 @@ export type OnrouteConstraint =
   | 'RESOURCE_PERIOD_MIN_COMPLEXITY'
   | 'RESOURCE_PERIOD_MAX_COMPLEXITY'
   | 'RESOURCE_COMPATIBILITY'
-  | 'JOBTYPE_VIOLATION';
+  | 'JOBTYPE_VIOLATION'
+  | 'GROUP_SEQUENCE'
+  | 'JOB_PROXIMITY';
 
 /**
  * The score of a solution shows how good this solution is w.r.t all the
