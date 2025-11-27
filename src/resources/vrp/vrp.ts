@@ -449,6 +449,11 @@ export namespace Job {
  */
 export interface Location {
   /**
+   * H3 hexagon index at resolution 9 (optional)
+   */
+  h3Index?: number | null;
+
+  /**
    * Latitude
    */
   latitude?: number;
