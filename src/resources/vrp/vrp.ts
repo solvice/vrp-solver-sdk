@@ -352,6 +352,15 @@ export interface Job {
   priority?: number | null;
 
   /**
+   * List of resource proficiency modifiers for this job. Each entry specifies how
+   * efficiently a specific resource can complete this job by adjusting the effective
+   * service duration. Resources with lower durationModifier values (e.g., 0.8)
+   * complete the job faster, while higher values (e.g., 1.5) indicate slower
+   * completion.
+   */
+  proficiency?: Array<Job.Proficiency> | null;
+
+  /**
    * List of resource preference rankings for this job. Each ranking specifies a
    * resource name and a preference score (1-100), where lower values indicate
    * stronger preference. This allows jobs to have preferred resources while still
@@ -393,6 +402,27 @@ export interface Job {
 }
 
 export namespace Job {
+  /**
+   * Defines how efficiently a specific resource can complete a job. The
+   * durationModifier adjusts the job's effective service time when assigned to that
+   * resource.
+   */
+  export interface Proficiency {
+    /**
+     * Name of the resource whose proficiency is being defined. Must exactly match a
+     * resource name defined in the request's resources list.
+     */
+    resource: string;
+
+    /**
+     * Multiplier applied to the job's duration when assigned to this resource. Values
+     * less than 1.0 reduce the duration (faster completion), values greater than 1.0
+     * increase it (slower completion). For example, 0.8 means the resource completes
+     * the job 20% faster, 1.5 means 50% slower. Default is 1.0 (no modification).
+     */
+    durationModifier?: number;
+  }
+
   /**
    * A ranking is a measure of the affinity of a `Resource` towards a `Job`.
    */
