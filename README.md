@@ -28,7 +28,9 @@ const client = new SolviceVrpSolver({
 
 const onRouteResponse = await client.vrp.syncSolve({
   jobs: [{ name: 'Job-1' }],
-  resources: [{ name: 'vehicle-1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] }],
+  resources: [
+    { name: 'vehicle-1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] },
+  ],
 });
 
 console.log(onRouteResponse.id);
