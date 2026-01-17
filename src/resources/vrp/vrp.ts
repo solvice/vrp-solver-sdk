@@ -1257,7 +1257,7 @@ export interface VrpSolveParams {
   resources: Array<Resource>;
 
   /**
-   * Query param:
+   * Query param
    */
   millis?: string | null;
 
@@ -1276,7 +1276,7 @@ export interface VrpSolveParams {
   hook?: string | null;
 
   /**
-   * Body param:
+   * Body param
    */
   label?: string | null;
 
@@ -1286,7 +1286,7 @@ export interface VrpSolveParams {
   options?: Options | null;
 
   /**
-   * Body param:
+   * Body param
    */
   relations?: Array<Relation> | null;
 
@@ -1296,7 +1296,7 @@ export interface VrpSolveParams {
   weights?: Weights | null;
 
   /**
-   * Header param:
+   * Header param
    */
   instance?: string | null;
 }
@@ -1319,7 +1319,7 @@ export interface VrpSuggestParams {
   resources: Array<Resource>;
 
   /**
-   * Query param:
+   * Query param
    */
   millis?: string | null;
 
@@ -1338,7 +1338,7 @@ export interface VrpSuggestParams {
   hook?: string | null;
 
   /**
-   * Body param:
+   * Body param
    */
   label?: string | null;
 
@@ -1348,7 +1348,7 @@ export interface VrpSuggestParams {
   options?: Options | null;
 
   /**
-   * Body param:
+   * Body param
    */
   relations?: Array<Relation> | null;
 
@@ -1421,7 +1421,7 @@ export interface VrpSyncSolveParams {
   resources: Array<Resource>;
 
   /**
-   * Query param:
+   * Query param
    */
   millis?: string | null;
 
@@ -1440,7 +1440,7 @@ export interface VrpSyncSolveParams {
   hook?: string | null;
 
   /**
-   * Body param:
+   * Body param
    */
   label?: string | null;
 
@@ -1450,7 +1450,7 @@ export interface VrpSyncSolveParams {
   options?: Options | null;
 
   /**
-   * Body param:
+   * Body param
    */
   relations?: Array<Relation> | null;
 
@@ -1478,7 +1478,7 @@ export interface VrpSyncSuggestParams {
   resources: Array<Resource>;
 
   /**
-   * Query param:
+   * Query param
    */
   millis?: string | null;
 
@@ -1497,7 +1497,7 @@ export interface VrpSyncSuggestParams {
   hook?: string | null;
 
   /**
-   * Body param:
+   * Body param
    */
   label?: string | null;
 
@@ -1507,7 +1507,7 @@ export interface VrpSyncSuggestParams {
   options?: Options | null;
 
   /**
-   * Body param:
+   * Body param
    */
   relations?: Array<Relation> | null;
 
