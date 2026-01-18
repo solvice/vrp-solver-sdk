@@ -7,6 +7,7 @@ import {
   Jobs,
   OnRouteResponse,
   OnrouteConstraint,
+  Score,
   SolviceStatusJob,
   Unresolved,
   Visit,
@@ -36,10 +37,10 @@ export class Vrp extends APIResource {
    * @example
    * ```ts
    * const solviceStatusJob = await client.vrp.evaluate({
-   *   jobs: [{ name: '1' }, { name: '2' }],
+   *   jobs: [{ name: 'Job-1' }],
    *   resources: [
    *     {
-   *       name: '1',
+   *       name: 'vehicle-1',
    *       shifts: [
    *         {
    *           from: '2023-01-13T08:00:00Z',
@@ -61,10 +62,10 @@ export class Vrp extends APIResource {
    * @example
    * ```ts
    * const solviceStatusJob = await client.vrp.solve({
-   *   jobs: [{ name: '1' }, { name: '2' }],
+   *   jobs: [{ name: 'Job-1' }],
    *   resources: [
    *     {
-   *       name: '1',
+   *       name: 'vehicle-1',
    *       shifts: [
    *         {
    *           from: '2023-01-13T08:00:00Z',
@@ -95,10 +96,10 @@ export class Vrp extends APIResource {
    * @example
    * ```ts
    * const solviceStatusJob = await client.vrp.suggest({
-   *   jobs: [{ name: '1' }, { name: '2' }],
+   *   jobs: [{ name: 'Job-1' }],
    *   resources: [
    *     {
-   *       name: '1',
+   *       name: 'vehicle-1',
    *       shifts: [
    *         {
    *           from: '2023-01-13T08:00:00Z',
@@ -121,10 +122,10 @@ export class Vrp extends APIResource {
    * @example
    * ```ts
    * const onRouteResponse = await client.vrp.syncEvaluate({
-   *   jobs: [{ name: '1' }, { name: '2' }],
+   *   jobs: [{ name: 'Job-1' }],
    *   resources: [
    *     {
-   *       name: '1',
+   *       name: 'vehicle-1',
    *       shifts: [
    *         {
    *           from: '2023-01-13T08:00:00Z',
@@ -146,10 +147,10 @@ export class Vrp extends APIResource {
    * @example
    * ```ts
    * const onRouteResponse = await client.vrp.syncSolve({
-   *   jobs: [{ name: '1' }, { name: '2' }],
+   *   jobs: [{ name: 'Job-1' }],
    *   resources: [
    *     {
-   *       name: '1',
+   *       name: 'vehicle-1',
    *       shifts: [
    *         {
    *           from: '2023-01-13T08:00:00Z',
@@ -172,10 +173,10 @@ export class Vrp extends APIResource {
    * @example
    * ```ts
    * const onRouteResponse = await client.vrp.syncSuggest({
-   *   jobs: [{ name: '1' }, { name: '2' }],
+   *   jobs: [{ name: 'Job-1' }],
    *   resources: [
    *     {
-   *       name: '1',
+   *       name: 'vehicle-1',
    *       shifts: [
    *         {
    *           from: '2023-01-13T08:00:00Z',
@@ -191,6 +192,25 @@ export class Vrp extends APIResource {
     const { millis, ...body } = params;
     return this._client.post('/v2/vrp/sync/suggest', { query: { millis }, body, ...options });
   }
+}
+
+/**
+ * Custom distance matrix configuration for multi-profile and multi-slice scenarios
+ */
+export interface CustomDistanceMatrices {
+  /**
+   * Optional URL for external distance matrix service endpoint. If not provided,
+   * uses the default system service.
+   */
+  matrixServiceUrl?: string | null;
+
+  /**
+   * Map of vehicle profile names (CAR, BIKE, TRUCK) to time slice hour mappings.
+   * Each time slice hour maps to a matrix ID that should be fetched from the
+   * distance matrix service. Time slice hours correspond to: 6=MORNING_RUSH,
+   * 9=MORNING, 12=MIDDAY, 14=AFTERNOON, 16=EVENING_RUSH, 20=NIGHT.
+   */
+  profileMatrices?: { [key: string]: { [key: string]: string } } | null;
 }
 
 /**
@@ -332,6 +352,15 @@ export interface Job {
   priority?: number | null;
 
   /**
+   * List of resource proficiency modifiers for this job. Each entry specifies how
+   * efficiently a specific resource can complete this job by adjusting the effective
+   * service duration. Resources with lower durationModifier values (e.g., 0.8)
+   * complete the job faster, while higher values (e.g., 1.5) indicate slower
+   * completion.
+   */
+  proficiency?: Array<Job.Proficiency> | null;
+
+  /**
    * List of resource preference rankings for this job. Each ranking specifies a
    * resource name and a preference score (1-100), where lower values indicate
    * stronger preference. This allows jobs to have preferred resources while still
@@ -373,6 +402,27 @@ export interface Job {
 }
 
 export namespace Job {
+  /**
+   * Defines how efficiently a specific resource can complete a job. The
+   * durationModifier adjusts the job's effective service time when assigned to that
+   * resource.
+   */
+  export interface Proficiency {
+    /**
+     * Name of the resource whose proficiency is being defined. Must exactly match a
+     * resource name defined in the request's resources list.
+     */
+    resource: string;
+
+    /**
+     * Multiplier applied to the job's duration when assigned to this resource. Values
+     * less than 1.0 reduce the duration (faster completion), values greater than 1.0
+     * increase it (slower completion). For example, 0.8 means the resource completes
+     * the job 20% faster, 1.5 means 50% slower. Default is 1.0 (no modification).
+     */
+    durationModifier?: number;
+  }
+
   /**
    * A ranking is a measure of the affinity of a `Resource` towards a `Job`.
    */
@@ -429,6 +479,11 @@ export namespace Job {
  */
 export interface Location {
   /**
+   * H3 hexagon index at resolution 9 (optional)
+   */
+  h3Index?: number | null;
+
+  /**
    * Latitude
    */
   latitude?: number;
@@ -458,6 +513,24 @@ export interface Message {
  * Options to tweak the routing engine
  */
 export interface Options {
+  /**
+   * Clustering threshold in meters defining the buffer zone around each route's
+   * bounding box. Routes whose expanded bounding boxes (including buffer) overlap
+   * will be penalized based on their actual overlap area. This threshold acts as a
+   * proximity trigger - routes should ideally stay at least this distance apart.
+   * Default: 10000 meters (10km).
+   */
+  clusteringThresholdMeters?: number;
+
+  /**
+   * Enable geographic clustering constraint to discourage route overlap. When
+   * enabled, routes are penalized if their bounding boxes overlap, encouraging
+   * visually distinct geographic territories for each route. This is a soft
+   * constraint that promotes clearer route separation without strictly enforcing
+   * non-overlapping regions. Default: false.
+   */
+  enableClustering?: boolean;
+
   /**
    * Use euclidean distance calculations for travel time and distance instead of real
    * road networks. When true, straight-line distances are used which is faster but
@@ -492,6 +565,19 @@ export interface Options {
    * `options.workloadSensitivity`.
    */
   fairWorkloadPerTrip?: boolean | null;
+
+  /**
+   * The type of distance calculation to use for job proximity calculations
+   */
+  jobProximityDistanceType?: 'REAL' | 'HAVERSINE' | null;
+
+  /**
+   * Proximity radius in meters for grouping jobs as neighbors. Jobs within this
+   * distance of each other are considered neighbors for proximity-based constraints
+   * and optimizations. When set, the solver can leverage geographic proximity
+   * patterns to optimize routing decisions.
+   */
+  jobProximityRadius?: number | null;
 
   /**
    * Maximum number of alternative assignment suggestions to return when using the
@@ -591,13 +677,21 @@ export interface Relation {
   jobs: Array<string>;
 
   /**
-   * Determines if the time interval between jobs should be measured from arrival or
-   * departure
+   * Reference point for measuring time intervals between jobs in sequence relations.
+   * FROM_ARRIVAL (default) measures from when the first job's service begins to when
+   * the second job's service begins. FROM_DEPARTURE measures from when the first
+   * job's service ends to when the second job's service begins.
    */
   timeInterval: 'FROM_ARRIVAL' | 'FROM_DEPARTURE';
 
   /**
-   * Type of relation between jobs
+   * Type of relationship constraint between jobs. SAME_TRIP: jobs must be on the
+   * same vehicle/day. SEQUENCE: jobs must be done in order with optional time
+   * intervals. DIRECT_SEQUENCE: jobs must be consecutive with no other jobs between
+   * them. NEIGHBOR: jobs must be geographically close. SAME_TIME: jobs must be done
+   * simultaneously. PICKUP_AND_DELIVERY: first job is pickup, second is delivery.
+   * SAME_RESOURCE: jobs must use the same resource. SAME_DAY: jobs must be on the
+   * same day. GROUP_SEQUENCE: jobs with matching tags must be in sequence.
    */
   type: RelationType;
 
@@ -706,7 +800,7 @@ export interface Request {
   /**
    * Custom distance matrix configuration for multi-profile and multi-slice scenarios
    */
-  customDistanceMatrices?: Request.CustomDistanceMatrices | null;
+  customDistanceMatrices?: CustomDistanceMatrices | null;
 
   /**
    * Optional webhook URL that will receive a POST request with the job ID when the
@@ -729,27 +823,6 @@ export interface Request {
    * OnRoute Weights
    */
   weights?: Weights | null;
-}
-
-export namespace Request {
-  /**
-   * Custom distance matrix configuration for multi-profile and multi-slice scenarios
-   */
-  export interface CustomDistanceMatrices {
-    /**
-     * Optional URL for external distance matrix service endpoint. If not provided,
-     * uses the default system service.
-     */
-    matrixServiceUrl?: string | null;
-
-    /**
-     * Map of vehicle profile names (CAR, BIKE, TRUCK) to time slice hour mappings.
-     * Each time slice hour maps to a matrix ID that should be fetched from the
-     * distance matrix service. Time slice hours correspond to: 6=MORNING_RUSH,
-     * 9=MORNING, 12=MIDDAY, 14=AFTERNOON, 16=EVENING_RUSH, 20=NIGHT.
-     */
-    profileMatrices?: { [key: string]: { [key: string]: string } } | null;
-  }
 }
 
 /**
@@ -801,6 +874,14 @@ export interface Resource {
    * analysis of routing solutions.
    */
   hourlyCost?: number | null;
+
+  /**
+   * Maximum total distance allowed for this resource per shift or planning period.
+   * This constraint prevents excessive driving and ensures compliance with
+   * regulations or operational policies. Measured in meters and includes all travel
+   * between jobs but excludes service time.
+   */
+  maxDriveDistance?: number | null;
 
   maxDriveTime?: number | null;
 
@@ -895,7 +976,7 @@ export interface Rule {
   /**
    * Subset of the planning period
    */
-  period?: Period;
+  period?: Period | null;
 }
 
 /**
@@ -990,12 +1071,30 @@ export interface Weights {
   asapWeight?: number | null;
 
   /**
+   * Weight modifier for geographic clustering constraint. Controls the penalty for
+   * route bounding box overlaps when clustering is enabled. Higher values more
+   * strongly discourage routes from overlapping in geographic space, promoting
+   * clearer territorial separation. The penalty is multiplied by this weight before
+   * being applied to the score.
+   */
+  clusteringWeight?: number | null;
+
+  /**
    * Weight modifier for total driving time across all resources. Similar to
    * travelTimeWeight but focuses specifically on driving time violations or
    * constraints. Higher values make the solver more concerned with minimizing
    * driving time, useful for fuel efficiency or driver fatigue management.
    */
   driveTimeWeight?: number | null;
+
+  /**
+   * Weight modifier for separating jobs that are geographically close to each other.
+   * When jobProximityRadius is set in options, this weight penalizes consecutive
+   * scheduling of jobs within that radius to different resources or non-consecutive
+   * scheduling. Higher values encourage grouping nearby jobs together in the same
+   * route segment.
+   */
+  jobProximityWeight?: number | null;
 
   /**
    * Weight modifier for minimizing the number of active resources per day/trip. The
@@ -1115,7 +1214,7 @@ export interface VrpEvaluateParams {
   /**
    * Custom distance matrix configuration for multi-profile and multi-slice scenarios
    */
-  customDistanceMatrices?: VrpEvaluateParams.CustomDistanceMatrices | null;
+  customDistanceMatrices?: CustomDistanceMatrices | null;
 
   /**
    * Optional webhook URL that will receive a POST request with the job ID when the
@@ -1140,27 +1239,6 @@ export interface VrpEvaluateParams {
   weights?: Weights | null;
 }
 
-export namespace VrpEvaluateParams {
-  /**
-   * Custom distance matrix configuration for multi-profile and multi-slice scenarios
-   */
-  export interface CustomDistanceMatrices {
-    /**
-     * Optional URL for external distance matrix service endpoint. If not provided,
-     * uses the default system service.
-     */
-    matrixServiceUrl?: string | null;
-
-    /**
-     * Map of vehicle profile names (CAR, BIKE, TRUCK) to time slice hour mappings.
-     * Each time slice hour maps to a matrix ID that should be fetched from the
-     * distance matrix service. Time slice hours correspond to: 6=MORNING_RUSH,
-     * 9=MORNING, 12=MIDDAY, 14=AFTERNOON, 16=EVENING_RUSH, 20=NIGHT.
-     */
-    profileMatrices?: { [key: string]: { [key: string]: string } } | null;
-  }
-}
-
 export interface VrpSolveParams {
   /**
    * Body param: List of jobs/tasks to be assigned to resources. Each job specifies
@@ -1179,7 +1257,7 @@ export interface VrpSolveParams {
   resources: Array<Resource>;
 
   /**
-   * Query param:
+   * Query param
    */
   millis?: string | null;
 
@@ -1187,7 +1265,7 @@ export interface VrpSolveParams {
    * Body param: Custom distance matrix configuration for multi-profile and
    * multi-slice scenarios
    */
-  customDistanceMatrices?: VrpSolveParams.CustomDistanceMatrices | null;
+  customDistanceMatrices?: CustomDistanceMatrices | null;
 
   /**
    * Body param: Optional webhook URL that will receive a POST request with the job
@@ -1198,7 +1276,7 @@ export interface VrpSolveParams {
   hook?: string | null;
 
   /**
-   * Body param:
+   * Body param
    */
   label?: string | null;
 
@@ -1208,7 +1286,7 @@ export interface VrpSolveParams {
   options?: Options | null;
 
   /**
-   * Body param:
+   * Body param
    */
   relations?: Array<Relation> | null;
 
@@ -1218,30 +1296,9 @@ export interface VrpSolveParams {
   weights?: Weights | null;
 
   /**
-   * Header param:
+   * Header param
    */
-  instance?: string;
-}
-
-export namespace VrpSolveParams {
-  /**
-   * Custom distance matrix configuration for multi-profile and multi-slice scenarios
-   */
-  export interface CustomDistanceMatrices {
-    /**
-     * Optional URL for external distance matrix service endpoint. If not provided,
-     * uses the default system service.
-     */
-    matrixServiceUrl?: string | null;
-
-    /**
-     * Map of vehicle profile names (CAR, BIKE, TRUCK) to time slice hour mappings.
-     * Each time slice hour maps to a matrix ID that should be fetched from the
-     * distance matrix service. Time slice hours correspond to: 6=MORNING_RUSH,
-     * 9=MORNING, 12=MIDDAY, 14=AFTERNOON, 16=EVENING_RUSH, 20=NIGHT.
-     */
-    profileMatrices?: { [key: string]: { [key: string]: string } } | null;
-  }
+  instance?: string | null;
 }
 
 export interface VrpSuggestParams {
@@ -1262,7 +1319,7 @@ export interface VrpSuggestParams {
   resources: Array<Resource>;
 
   /**
-   * Query param:
+   * Query param
    */
   millis?: string | null;
 
@@ -1270,7 +1327,7 @@ export interface VrpSuggestParams {
    * Body param: Custom distance matrix configuration for multi-profile and
    * multi-slice scenarios
    */
-  customDistanceMatrices?: VrpSuggestParams.CustomDistanceMatrices | null;
+  customDistanceMatrices?: CustomDistanceMatrices | null;
 
   /**
    * Body param: Optional webhook URL that will receive a POST request with the job
@@ -1281,7 +1338,7 @@ export interface VrpSuggestParams {
   hook?: string | null;
 
   /**
-   * Body param:
+   * Body param
    */
   label?: string | null;
 
@@ -1291,7 +1348,7 @@ export interface VrpSuggestParams {
   options?: Options | null;
 
   /**
-   * Body param:
+   * Body param
    */
   relations?: Array<Relation> | null;
 
@@ -1299,27 +1356,6 @@ export interface VrpSuggestParams {
    * Body param: OnRoute Weights
    */
   weights?: Weights | null;
-}
-
-export namespace VrpSuggestParams {
-  /**
-   * Custom distance matrix configuration for multi-profile and multi-slice scenarios
-   */
-  export interface CustomDistanceMatrices {
-    /**
-     * Optional URL for external distance matrix service endpoint. If not provided,
-     * uses the default system service.
-     */
-    matrixServiceUrl?: string | null;
-
-    /**
-     * Map of vehicle profile names (CAR, BIKE, TRUCK) to time slice hour mappings.
-     * Each time slice hour maps to a matrix ID that should be fetched from the
-     * distance matrix service. Time slice hours correspond to: 6=MORNING_RUSH,
-     * 9=MORNING, 12=MIDDAY, 14=AFTERNOON, 16=EVENING_RUSH, 20=NIGHT.
-     */
-    profileMatrices?: { [key: string]: { [key: string]: string } } | null;
-  }
 }
 
 export interface VrpSyncEvaluateParams {
@@ -1342,7 +1378,7 @@ export interface VrpSyncEvaluateParams {
   /**
    * Custom distance matrix configuration for multi-profile and multi-slice scenarios
    */
-  customDistanceMatrices?: VrpSyncEvaluateParams.CustomDistanceMatrices | null;
+  customDistanceMatrices?: CustomDistanceMatrices | null;
 
   /**
    * Optional webhook URL that will receive a POST request with the job ID when the
@@ -1367,27 +1403,6 @@ export interface VrpSyncEvaluateParams {
   weights?: Weights | null;
 }
 
-export namespace VrpSyncEvaluateParams {
-  /**
-   * Custom distance matrix configuration for multi-profile and multi-slice scenarios
-   */
-  export interface CustomDistanceMatrices {
-    /**
-     * Optional URL for external distance matrix service endpoint. If not provided,
-     * uses the default system service.
-     */
-    matrixServiceUrl?: string | null;
-
-    /**
-     * Map of vehicle profile names (CAR, BIKE, TRUCK) to time slice hour mappings.
-     * Each time slice hour maps to a matrix ID that should be fetched from the
-     * distance matrix service. Time slice hours correspond to: 6=MORNING_RUSH,
-     * 9=MORNING, 12=MIDDAY, 14=AFTERNOON, 16=EVENING_RUSH, 20=NIGHT.
-     */
-    profileMatrices?: { [key: string]: { [key: string]: string } } | null;
-  }
-}
-
 export interface VrpSyncSolveParams {
   /**
    * Body param: List of jobs/tasks to be assigned to resources. Each job specifies
@@ -1406,7 +1421,7 @@ export interface VrpSyncSolveParams {
   resources: Array<Resource>;
 
   /**
-   * Query param:
+   * Query param
    */
   millis?: string | null;
 
@@ -1414,7 +1429,7 @@ export interface VrpSyncSolveParams {
    * Body param: Custom distance matrix configuration for multi-profile and
    * multi-slice scenarios
    */
-  customDistanceMatrices?: VrpSyncSolveParams.CustomDistanceMatrices | null;
+  customDistanceMatrices?: CustomDistanceMatrices | null;
 
   /**
    * Body param: Optional webhook URL that will receive a POST request with the job
@@ -1425,7 +1440,7 @@ export interface VrpSyncSolveParams {
   hook?: string | null;
 
   /**
-   * Body param:
+   * Body param
    */
   label?: string | null;
 
@@ -1435,7 +1450,7 @@ export interface VrpSyncSolveParams {
   options?: Options | null;
 
   /**
-   * Body param:
+   * Body param
    */
   relations?: Array<Relation> | null;
 
@@ -1443,27 +1458,6 @@ export interface VrpSyncSolveParams {
    * Body param: OnRoute Weights
    */
   weights?: Weights | null;
-}
-
-export namespace VrpSyncSolveParams {
-  /**
-   * Custom distance matrix configuration for multi-profile and multi-slice scenarios
-   */
-  export interface CustomDistanceMatrices {
-    /**
-     * Optional URL for external distance matrix service endpoint. If not provided,
-     * uses the default system service.
-     */
-    matrixServiceUrl?: string | null;
-
-    /**
-     * Map of vehicle profile names (CAR, BIKE, TRUCK) to time slice hour mappings.
-     * Each time slice hour maps to a matrix ID that should be fetched from the
-     * distance matrix service. Time slice hours correspond to: 6=MORNING_RUSH,
-     * 9=MORNING, 12=MIDDAY, 14=AFTERNOON, 16=EVENING_RUSH, 20=NIGHT.
-     */
-    profileMatrices?: { [key: string]: { [key: string]: string } } | null;
-  }
 }
 
 export interface VrpSyncSuggestParams {
@@ -1484,7 +1478,7 @@ export interface VrpSyncSuggestParams {
   resources: Array<Resource>;
 
   /**
-   * Query param:
+   * Query param
    */
   millis?: string | null;
 
@@ -1492,7 +1486,7 @@ export interface VrpSyncSuggestParams {
    * Body param: Custom distance matrix configuration for multi-profile and
    * multi-slice scenarios
    */
-  customDistanceMatrices?: VrpSyncSuggestParams.CustomDistanceMatrices | null;
+  customDistanceMatrices?: CustomDistanceMatrices | null;
 
   /**
    * Body param: Optional webhook URL that will receive a POST request with the job
@@ -1503,7 +1497,7 @@ export interface VrpSyncSuggestParams {
   hook?: string | null;
 
   /**
-   * Body param:
+   * Body param
    */
   label?: string | null;
 
@@ -1513,7 +1507,7 @@ export interface VrpSyncSuggestParams {
   options?: Options | null;
 
   /**
-   * Body param:
+   * Body param
    */
   relations?: Array<Relation> | null;
 
@@ -1523,31 +1517,11 @@ export interface VrpSyncSuggestParams {
   weights?: Weights | null;
 }
 
-export namespace VrpSyncSuggestParams {
-  /**
-   * Custom distance matrix configuration for multi-profile and multi-slice scenarios
-   */
-  export interface CustomDistanceMatrices {
-    /**
-     * Optional URL for external distance matrix service endpoint. If not provided,
-     * uses the default system service.
-     */
-    matrixServiceUrl?: string | null;
-
-    /**
-     * Map of vehicle profile names (CAR, BIKE, TRUCK) to time slice hour mappings.
-     * Each time slice hour maps to a matrix ID that should be fetched from the
-     * distance matrix service. Time slice hours correspond to: 6=MORNING_RUSH,
-     * 9=MORNING, 12=MIDDAY, 14=AFTERNOON, 16=EVENING_RUSH, 20=NIGHT.
-     */
-    profileMatrices?: { [key: string]: { [key: string]: string } } | null;
-  }
-}
-
 Vrp.Jobs = Jobs;
 
 export declare namespace Vrp {
   export {
+    type CustomDistanceMatrices as CustomDistanceMatrices,
     type ExplanationOptions as ExplanationOptions,
     type Job as Job,
     type Location as Location,
@@ -1575,6 +1549,7 @@ export declare namespace Vrp {
     Jobs as Jobs,
     type OnRouteResponse as OnRouteResponse,
     type OnrouteConstraint as OnrouteConstraint,
+    type Score as Score,
     type SolviceStatusJob as SolviceStatusJob,
     type Unresolved as Unresolved,
     type Visit as Visit,

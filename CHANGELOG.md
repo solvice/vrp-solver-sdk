@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.12.0 (2026-01-18)
+
+Full Changelog: [v0.11.0...v0.12.0](https://github.com/solvice/vrp-solver-sdk/compare/v0.11.0...v0.12.0)
+
+### Features
+
+* **api:** api update ([1fe8f5a](https://github.com/solvice/vrp-solver-sdk/commit/1fe8f5a82dfb75af446329bf54d1f68cbfef57ef))
+* **api:** api update ([4b497aa](https://github.com/solvice/vrp-solver-sdk/commit/4b497aa86a6297eefe8b2d87434f1ee12805ae70))
+* **api:** api update ([213227a](https://github.com/solvice/vrp-solver-sdk/commit/213227a47c237195717b7ceb2d2d3f17ccb8bf30))
+* **api:** api update ([b16cede](https://github.com/solvice/vrp-solver-sdk/commit/b16cede6bb9c1d6bbbfcf6f5400aa2afad083823))
+* **api:** api update ([9a8a6ef](https://github.com/solvice/vrp-solver-sdk/commit/9a8a6efe59081026ab9d46141b98908a62241350))
+* **api:** api update ([0f22b62](https://github.com/solvice/vrp-solver-sdk/commit/0f22b622240ccd8e573db9a3496210111eb34387))
+* **api:** api update ([151fc9e](https://github.com/solvice/vrp-solver-sdk/commit/151fc9ee3ec684e70b0f2430683ae6853f54457a))
+* **api:** api update ([ea5824e](https://github.com/solvice/vrp-solver-sdk/commit/ea5824ed5c782c00d06278959de510fa6fcc8018))
+* **api:** manual updates ([0baf30d](https://github.com/solvice/vrp-solver-sdk/commit/0baf30db9f78d6ec93b2bb0bda6fab9c1f2d8cab))
+* **api:** manual updates ([72c8505](https://github.com/solvice/vrp-solver-sdk/commit/72c85053ea0051e5686811e9a6f67b191d3086aa))
+
+
+### Performance Improvements
+
+* faster formatting ([32119fd](https://github.com/solvice/vrp-solver-sdk/commit/32119fddf6bd4184bfa4a6ded66d22c45df1a150))
+
+
+### Chores
+
+* do not install brew dependencies in ./scripts/bootstrap by default ([42d4d04](https://github.com/solvice/vrp-solver-sdk/commit/42d4d04583d660e43c6ce3aac3d3308823a251ce))
+* improve example values ([21b7858](https://github.com/solvice/vrp-solver-sdk/commit/21b785836fa8a3cab4ec650cab6b5b9a549f5641))
+* **internal:** codegen related update ([76e3422](https://github.com/solvice/vrp-solver-sdk/commit/76e342281838922d1d1a0e3a0cb78c07f6ef7110))
+* **internal:** codegen related update ([96cbe60](https://github.com/solvice/vrp-solver-sdk/commit/96cbe6082667d26c67d976dcfca755b1acdc8638))
+* **internal:** codegen related update ([4bb1da4](https://github.com/solvice/vrp-solver-sdk/commit/4bb1da4f04f25678b068045d946454564737535d))
+* **internal:** fix incremental formatting in some cases ([c0e948d](https://github.com/solvice/vrp-solver-sdk/commit/c0e948dea4bc91d46d7bcd6537816db8bc487168))
+* **internal:** ignore .eslintcache ([64ff3fd](https://github.com/solvice/vrp-solver-sdk/commit/64ff3fdd1f82b9fd659001a70c5b2eacafc7dd68))
+* **internal:** remove .eslintcache ([28dc73c](https://github.com/solvice/vrp-solver-sdk/commit/28dc73cacde98324499f7534a39b84ce51adc913))
+* **internal:** remove deprecated `compilerOptions.baseUrl` from tsconfig.json ([85520ad](https://github.com/solvice/vrp-solver-sdk/commit/85520ad32eab3a7ee6e9643cf1e31d69ce38e36d))
+* **internal:** use npm pack for build uploads ([b79b3d4](https://github.com/solvice/vrp-solver-sdk/commit/b79b3d4c320fb1d3662a559489ea9fb3b4e8d5a8))
+* **jsdoc:** fix [@link](https://github.com/link) annotations to refer only to parts of the package‘s public interface ([8743bd8](https://github.com/solvice/vrp-solver-sdk/commit/8743bd81acb8f87d32e27aac4e0d0e3d1f639f3e))
+
 ## 0.11.0 (2025-09-18)
 
 Full Changelog: [v0.10.0...v0.11.0](https://github.com/solvice/vrp-solver-sdk/compare/v0.10.0...v0.11.0)

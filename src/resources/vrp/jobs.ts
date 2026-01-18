@@ -85,9 +85,10 @@ export interface OnRouteResponse {
   occupancy?: number | null;
 
   /**
-   * Score tells you how good a solution is.
+   * The score of a solution shows how good this solution is w.r.t all the
+   * constraints. All solvers try to maximize the score.
    */
-  score?: OnRouteResponse.Score | null;
+  score?: Score | null;
 
   /**
    * Status of the solve job.
@@ -209,29 +210,6 @@ export namespace OnRouteResponse {
     workTime?: number | null;
   }
 
-  /**
-   * Score tells you how good a solution is.
-   */
-  export interface Score {
-    feasible?: boolean | null;
-
-    /**
-     * The score of the constraints that are hard. This should be 0 in order to be
-     * feasible.
-     */
-    hardScore?: number | null;
-
-    /**
-     * The score of the constraints that are medium.
-     */
-    mediumScore?: number | null;
-
-    /**
-     * The score of the constraints that are soft.
-     */
-    softScore?: number | null;
-  }
-
   export interface Suggestion {
     assignments: Array<Suggestion.Assignment>;
 
@@ -239,7 +217,7 @@ export namespace OnRouteResponse {
      * The score of a solution shows how good this solution is w.r.t all the
      * constraints. All solvers try to maximize the score.
      */
-    score: Suggestion.Score;
+    score: JobsAPI.Score;
   }
 
   export namespace Suggestion {
@@ -269,14 +247,15 @@ export namespace OnRouteResponse {
       latestArrival?: string | null;
 
       /**
-       * Score of the assignment
+       * The score of a solution shows how good this solution is w.r.t all the
+       * constraints. All solvers try to maximize the score.
        */
-      score?: Assignment.Score | null;
+      score?: JobsAPI.Score | null;
 
       /**
        * Unresolved constraints in this alternative solution
        */
-      scoreExplanation?: Assignment.ScoreExplanation | null;
+      scoreExplanation?: Assignment.ScoreExplanation;
 
       /**
        * Suggested arrival date-time
@@ -285,39 +264,16 @@ export namespace OnRouteResponse {
 
       suggestedInitialArrival?: string | null;
 
-      violations?: Array<JobsAPI.Unresolved | null> | null;
+      violations?: Array<JobsAPI.Unresolved> | null;
     }
 
     export namespace Assignment {
-      /**
-       * Score of the assignment
-       */
-      export interface Score {
-        feasible?: boolean | null;
-
-        /**
-         * The score of the constraints that are hard. This should be 0 in order to be
-         * feasible.
-         */
-        hardScore?: number | null;
-
-        /**
-         * The score of the constraints that are medium.
-         */
-        mediumScore?: number | null;
-
-        /**
-         * The score of the constraints that are soft.
-         */
-        softScore?: number | null;
-      }
-
       /**
        * Unresolved constraints in this alternative solution
        */
       export interface ScoreExplanation {
         /**
-         * Types of constraints that can be violated in a routing solution
+         * Constraint type.
          */
         constraint: JobsAPI.OnrouteConstraint;
 
@@ -326,30 +282,6 @@ export namespace OnRouteResponse {
          */
         score: string;
       }
-    }
-
-    /**
-     * The score of a solution shows how good this solution is w.r.t all the
-     * constraints. All solvers try to maximize the score.
-     */
-    export interface Score {
-      feasible?: boolean | null;
-
-      /**
-       * The score of the constraints that are hard. This should be 0 in order to be
-       * feasible.
-       */
-      hardScore?: number | null;
-
-      /**
-       * The score of the constraints that are medium.
-       */
-      mediumScore?: number | null;
-
-      /**
-       * The score of the constraints that are soft.
-       */
-      softScore?: number | null;
     }
   }
 
@@ -439,7 +371,33 @@ export type OnrouteConstraint =
   | 'RESOURCE_PERIOD_MIN_COMPLEXITY'
   | 'RESOURCE_PERIOD_MAX_COMPLEXITY'
   | 'RESOURCE_COMPATIBILITY'
-  | 'JOBTYPE_VIOLATION';
+  | 'JOBTYPE_VIOLATION'
+  | 'GROUP_SEQUENCE'
+  | 'JOB_PROXIMITY';
+
+/**
+ * The score of a solution shows how good this solution is w.r.t all the
+ * constraints. All solvers try to maximize the score.
+ */
+export interface Score {
+  feasible?: boolean | null;
+
+  /**
+   * The score of the constraints that are hard. This should be 0 in order to be
+   * feasible.
+   */
+  hardScore?: number | null;
+
+  /**
+   * The score of the constraints that are medium.
+   */
+  mediumScore?: number | null;
+
+  /**
+   * The score of the constraints that are soft.
+   */
+  softScore?: number | null;
+}
 
 /**
  * Status of a solve job
@@ -476,7 +434,7 @@ export interface SolviceStatusJob {
  */
 export interface Unresolved {
   /**
-   * Types of constraints that can be violated in a routing solution
+   * Constraint type.
    */
   constraint: OnrouteConstraint;
 
@@ -556,7 +514,7 @@ export interface JobExplanationResponse {
   /**
    * Score of the solution.
    */
-  score: JobExplanationResponse.Score | null;
+  score: Score;
 
   /**
    * When `options.explanation.enabled` is set to `true`, this field will contain the
@@ -569,42 +527,51 @@ export interface JobExplanationResponse {
   /**
    * Conflicts in the solution
    */
-  conflicts?: JobExplanationResponse.Conflicts | null;
+  conflicts?: Array<JobExplanationResponse.UnionMember0> | JobExplanationResponse.UnionMember1 | null;
 
   /**
    * Unresolved constraints in the solution
    */
-  unresolved?: JobExplanationResponse.Unresolved | null;
+  unresolved?: Array<Unresolved> | JobExplanationResponse.UnionMember1 | null;
 }
 
 export namespace JobExplanationResponse {
   /**
-   * Score of the solution.
+   * Conflicts in the solution
    */
-  export interface Score {
-    feasible?: boolean | null;
+  export interface UnionMember0 {
+    /**
+     * Constraint type.
+     */
+    constraint: string;
 
     /**
-     * The score of the constraints that are hard. This should be 0 in order to be
-     * feasible.
+     * Score impact of this conflict.
      */
-    hardScore?: number | null;
+    score: string;
 
     /**
-     * The score of the constraints that are medium.
+     * Job id.
      */
-    mediumScore?: number | null;
+    job?: string | null;
+
+    relation?: string | null;
 
     /**
-     * The score of the constraints that are soft.
+     * Resource id.
      */
-    softScore?: number | null;
+    resource?: string | null;
+
+    /**
+     * Tag id.
+     */
+    tag?: string | null;
   }
 
   /**
    * Conflicts in the solution
    */
-  export interface Conflicts {
+  export interface UnionMember1 {
     /**
      * Constraint type.
      */
@@ -636,9 +603,9 @@ export namespace JobExplanationResponse {
   /**
    * Unresolved constraints in the solution
    */
-  export interface Unresolved {
+  export interface UnionMember1 {
     /**
-     * Types of constraints that can be violated in a routing solution
+     * Constraint type.
      */
     constraint: JobsAPI.OnrouteConstraint;
 
@@ -653,6 +620,7 @@ export declare namespace Jobs {
   export {
     type OnRouteResponse as OnRouteResponse,
     type OnrouteConstraint as OnrouteConstraint,
+    type Score as Score,
     type SolviceStatusJob as SolviceStatusJob,
     type Unresolved as Unresolved,
     type Visit as Visit,

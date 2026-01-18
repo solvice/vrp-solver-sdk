@@ -4,7 +4,7 @@
 
 This library provides convenient access to the Solvice Vrp Solver REST API from server-side TypeScript or JavaScript.
 
-The REST API documentation can be found on [docs2.solvice.io](https://docs2.solvice.io/). The full API of this library can be found in [api.md](api.md).
+The REST API documentation can be found on [docs.solvice.io](https://docs.solvice.io/). The full API of this library can be found in [api.md](api.md).
 
 It is generated with [Stainless](https://www.stainless.com/).
 
@@ -27,8 +27,10 @@ const client = new SolviceVrpSolver({
 });
 
 const onRouteResponse = await client.vrp.syncSolve({
-  jobs: [{ name: '1' }, { name: '2' }],
-  resources: [{ name: '1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] }],
+  jobs: [{ name: 'Job-1' }],
+  resources: [
+    { name: 'vehicle-1', shifts: [{ from: '2023-01-13T08:00:00Z', to: '2023-01-13T17:00:00Z' }] },
+  ],
 });
 
 console.log(onRouteResponse.id);
