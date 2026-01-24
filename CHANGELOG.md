@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.1 (2026-01-24)
+
+Full Changelog: [v0.12.0...v0.12.1](https://github.com/solvice/vrp-solver-sdk/compare/v0.12.0...v0.12.1)
+
+### Chores
+
+* **ci:** upgrade `actions/github-script` ([9fac871](https://github.com/solvice/vrp-solver-sdk/commit/9fac871e22b18cdaf16ac58bdc190bcc64d6c35b))
+
 ## 0.12.0 (2026-01-18)
 
 Full Changelog: [v0.11.0...v0.12.0](https://github.com/solvice/vrp-solver-sdk/compare/v0.11.0...v0.12.0)
