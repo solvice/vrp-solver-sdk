@@ -8,7 +8,7 @@ const client = new SolviceVrpSolver({
 });
 
 describe('resource vrp', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('demo', async () => {
     const responsePromise = client.vrp.demo();
     const rawResponse = await responsePromise.asResponse();
@@ -20,7 +20,7 @@ describe('resource vrp', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('demo: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
@@ -35,7 +35,7 @@ describe('resource vrp', () => {
     ).rejects.toThrow(SolviceVrpSolver.NotFoundError);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('evaluate: only required params', async () => {
     const responsePromise = client.vrp.evaluate({
       jobs: [{ name: 'Job-1' }],
@@ -52,7 +52,7 @@ describe('resource vrp', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('evaluate: required and optional params', async () => {
     const response = await client.vrp.evaluate({
       jobs: [
@@ -242,7 +242,7 @@ describe('resource vrp', () => {
     });
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('solve: only required params', async () => {
     const responsePromise = client.vrp.solve({
       jobs: [{ name: 'Job-1' }],
@@ -259,7 +259,7 @@ describe('resource vrp', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('solve: required and optional params', async () => {
     const response = await client.vrp.solve({
       jobs: [
@@ -451,7 +451,7 @@ describe('resource vrp', () => {
     });
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('suggest: only required params', async () => {
     const responsePromise = client.vrp.suggest({
       jobs: [{ name: 'Job-1' }],
@@ -468,7 +468,7 @@ describe('resource vrp', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('suggest: required and optional params', async () => {
     const response = await client.vrp.suggest({
       jobs: [
@@ -659,7 +659,7 @@ describe('resource vrp', () => {
     });
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('syncEvaluate: only required params', async () => {
     const responsePromise = client.vrp.syncEvaluate({
       jobs: [{ name: 'Job-1' }],
@@ -676,7 +676,7 @@ describe('resource vrp', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('syncEvaluate: required and optional params', async () => {
     const response = await client.vrp.syncEvaluate({
       jobs: [
@@ -866,7 +866,7 @@ describe('resource vrp', () => {
     });
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('syncSolve: only required params', async () => {
     const responsePromise = client.vrp.syncSolve({
       jobs: [{ name: 'Job-1' }],
@@ -883,7 +883,7 @@ describe('resource vrp', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('syncSolve: required and optional params', async () => {
     const response = await client.vrp.syncSolve({
       jobs: [
@@ -1074,7 +1074,7 @@ describe('resource vrp', () => {
     });
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('syncSuggest: only required params', async () => {
     const responsePromise = client.vrp.syncSuggest({
       jobs: [{ name: 'Job-1' }],
@@ -1091,7 +1091,7 @@ describe('resource vrp', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('syncSuggest: required and optional params', async () => {
     const response = await client.vrp.syncSuggest({
       jobs: [
