@@ -60,7 +60,7 @@ $ yarn link solvice-vrp-solver
 # With pnpm
 $ pnpm link --global
 $ cd ../my-package
-$ pnpm link -—global solvice-vrp-solver
+$ pnpm link --global solvice-vrp-solver
 ```
 
 ## Running tests
