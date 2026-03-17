@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.12.1 (2026-03-17)
+
+Full Changelog: [v0.12.0...v0.12.1](https://github.com/solvice/vrp-solver-sdk/compare/v0.12.0...v0.12.1)
+
+### Bug Fixes
+
+* **client:** avoid memory leak with abort signals ([392868a](https://github.com/solvice/vrp-solver-sdk/commit/392868ad365d8101eaa4e928b52184d949384004))
+* **client:** avoid removing abort listener too early ([4a5fae9](https://github.com/solvice/vrp-solver-sdk/commit/4a5fae98f526c58e595467ddbc817bd85e75ff8b))
+* **client:** preserve URL params already embedded in path ([72d5d2e](https://github.com/solvice/vrp-solver-sdk/commit/72d5d2ee2c0fe685fc370cd636be16df29dc5d4b))
+* **docs/contributing:** correct pnpm link command ([0e37143](https://github.com/solvice/vrp-solver-sdk/commit/0e3714335e83cc623239781a5b84e816acc2ac75))
+
+
+### Chores
+
+* **api:** minor updates ([dd9168c](https://github.com/solvice/vrp-solver-sdk/commit/dd9168ca41b3ea506734728beae3a93774a7f1f6))
+* **ci:** skip uploading artifacts on stainless-internal branches ([f01c070](https://github.com/solvice/vrp-solver-sdk/commit/f01c0704df6a9144cdabebf4edb07357beadaa6b))
+* **ci:** upgrade `actions/github-script` ([9fac871](https://github.com/solvice/vrp-solver-sdk/commit/9fac871e22b18cdaf16ac58bdc190bcc64d6c35b))
+* **client:** do not parse responses with empty content-length ([8cf7166](https://github.com/solvice/vrp-solver-sdk/commit/8cf71663e41dcc725b3543500b05a763f2139ffb))
+* **client:** restructure abort controller binding ([ad6b532](https://github.com/solvice/vrp-solver-sdk/commit/ad6b5326d02a31c40294ac72499427935179b63a))
+* **internal/client:** fix form-urlencoded requests ([a1c67be](https://github.com/solvice/vrp-solver-sdk/commit/a1c67be70a641731882151690f0680203d3645fe))
+* **internal:** avoid type checking errors with ts-reset ([1185c97](https://github.com/solvice/vrp-solver-sdk/commit/1185c978d8e13c8a822da5137c3c2ee606302759))
+* **internal:** codegen related update ([bb6c564](https://github.com/solvice/vrp-solver-sdk/commit/bb6c5649fd9a3abb708c09cbe87b3863712ed86f))
+* **internal:** move stringifyQuery implementation to internal function ([4f3b427](https://github.com/solvice/vrp-solver-sdk/commit/4f3b427d480ec50ba23e6882bc1cb278c26b4c09))
+* **internal:** remove mock server code ([696c502](https://github.com/solvice/vrp-solver-sdk/commit/696c502cc7364656d1df6f549489a271910775e0))
+* **internal:** tweak CI branches ([0d79c92](https://github.com/solvice/vrp-solver-sdk/commit/0d79c92ad9b324f49bf23ab54a66a8eacc256f39))
+* **internal:** update dependencies to address dependabot vulnerabilities ([c9e4229](https://github.com/solvice/vrp-solver-sdk/commit/c9e422995031c15ebefb4cb6dbc1601611a59d33))
+* update mock server docs ([4368063](https://github.com/solvice/vrp-solver-sdk/commit/4368063252a27e30ccb19038d9c89607fb1d7a60))
+
 ## 0.12.0 (2026-01-18)
 
 Full Changelog: [v0.11.0...v0.12.0](https://github.com/solvice/vrp-solver-sdk/compare/v0.11.0...v0.12.0)
