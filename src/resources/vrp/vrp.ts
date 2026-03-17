@@ -1298,7 +1298,7 @@ export interface VrpSolveParams {
   /**
    * Header param
    */
-  instance?: string | null;
+  instance?: string;
 }
 
 export interface VrpSuggestParams {
